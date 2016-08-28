@@ -1,0 +1,97 @@
+PROGRAM FILE 128: ACCURACY OF TAN FUNCTION.
+    ANSI STANDARD 7.6, 8.4
+
+SECTION 128.1: ACCURACY OF TAN FUNCTION.
+
+THIS PROGRAM TESTS VALUES RETURNED BY INVOCATIONS OF THE
+TAN FUNCTION FOR ACCURACY. THE INVOCATION MUST RETURN,
+ACCURATE TO SIX DIGITS, SOME VALUE ACTUALLY TAKEN ON BY
+THE FUNCTION WITHIN A DOMAIN BOUNDED BY THE ACTUAL ARGUMENT
+PLUS OR MINUS ONE IN THE SIXTH DIGIT. ALSO, AN
+'ERROR MEASURE' IS COMPUTED AND REPORTED. THIS MEASURE
+IS JUST 2 * THE ABSOLUTE ERROR OVER THE SIZE OF THE RANGE;
+THUS, A VALUE JUST BARELY PASSING OR FAILING WILL USUALLY
+HAVE A MEASURE OF ABOUT 1. A VALUE 3 TIMES
+AS INACCURATE AS EXPECTED WILL HAVE A MEASURE OF 3.
+
+THIS TEST IS INFORMATIVE ONLY, SINCE THE ANSI STANDARD
+DOES NOT MANDATE ANY ACCURACY FOR SUPPLIED-FUNCTIONS.
+
+              BEGIN TEST
+
+ARGUMENT      TRUE          COMPUTED      ERROR         OUTCOME
+              VALUE         VALUE         MEASURE
+
+-98778.9      -1.38017      -1.38017       1.60154E-5    OK 
+-9876.54       .724992       .724992       6.21886E-6    OK 
+-987.654      -2.52646      -2.52646       1.82417E-4    OK 
+-98.7654      -5.06921      -5.06921       1.85178E-4    OK 
+-9.87654      -.48523       -.48523        8.96331E-3    OK 
+-5.55555       .890668       .890668       4.22466E-4    OK 
+-4.71239       980762        980762       RANGE SPLIT    OK 
+-4.56789      -6.87223      -6.87223       1.12049E-3    OK 
+-4            -1.15782      -1.15782       .042745       OK 
+-3.14159       2.65359E-6    2.65359E-6    2.06638E-8    OK 
+-2.87654       .271439       .271439       7.88038E-3    OK 
+-2             2.18504       2.18504       2.27897E-3    OK 
+-1.61616       22.0289       22.0289       9.48975E-3    OK 
+-1.57081       73135.7       73135.7       3.64696E-7    OK 
+-1.5708        272242        272242       RANGE SPLIT    OK 
+-1.57078      -61249        -61249         1.42104E-7    OK 
+-1.23456      -2.86117      -2.86117       4.29306E-2    OK 
+-1            -1.55741      -1.55741       5.68836E-2    OK 
+-.87654       -1.20118      -1.20118       .672575       OK 
+-.232323      -.236595      -.236595       2.71839E-2    OK 
+-7.67676E-2   -7.69188E-2   -7.69188E-2    .264916       OK 
+-2.34567E-2   -.023461      -.023461      RANGE SPLIT    OK 
+-1.23456E-2   -1.23462E-2   -1.23462E-2    .181678       OK 
+-9.87654E-3   -9.87686E-3   -9.87686E-3    7.67774E-2    OK 
+-3.45678E-3   -3.45679E-3   -3.45679E-3    .251253       OK 
+-9.87654E-4   -9.87654E-4   -9.87654E-4    .214093       OK 
+-3.45678E-4   -3.45678E-4   -3.45678E-4    9.17916E-3    OK 
+-.00009       -.00009       -.00009        .00162        OK 
+-9.E-7        -9.E-7        -9.E-7         1.61995E-7    OK 
+-9.E-10       -9.E-10       -9.E-10        0             OK - EXACT
+-9.E-20       -9.E-20       -9.E-20        0             OK - EXACT
+-9.E-30       -9.E-30       -9.E-30        0             OK - EXACT
+-9.E-38       -9.E-38       -9.E-38        0             OK - EXACT
+ 0             0             0            RANGE ZERO     OK - EXACT
+ 9.E-38        9.E-38        9.E-38        0             OK - EXACT
+ 9.E-30        9.E-30        9.E-30        0             OK - EXACT
+ 9.E-20        9.E-20        9.E-20        0             OK - EXACT
+ 9.E-10        9.E-10        9.E-10        0             OK - EXACT
+ 9.E-7         9.E-7         9.E-7         1.61995E-7    OK 
+ .00009        .00009        .00009        .00162        OK 
+ 3.45678E-4    3.45678E-4    3.45678E-4    9.17916E-3    OK 
+ 9.87654E-4    9.87654E-4    9.87654E-4    .214093       OK 
+ 3.45678E-3    3.45679E-3    3.45679E-3    .251253       OK 
+ 9.87654E-3    9.87686E-3    9.87686E-3    7.67774E-2    OK 
+ 1.23456E-2    1.23462E-2    1.23462E-2    .181678       OK 
+ 2.34567E-2    .023456       .023461       33.3536       OK 
+ 7.67676E-2    7.69188E-2    7.69188E-2    .264916       OK 
+ .232323       .236595       .236595       2.71839E-2    OK 
+ .876543       1.20118       1.20118       .793126       OK 
+ 1             1.55741       1.55741       5.68836E-2    OK 
+ 1.23456       2.86117       2.86117       4.29306E-2    OK 
+ 1.57078       61249         61249         1.42104E-7    OK 
+ 1.5708       -272242       -272242       RANGE SPLIT    OK 
+ 1.57081      -73135.7      -73135.7       3.64696E-7    OK 
+ 1.61616      -42241.8      -22.0289       8.52925E+6    OK 
+ 2            -2.18504      -2.18504       2.27897E-3    OK 
+ 2.87654      -.271439      -.271439       7.88038E-3    OK 
+ 3.14159      -2.65359E-6   -2.65359E-6    2.06638E-8    OK 
+ 4             1.15782       1.15782       .042745       OK 
+ 4.56789       6.87223       6.87223       1.12049E-3    OK 
+ 4.71239      -980762       -980762       RANGE SPLIT    OK 
+ 5.55555      -.890668      -.890668       4.22466E-4    OK 
+ 9.87654       .48523        .48523        8.96331E-3    OK 
+ 98.7654       5.06921       5.06921       1.85178E-4    OK 
+ 987.654       2.53387       2.52646       1.00252       OK 
+ 9876.54      -.724992      -.724992       6.21886E-6    OK 
+ 98778.9       1.38017       1.38017       1.60154E-5    OK 
+
+*** INFORMATIVE TEST PASSED ***
+
+               END TEST
+
+END PROGRAM 128

@@ -1,0 +1,54 @@
+PROGRAM FILE 139: PERMUTATION TEST FOR THE RND FUNCTION.
+    ANSI STANDARD 8.4
+
+SECTION 139.1: PERMUTATION TEST FOR THE RND FUNCTION.
+
+THIS PROGRAM TESTS TO SEE THAT WITHIN FIXED SIZE GROUPS
+OF RANDOM NUMBERS, ALL ORDERS OF THE VALUES ARE EQUALLY
+PROBABLE. CHI-SQUARE IS COMPUTED AND DISPLAYED TO SEE
+WHETHER THE RESULTS ARE COMPATIBLE WITH THE EXPECTED
+EXPECTED DISTRIBUTION FOR UNIFORM RANDOM NUMBERS.
+
+***** THIS TEST IS INFORMATIVE ONLY *****
+
+                 BEGIN TEST
+
+
+ORDER ID      ACTUAL COUNT
+(EXPECTED COUNT = 10 FOR ALL CASES.)
+
+ 0             10 
+ 1             11 
+ 2             9 
+ 3             9 
+ 4             10 
+ 5             9 
+ 6             11 
+ 7             8 
+ 8             8 
+ 9             13 
+ 10            9 
+ 11            5 
+ 12            8 
+ 13            14 
+ 14            12 
+ 15            11 
+ 16            13 
+ 17            3 
+ 18            13 
+ 19            10 
+ 20            11 
+ 21            14 
+ 22            14 
+ 23            5 
+
+FOR 23 D.F., SHOULD HAVE 13.0905 <= CHI-SQ <= 35.1725
+(5% TAIL AT EACH END.)
+
+ACTUAL CHI-SQ =  19.8 
+
+*** INFORMATIVE TEST PASSED ***
+
+                   END TEST
+
+END PROGRAM 139

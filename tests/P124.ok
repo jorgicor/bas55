@@ -1,0 +1,91 @@
+PROGRAM FILE 124: ACCURACY OF LOG FUNCTION.
+    ANSI STANDARD 7.6, 8.4
+
+SECTION 124.1: ACCURACY OF LOG FUNCTION.
+
+THIS PROGRAM TESTS VALUES RETURNED BY INVOCATIONS OF THE
+LOG FUNCTION FOR ACCURACY. THE INVOCATION MUST RETURN,
+ACCURATE TO SIX DIGITS, SOME VALUE ACTUALLY TAKEN ON BY
+THE FUNCTION WITHIN A DOMAIN BOUNDED BY THE ACTUAL ARGUMENT
+PLUS OR MINUS ONE IN THE SIXTH DIGIT. ALSO, AN
+'ERROR MEASURE' IS COMPUTED AND REPORTED. THIS MEASURE
+IS JUST 2 * THE ABSOLUTE ERROR OVER THE SIZE OF THE RANGE;
+THUS, A VALUE JUST BARELY PASSING OR FAILING WILL USUALLY
+HAVE A MEASURE OF ABOUT 1. A VALUE 3 TIMES
+AS INACCURATE AS EXPECTED WILL HAVE A MEASURE OF 3.
+
+THIS TEST IS INFORMATIVE ONLY, SINCE THE ANSI STANDARD
+DOES NOT MANDATE ANY ACCURACY FOR SUPPLIED-FUNCTIONS.
+
+              BEGIN TEST
+
+ARGUMENT      TRUE          COMPUTED      ERROR         OUTCOME
+              VALUE         VALUE         MEASURE
+
+ 1.E-38       -87.4982      -87.4982       .670675       OK 
+ 1.00001E-38  -87.4982      -87.4982       .470676       OK 
+ 9.87654E-38  -85.2081      -85.2081       .574284       OK 
+ 8.98989E-37  -82.9995      -82.9995       .956564       OK 
+ 7.87878E-36  -80.8289      -80.8289       .194435       OK 
+ 6.76767E-35  -78.6783      -78.6783       .427851       OK 
+ 5.65656E-30  -67.3447      -67.3447       .737125       OK 
+ 4.54545E-25  -56.0505      -56.0505       5.92222E-3    OK 
+ 3.43434E-20  -44.8179      -44.8179       .458152       OK 
+ 2.32323E-15  -33.6958      -33.6958       .358722       OK 
+ 1.21212E-10  -22.8335      -22.8335       .399254       OK 
+ 9.0909E-7    -13.9108      -13.9108       .434755       OK 
+ 8.88888E-5   -9.32812      -9.32812       .881527       OK 
+ 7.77777E-4   -7.15907      -7.15907       7.07264E-2    OK 
+ 6.66666E-3   -5.01064      -5.01064       .741181       OK 
+ 5.55555E-2   -2.89037      -2.89037       .551579       OK 
+ .123456      -2.09187      -2.09187       4.61699E-2    OK 
+ .298347      -1.2095       -1.2095        .195963       OK 
+ .535353      -.624829      -.624829       3.17085E-2    OK 
+ .893481      -.11263       -.11263        .139532       OK 
+ .999         -1.0005E-3    -1.0005E-3     3.31759E-4    OK 
+ .9995        -5.00125E-4   -5.00125E-4    4.16406E-5    OK 
+ .9999        -1.00005E-4   -1.00005E-4    3.33164E-7    OK 
+ .99995       -5.00013E-5   -5.00013E-5    4.99533E-5    OK 
+ .99999       -1.00001E-5   -1.00001E-5    4.99982E-5    OK 
+ .999995      -5.00001E-6   -5.00001E-6    2.50005E-6    OK 
+ .999998      -.000002      -.000002       1.99993E-6    OK 
+ .999999      -.000001      -.000001       4.00022E-7    OK 
+ 1             0             0             0             OK  - EXACT
+ 1.00001       9.99995E-6    9.99995E-6    3.98843E-11   OK 
+ 1.00002       1.99998E-5    1.99998E-5    2.57565E-10   OK 
+ 1.00005       4.99988E-5    4.99988E-5    4.99605E-6    OK 
+ 1.0001        9.9995E-5     9.9995E-5     3.33329E-8    OK 
+ 1.0003        2.99955E-4    2.99955E-4    9.00019E-7    OK 
+ 1.001         9.995E-4      9.995E-4      3.3325E-5     OK 
+ 1.003         2.99551E-3    2.99551E-3    1.02276E-4    OK 
+ 1.01          9.95033E-3    9.95033E-3    8.60916E-5    OK 
+ 1.03          2.95588E-2    2.95588E-2    2.28729E-4    OK 
+ 1.11111       .10536        .10536        5.09834E-2    OK 
+ 1.54321       .433865       .433865       4.81957E-2    OK 
+ 2             .693147       .693147       3.28291E-2    OK 
+ 2.32323       .842958       .842958       .101953       OK 
+ 2.71828       .999999       .999999       4.36463E-2    OK 
+ 4             1.38629       1.38629       .872224       OK 
+ 7.14286       1.96611       1.96611       .651275       OK 
+ 8             2.07944       2.07944       .308336       OK 
+ 53.6789       3.98302       3.98302       6.50188E-5    OK 
+ 482.284       6.17853       6.17853       .63043        OK 
+ 9621.12       9.17172       9.17172       .8078         OK 
+ 86321.4       11.3658       11.3658       .65637        OK 
+ 777777        13.5642       13.5642       9.74063E-2    OK 
+ 9.87654E+7    18.4083       18.4083       .842021       OK 
+ 8.98989E+10   25.222        25.222        .969149       OK 
+ 7.97979E+15   36.6157       36.6157       .230195       OK 
+ 6.96969E+20   47.9933       47.9933       .547853       OK 
+ 5.95959E+25   59.3496       59.3496       .580232       OK 
+ 4.94949E+30   70.6768       70.6768       .746616       OK 
+ 3.93939E+35   81.9615       81.9615       8.28756E-2    OK 
+ 9.87654E+36   85.1832       85.1832       .511916       OK 
+ 9.87654E+37   87.4858       87.4858       .213776       OK 
+ 1.E+38        87.4982       87.4982       .670675       OK 
+
+*** INFORMATIVE TEST PASSED ***
+
+               END TEST
+
+END PROGRAM 124

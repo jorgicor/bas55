@@ -1,0 +1,68 @@
+PROGRAM FILE 48: LIMIT AND INCREMENT IN THE FOR-STATEMENT
+        ARE EVALUATED ONCE UPON ENTERING THE LOOP.
+    ANSI STANDARD 11.2, 11.4
+
+SECTION 48.1: LIMIT AND INCREMENT IN THE FOR-STATEMENT
+        ARE EVALUATED ONCE UPON ENTERING THE LOOP.
+
+               BEGIN TEST.
+
+I1 SET TO -20
+LOOP IS: FOR I1=I1 TO I1 STEP -3
+
+CONTROL VARIABLE:
+SHOULD BE     ACTUAL        RESULT
+-20           -20             OK  
+LOOP EXITED
+-23           -23             OK  
+
+NO. TIMES THROUGH LOOP:
+SHOULD BE:  1      ACTUAL:  1    RESULT:   OK  
+
+----------------------------
+
+
+I1 SET TO -3
+LOOP IS: FOR I1=I1 TO -20 STEP I1
+
+CONTROL VARIABLE:
+SHOULD BE     ACTUAL        RESULT
+-3            -3              OK  
+-6            -6              OK  
+-9            -9              OK  
+-12           -12             OK  
+-15           -15             OK  
+-18           -18             OK  
+LOOP EXITED
+-21           -21             OK  
+
+NO. TIMES THROUGH LOOP:
+SHOULD BE:  6      ACTUAL:  6    RESULT:   OK  
+
+----------------------------
+
+
+I1 SET TO -2
+LOOP IS: FOR I1=9 TO I1 STEP I1
+
+CONTROL VARIABLE:
+SHOULD BE     ACTUAL        RESULT
+ 9             9              OK  
+ 7             7              OK  
+ 5             5              OK  
+ 3             3              OK  
+ 1             1              OK  
+-1            -1              OK  
+LOOP EXITED
+-3            -3              OK  
+
+NO. TIMES THROUGH LOOP:
+SHOULD BE:  6      ACTUAL:  6    RESULT:   OK  
+
+----------------------------
+
+*** TEST PASSED ***
+
+               END TEST.
+
+END PROGRAM 48

@@ -1,0 +1,14 @@
+#!/bin/sh
+
+nom=P117
+
+bas55=$top_builddir/ecma55/bas55
+bas=$nom.BAS
+out=$nom.out
+err=$nom.err
+ok=$nom.ok
+eok=$nom.eok
+
+$bas55 $bas >$out 2>$err
+
+diff $err $eok && grep -q "INFORMATIVE TEST PASSED" $out && rm -f $out $err

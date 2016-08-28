@@ -1,0 +1,4 @@
+#!/bin/sh
+
+nom=P041
+. ./chkout.inc

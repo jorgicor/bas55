@@ -1,0 +1,77 @@
+PROGRAM FILE 121: ACCURACY OF EXP FUNCTION.
+    ANSI STANDARD 7.6, 8.4
+
+SECTION 121.1: ACCURACY OF EXP FUNCTION.
+
+THIS PROGRAM TESTS VALUES RETURNED BY INVOCATIONS OF THE
+EXP FUNCTION FOR ACCURACY. THE INVOCATION MUST RETURN,
+ACCURATE TO SIX DIGITS, SOME VALUE ACTUALLY TAKEN ON BY
+THE FUNCTION WITHIN A DOMAIN BOUNDED BY THE ACTUAL ARGUMENT
+PLUS OR MINUS ONE IN THE SIXTH DIGIT. ALSO, AN
+'ERROR MEASURE' IS COMPUTED AND REPORTED. THIS MEASURE
+IS JUST 2 * THE ABSOLUTE ERROR OVER THE SIZE OF THE RANGE;
+THUS, A VALUE JUST BARELY PASSING OR FAILING WILL USUALLY
+HAVE A MEASURE OF ABOUT  1. A VALUE 3 TIMES
+AS INACCURATE AS EXPECTED WILL HAVE A MEASURE OF 3.
+
+THIS TEST IS INFORMATIVE ONLY, SINCE THE ANSI STANDARD
+DOES NOT MANDATE ANY ACCURACY FOR SUPPLIED-FUNCTIONS.
+
+              BEGIN TEST
+
+ARGUMENT      TRUE          COMPUTED      ERROR         OUTCOME
+              VALUE         VALUE         MEASURE
+
+-87.4981       1.00013E-38   1.00013E-38   3.37399E-2    OK 
+-85.9876       4.5296E-38    4.5296E-38    1.00047E-3    OK 
+-75            2.67864E-33   2.67864E-33   .011048       OK 
+-44.4444       4.98933E-20   4.98933E-20   2.24934E-3    OK 
+-23.4567       6.49957E-11   6.49957E-11   2.05141E-5    OK 
+-7.77777       4.18945E-4    4.18945E-4    8.48666E-2    OK 
+-2.22222       .108368       .108368       .176027       OK 
+-1             .367879       .367879       9.80381E-2    OK 
+-.999999       .36788        .36788        .190949       OK 
+-.456789       .633314       .633314       4.47896E-2    OK 
+-9.87654E-2    .905955       .905955       .440379       OK 
+-9.87654E-3    .990172       .990172       .145695       OK 
+-9.87654E-4    .999013       .999013       .332861       OK 
+-9.87654E-5    .999901       .999901       .478954       OK 
+-9.87654E-6    .99999        .99999        .247018       OK 
+-9.87654E-7    .999999       .999999       .024693       OK 
+-9.87654E-8    1             1             .197531       OK 
+-9.87654E-9    1             1             1.97531E-2    OK 
+-9.87654E-10   1             1             1.97531E-3    OK 
+-9.87654E-15   1             1             1.9762E-8     OK 
+-9.87654E-20   1             1             0             OK  - EXACT
+-9.87654E-30   1             1             0             OK  - EXACT
+-9.87654E-38   1             1             0             OK  - EXACT
+ 0             1             1            RANGE ZERO     OK  - EXACT
+ 9.87654E-38   1             1             0             OK  - EXACT
+ 9.87654E-30   1             1             0             OK  - EXACT
+ 9.87654E-20   1             1             0             OK  - EXACT
+ 9.87654E-15   1             1             1.30266E-9    OK 
+ 9.87654E-10   1             1             1.31687E-4    OK 
+ 9.87654E-9    1             1             1.31687E-3    OK 
+ 9.87654E-8    1             1             1.31687E-2    OK 
+ 9.87654E-7    1             1             .141093       OK 
+ 9.87654E-6    1.00001       1.00001       2.46822E-2    OK 
+ 9.87654E-5    1.0001        1.0001        .245945       OK 
+ 9.87654E-4    1.00099       1.00099       .371622       OK 
+ 9.87654E-3    1.00993       1.00993       .905202       OK 
+ 9.87654E-2    1.10381       1.10381       .536803       OK 
+ .456789       1.579         1.579         .863798       OK 
+ .999999       2.71828       2.71828       8.89821E-2    OK 
+ 1             2.71828       2.71828       6.09486E-2    OK 
+ 2.22222       9.22779       9.22779       4.04832E-2    OK 
+ 7.77777       2386.95       2386.95       .160338       OK 
+ 23.4567       1.53856E+10   1.53856E+10   2.07323E-2    OK 
+ 44.4444       2.00428E+19   2.00428E+19   1.62386E-2    OK 
+ 75            3.73324E+32   3.73324E+32   5.25473E-3    OK 
+ 85.9876       2.2077E+37    2.2077E+37    2.97177E-3    OK 
+ 87.4981       9.99866E+37   9.99866E+37   4.72778E-3    OK 
+
+*** INFORMATIVE TEST PASSED ***
+
+               END TEST
+
+END PROGRAM 121

@@ -1,0 +1,43 @@
+PROGRAM FILE 136: GAP TEST FOR RND FUNCTION.
+    ANSI STANDARD 8.4
+
+SECTION 136.1: GAP TEST FOR RND FUNCTION.
+
+THIS PROGRAM TESTS THAT THE GAPS BETWEEN NUMBERS WITHIN
+A SPECIFIED INTERVAL ARE DISTRIBUTED AS EXPECTED FOR
+UNIFORMLY DISTRIBUTED RANDOM NUMBERS. CHI-SQUARE IS
+COMPUTED AND DISPLAYED AS THE RESULT.
+
+***** THIS TEST IS INFORMATIVE ONLY. *****
+
+                    BEGIN TEST
+
+
+WILL RUN  259  TRIALS, SO THAT EACH POSSIBILITY HAS
+EXPECTED VALUE >= 10.
+
+
+GAP SIZE      ACTUAL COUNT  EXPECTED COUNT
+
+ 0             37            25.9 
+ 1             19            23.31 
+ 2             20            20.979 
+ 3             24            18.8811 
+ 4             12            16.993 
+ 5             17            15.2937 
+ 6             10            13.7643 
+ 7             10            12.3879 
+ 8             14            11.1491 
+ 9             11            10.0342 
+>= 10          85            90.3077 
+
+FOR 10 D.F., SHOULD HAVE 3.9403 <= CHI-SQ <= 18.307
+(5% TAIL AT EACH END.)
+
+ACTUAL CHI-SQ =  11.2687 
+
+*** INFORMATIVE TEST PASSED ***
+
+                 END TEST
+
+END PROGRAM 136

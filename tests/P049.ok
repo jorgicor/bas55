@@ -1,0 +1,430 @@
+PROGRAM FILE 49: NESTED FOR-BLOCKS.
+    ANSI STANDARD 11.2, 11.4
+
+SECTION 49.1: NESTED FOR-BLOCKS.
+
+THIS SECTION TESTS THAT FOR-BLOCKS MAY BE NESTED IN THE
+TEXT OF THE PROGRAM, WITH SEPARATE CONTROL MAINTAINED
+FOR EACH CONTROL-VARIABLE.
+
+               BEGIN TEST.
+
+EACH DETAIL LINE REPORTS:
+   1) DEPTH OF NESTING
+   2) CORRECT VALUE FOR CONTROL VARIABLE
+   3) ACTUAL VALUE OF CONTROL VARIABLE
+   4) RESULT (OK OR FAILED)
+
+DETAIL LINES ARE INDENTED TO SHOW DEPTH OF NESTING.
+
+ENTERING FOR-BLOCK 1
+ENTERING FOR-BLOCK 2
+  2        -1        -1          OK  
+  2         0         0          OK  
+EXITING FOR-BLOCK 2
+  2         1         1          OK  
+ENTERING FOR-BLOCK 3
+ENTERING FOR-BLOCK 4
+  2         12        12         OK  
+  2         10        10         OK  
+  2         8         8          OK  
+  2         6         6          OK  
+  2         4         4          OK  
+  2         2         2          OK  
+EXITING FOR-BLOCK 4
+  2         0         0          OK  
+    3         1         1          OK  
+ENTERING FOR-BLOCK 4
+  2         12        12         OK  
+  2         10        10         OK  
+  2         8         8          OK  
+  2         6         6          OK  
+  2         4         4          OK  
+  2         2         2          OK  
+EXITING FOR-BLOCK 4
+  2         0         0          OK  
+    3         2         2          OK  
+ENTERING FOR-BLOCK 4
+  2         12        12         OK  
+  2         10        10         OK  
+  2         8         8          OK  
+  2         6         6          OK  
+  2         4         4          OK  
+  2         2         2          OK  
+EXITING FOR-BLOCK 4
+  2         0         0          OK  
+    3         3         3          OK  
+EXITING FOR-BLOCK 3
+    3         4         4          OK  
+ 1        12        12         OK  
+ENTERING FOR-BLOCK 2
+  2        -1        -1          OK  
+  2         0         0          OK  
+EXITING FOR-BLOCK 2
+  2         1         1          OK  
+ENTERING FOR-BLOCK 3
+ENTERING FOR-BLOCK 4
+  2         11        11         OK  
+  2         9         9          OK  
+  2         7         7          OK  
+  2         5         5          OK  
+  2         3         3          OK  
+  2         1         1          OK  
+EXITING FOR-BLOCK 4
+  2        -1        -1          OK  
+    3         1         1          OK  
+ENTERING FOR-BLOCK 4
+  2         11        11         OK  
+  2         9         9          OK  
+  2         7         7          OK  
+  2         5         5          OK  
+  2         3         3          OK  
+  2         1         1          OK  
+EXITING FOR-BLOCK 4
+  2        -1        -1          OK  
+    3         2         2          OK  
+ENTERING FOR-BLOCK 4
+  2         11        11         OK  
+  2         9         9          OK  
+  2         7         7          OK  
+  2         5         5          OK  
+  2         3         3          OK  
+  2         1         1          OK  
+EXITING FOR-BLOCK 4
+  2        -1        -1          OK  
+    3         3         3          OK  
+EXITING FOR-BLOCK 3
+    3         4         4          OK  
+ 1        11        11         OK  
+ENTERING FOR-BLOCK 2
+  2        -1        -1          OK  
+  2         0         0          OK  
+EXITING FOR-BLOCK 2
+  2         1         1          OK  
+ENTERING FOR-BLOCK 3
+ENTERING FOR-BLOCK 4
+  2         10        10         OK  
+  2         8         8          OK  
+  2         6         6          OK  
+  2         4         4          OK  
+  2         2         2          OK  
+EXITING FOR-BLOCK 4
+  2         0         0          OK  
+    3         1         1          OK  
+ENTERING FOR-BLOCK 4
+  2         10        10         OK  
+  2         8         8          OK  
+  2         6         6          OK  
+  2         4         4          OK  
+  2         2         2          OK  
+EXITING FOR-BLOCK 4
+  2         0         0          OK  
+    3         2         2          OK  
+ENTERING FOR-BLOCK 4
+  2         10        10         OK  
+  2         8         8          OK  
+  2         6         6          OK  
+  2         4         4          OK  
+  2         2         2          OK  
+EXITING FOR-BLOCK 4
+  2         0         0          OK  
+    3         3         3          OK  
+EXITING FOR-BLOCK 3
+    3         4         4          OK  
+ 1        10        10         OK  
+ENTERING FOR-BLOCK 2
+  2        -1        -1          OK  
+  2         0         0          OK  
+EXITING FOR-BLOCK 2
+  2         1         1          OK  
+ENTERING FOR-BLOCK 3
+ENTERING FOR-BLOCK 4
+  2         9         9          OK  
+  2         7         7          OK  
+  2         5         5          OK  
+  2         3         3          OK  
+  2         1         1          OK  
+EXITING FOR-BLOCK 4
+  2        -1        -1          OK  
+    3         1         1          OK  
+ENTERING FOR-BLOCK 4
+  2         9         9          OK  
+  2         7         7          OK  
+  2         5         5          OK  
+  2         3         3          OK  
+  2         1         1          OK  
+EXITING FOR-BLOCK 4
+  2        -1        -1          OK  
+    3         2         2          OK  
+ENTERING FOR-BLOCK 4
+  2         9         9          OK  
+  2         7         7          OK  
+  2         5         5          OK  
+  2         3         3          OK  
+  2         1         1          OK  
+EXITING FOR-BLOCK 4
+  2        -1        -1          OK  
+    3         3         3          OK  
+EXITING FOR-BLOCK 3
+    3         4         4          OK  
+ 1        9         9          OK  
+ENTERING FOR-BLOCK 2
+  2        -1        -1          OK  
+  2         0         0          OK  
+EXITING FOR-BLOCK 2
+  2         1         1          OK  
+ENTERING FOR-BLOCK 3
+ENTERING FOR-BLOCK 4
+  2         8         8          OK  
+  2         6         6          OK  
+  2         4         4          OK  
+  2         2         2          OK  
+EXITING FOR-BLOCK 4
+  2         0         0          OK  
+    3         1         1          OK  
+ENTERING FOR-BLOCK 4
+  2         8         8          OK  
+  2         6         6          OK  
+  2         4         4          OK  
+  2         2         2          OK  
+EXITING FOR-BLOCK 4
+  2         0         0          OK  
+    3         2         2          OK  
+ENTERING FOR-BLOCK 4
+  2         8         8          OK  
+  2         6         6          OK  
+  2         4         4          OK  
+  2         2         2          OK  
+EXITING FOR-BLOCK 4
+  2         0         0          OK  
+    3         3         3          OK  
+EXITING FOR-BLOCK 3
+    3         4         4          OK  
+ 1        8         8          OK  
+ENTERING FOR-BLOCK 2
+  2        -1        -1          OK  
+  2         0         0          OK  
+EXITING FOR-BLOCK 2
+  2         1         1          OK  
+ENTERING FOR-BLOCK 3
+ENTERING FOR-BLOCK 4
+  2         7         7          OK  
+  2         5         5          OK  
+  2         3         3          OK  
+  2         1         1          OK  
+EXITING FOR-BLOCK 4
+  2        -1        -1          OK  
+    3         1         1          OK  
+ENTERING FOR-BLOCK 4
+  2         7         7          OK  
+  2         5         5          OK  
+  2         3         3          OK  
+  2         1         1          OK  
+EXITING FOR-BLOCK 4
+  2        -1        -1          OK  
+    3         2         2          OK  
+ENTERING FOR-BLOCK 4
+  2         7         7          OK  
+  2         5         5          OK  
+  2         3         3          OK  
+  2         1         1          OK  
+EXITING FOR-BLOCK 4
+  2        -1        -1          OK  
+    3         3         3          OK  
+EXITING FOR-BLOCK 3
+    3         4         4          OK  
+ 1        7         7          OK  
+ENTERING FOR-BLOCK 2
+  2        -1        -1          OK  
+  2         0         0          OK  
+EXITING FOR-BLOCK 2
+  2         1         1          OK  
+ENTERING FOR-BLOCK 3
+ENTERING FOR-BLOCK 4
+  2         6         6          OK  
+  2         4         4          OK  
+  2         2         2          OK  
+EXITING FOR-BLOCK 4
+  2         0         0          OK  
+    3         1         1          OK  
+ENTERING FOR-BLOCK 4
+  2         6         6          OK  
+  2         4         4          OK  
+  2         2         2          OK  
+EXITING FOR-BLOCK 4
+  2         0         0          OK  
+    3         2         2          OK  
+ENTERING FOR-BLOCK 4
+  2         6         6          OK  
+  2         4         4          OK  
+  2         2         2          OK  
+EXITING FOR-BLOCK 4
+  2         0         0          OK  
+    3         3         3          OK  
+EXITING FOR-BLOCK 3
+    3         4         4          OK  
+ 1        6         6          OK  
+ENTERING FOR-BLOCK 2
+  2        -1        -1          OK  
+  2         0         0          OK  
+EXITING FOR-BLOCK 2
+  2         1         1          OK  
+ENTERING FOR-BLOCK 3
+ENTERING FOR-BLOCK 4
+  2         5         5          OK  
+  2         3         3          OK  
+  2         1         1          OK  
+EXITING FOR-BLOCK 4
+  2        -1        -1          OK  
+    3         1         1          OK  
+ENTERING FOR-BLOCK 4
+  2         5         5          OK  
+  2         3         3          OK  
+  2         1         1          OK  
+EXITING FOR-BLOCK 4
+  2        -1        -1          OK  
+    3         2         2          OK  
+ENTERING FOR-BLOCK 4
+  2         5         5          OK  
+  2         3         3          OK  
+  2         1         1          OK  
+EXITING FOR-BLOCK 4
+  2        -1        -1          OK  
+    3         3         3          OK  
+EXITING FOR-BLOCK 3
+    3         4         4          OK  
+ 1        5         5          OK  
+ENTERING FOR-BLOCK 2
+  2        -1        -1          OK  
+  2         0         0          OK  
+EXITING FOR-BLOCK 2
+  2         1         1          OK  
+ENTERING FOR-BLOCK 3
+ENTERING FOR-BLOCK 4
+  2         4         4          OK  
+  2         2         2          OK  
+EXITING FOR-BLOCK 4
+  2         0         0          OK  
+    3         1         1          OK  
+ENTERING FOR-BLOCK 4
+  2         4         4          OK  
+  2         2         2          OK  
+EXITING FOR-BLOCK 4
+  2         0         0          OK  
+    3         2         2          OK  
+ENTERING FOR-BLOCK 4
+  2         4         4          OK  
+  2         2         2          OK  
+EXITING FOR-BLOCK 4
+  2         0         0          OK  
+    3         3         3          OK  
+EXITING FOR-BLOCK 3
+    3         4         4          OK  
+ 1        4         4          OK  
+ENTERING FOR-BLOCK 2
+  2        -1        -1          OK  
+  2         0         0          OK  
+EXITING FOR-BLOCK 2
+  2         1         1          OK  
+ENTERING FOR-BLOCK 3
+ENTERING FOR-BLOCK 4
+  2         3         3          OK  
+  2         1         1          OK  
+EXITING FOR-BLOCK 4
+  2        -1        -1          OK  
+    3         1         1          OK  
+ENTERING FOR-BLOCK 4
+  2         3         3          OK  
+  2         1         1          OK  
+EXITING FOR-BLOCK 4
+  2        -1        -1          OK  
+    3         2         2          OK  
+ENTERING FOR-BLOCK 4
+  2         3         3          OK  
+  2         1         1          OK  
+EXITING FOR-BLOCK 4
+  2        -1        -1          OK  
+    3         3         3          OK  
+EXITING FOR-BLOCK 3
+    3         4         4          OK  
+ 1        3         3          OK  
+ENTERING FOR-BLOCK 2
+  2        -1        -1          OK  
+  2         0         0          OK  
+EXITING FOR-BLOCK 2
+  2         1         1          OK  
+ENTERING FOR-BLOCK 3
+ENTERING FOR-BLOCK 4
+  2         2         2          OK  
+EXITING FOR-BLOCK 4
+  2         0         0          OK  
+    3         1         1          OK  
+ENTERING FOR-BLOCK 4
+  2         2         2          OK  
+EXITING FOR-BLOCK 4
+  2         0         0          OK  
+    3         2         2          OK  
+ENTERING FOR-BLOCK 4
+  2         2         2          OK  
+EXITING FOR-BLOCK 4
+  2         0         0          OK  
+    3         3         3          OK  
+EXITING FOR-BLOCK 3
+    3         4         4          OK  
+ 1        2         2          OK  
+ENTERING FOR-BLOCK 2
+  2        -1        -1          OK  
+  2         0         0          OK  
+EXITING FOR-BLOCK 2
+  2         1         1          OK  
+ENTERING FOR-BLOCK 3
+ENTERING FOR-BLOCK 4
+  2         1         1          OK  
+EXITING FOR-BLOCK 4
+  2        -1        -1          OK  
+    3         1         1          OK  
+ENTERING FOR-BLOCK 4
+  2         1         1          OK  
+EXITING FOR-BLOCK 4
+  2        -1        -1          OK  
+    3         2         2          OK  
+ENTERING FOR-BLOCK 4
+  2         1         1          OK  
+EXITING FOR-BLOCK 4
+  2        -1        -1          OK  
+    3         3         3          OK  
+EXITING FOR-BLOCK 3
+    3         4         4          OK  
+ 1        1         1          OK  
+ENTERING FOR-BLOCK 2
+  2        -1        -1          OK  
+  2         0         0          OK  
+EXITING FOR-BLOCK 2
+  2         1         1          OK  
+ENTERING FOR-BLOCK 3
+ENTERING FOR-BLOCK 4
+EXITING FOR-BLOCK 4
+  2         0         0          OK  
+    3         1         1          OK  
+ENTERING FOR-BLOCK 4
+EXITING FOR-BLOCK 4
+  2         0         0          OK  
+    3         2         2          OK  
+ENTERING FOR-BLOCK 4
+EXITING FOR-BLOCK 4
+  2         0         0          OK  
+    3         3         3          OK  
+EXITING FOR-BLOCK 3
+    3         4         4          OK  
+ 1        0         0          OK  
+EXITING FOR-BLOCK 1
+ 1       -1        -1          OK  
+
+NO. TIMES THROUGH LOOPS:
+SHOULD BE:  204      ACTUAL:  204    RESULT:   OK  
+
+*** TEST PASSED ***
+
+               END TEST.
+
+END PROGRAM 49

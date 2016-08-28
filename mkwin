@@ -1,0 +1,102 @@
+#!/bin/sh
+
+# This script is used by the author to build the Windows package under Cygwin.
+
+case $# in
+	2) bas55_vmaj=$1; bas55_vmin=$2 ;;
+	*) echo "$0 major_version minor_version"; exit 0 ;;
+esac
+
+bas55_xver=$bas55_vmaj.$bas55_vmin
+bas55_wver=$bas55_vmaj$bas55_vmin
+bas55_xname=bas55-$bas55_xver
+bas55_wname=bas55v$bas55_wver
+bas55_targz=$bas55_xname.tar.gz
+sedmask='s/$//'
+
+show_menu () {
+	echo "*********"
+	echo " M E N U "
+	echo "*********"
+	echo "1. Download $bas55_targz"
+	echo "2. Compile $bas55_xname"
+	echo "3. Make $bas55_wname.zip"
+	echo "4. Clean all"
+	echo "5. Remove $bas55_targz"
+	echo "6. Exit"
+}
+
+download_src () {
+	if [ ! -f $bas55_targz ]
+	then
+		wget -c http://jorgicor.sdfeu.org/bas55/$bas55_targz
+		if [ $? -ne 0 ]
+		then
+			echo "Error downloading $bas55_targz"
+		else
+			echo "Ok"
+		fi
+	else
+		echo "Ok"
+	fi
+}
+
+compile_src () {
+	tar -xvzf $bas55_targz
+	cd $bas55_xname
+#	./configure CC=i686-w64-mingw32-gcc --target=i686-w64-mingw32
+	./configure --host=i686-w64-mingw32
+	make
+	make html
+	cd ..
+}
+
+make_zip () {
+	mkdir $bas55_wname
+	cd $bas55_wname
+	cp ../$bas55_xname/ecma55/bas55.exe .
+	cp ../$bas55_xname/doc/bas55.html .
+	cp ../$bas55_xname/COPYING copying.txt
+	cp ../$bas55_xname/README readme.txt
+	cp ../$bas55_xname/NEWS news.txt
+	sed $sedmask ../$bas55_xname/data/SIEVE.BAS > sieve.bas
+	for i in *.txt
+	do
+		sed $sedmask $i > tmp.txt
+		rm $i
+		mv tmp.txt $i
+	done
+	i686-w64-mingw32-strip bas55.exe
+	cd ..
+	zip -r $bas55_wname.zip $bas55_wname
+}
+
+clean_all () {
+	rm -r $bas55_xname
+	rm -r $bas55_wname
+}
+
+remove_src () {
+	rm $bas55_targz
+}
+
+read_option () {
+	local choice
+	echo -n "Select option: "
+	read choice
+	case $choice in
+		1) download_src ;;
+		2) compile_src ;;
+		3) make_zip ;;
+		4) clean_all ;;
+		5) remove_src ;;
+		6) exit 0 ;;
+		*) echo "Wrong option" ;;
+	esac
+}
+
+while true
+do
+	show_menu
+	read_option
+done

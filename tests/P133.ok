@@ -1,0 +1,124 @@
+PROGRAM FILE 133: CHI-SQUARE UNIFORMITY TEST FOR
+        RND FUNCTION.
+    ANSI STANDARD 8.4
+
+SECTION 133.1: CHI-SQUARE UNIFORMITY TEST FOR
+        RND FUNCTION.
+
+THIS PROGRAM RUNS A SERIES OF 60 EXPERIMENTS OF 1040 SAMPLES
+TO DETERMINE IF THE RANDOM NUMBERS ARE EQUALLY DISTRIBUTED
+AMONG 21 EQUAL-SIZE INTERVALS BETWEEN 0 AND 1.  CHI-SQUARE
+IS COMPUTED AND DISPLAYED FOR EACH OF THESE EXPERIMENTS.
+EACH CHI-SQUARE RESULT IS CATEGORIZED ACCORDING TO THE
+PERCENTILE RANGE INTO WHICH ITS VALUE FALLS:
+
+CATEGORY     % RANGE                CATEGORY    % RANGE
+    1          0-1                      6        50-75
+    2          1-5                      7        75-90
+    3          5-10                     8        90-95
+    4         10-25                     9        95-99
+    5         25-50                    10        99-100
+
+THESE CATEGORICAL RESULTS ARE THEN EVALUATED AGAIN USING
+CHI-SQUARE (THE FIRST AND LAST THREE CATEGORIES ARE EACH
+CONSOLIDATED INTO ONE), AND IF THE DISTRIBUTION AMONG
+CATEGORIES IS SUFFICIENTLY IMPROBABLE (TOP OR BOTTOM 5%),
+THE TEST FAILS.
+
+                    BEGIN TEST
+
+EXPERIMENT    CHI-SQUARE    CATEGORY
+
+ 1             26.84         7 
+ 2             14.96         4 
+ 3             14            4 
+ 4             24.76         7 
+ 5             15.16         4 
+ 6             12.2          3 
+ 7             9.44          2 
+ 8             29.08         8 
+ 9             26.08         7 
+ 10            21.8          6 
+ 11            18.8          5 
+ 12            20.6          6 
+ 13            19.92         6 
+ 14            18.16         5 
+ 15            17.4          5 
+ 16            22.16         6 
+ 17            28.8          8 
+ 18            13.52         4 
+ 19            26.36         7 
+ 20            17.36         5 
+ 21            29.08         8 
+ 22            20.6          6 
+ 23            22.48         6 
+ 24            20.24         6 
+ 25            19.32         5 
+ 26            27.68         7 
+ 27            15.36         4 
+ 28            33.12         9 
+ 29            20.08         6 
+ 30            20.64         6 
+ 31            12.72         4 
+ 32            7.68          1 
+ 33            28.68         8 
+ 34            22.24         6 
+ 35            18.52         5 
+ 36            26.2          7 
+ 37            22.84         6 
+ 38            16.36         5 
+ 39            10.12         2 
+ 40            11.32         3 
+ 41            25.52         7 
+ 42            16.28         5 
+ 43            19.88         6 
+ 44            17.08         5 
+ 45            19.72         6 
+ 46            16.28         5 
+ 47            11.44         3 
+ 48            11.56         3 
+ 49            14.44         4 
+ 50            19.2          5 
+ 51            17.44         5 
+ 52            13.04         4 
+ 53            12.56         4 
+ 54            17.96         5 
+ 55            14.56         4 
+ 56            24.6          7 
+ 57            20.52         6 
+ 58            19.72         6 
+ 59            16.12         5 
+ 60            22.24         6 
+
+
+
+SUMMARY EVALUATION STATISTICS
+
+              ACTUAL        EXPECTED
+CATEGORY      COUNT         COUNT
+ 1             1             .6 
+ 2             2             2.4 
+ 3             4             3 
+ 4             10            9 
+ 5             14            15 
+ 6             16            15 
+ 7             8             9 
+ 8             4             3 
+ 9             1             2.4 
+ 10            0             .6 
+
+
+WILL CONSOLIDATE CATEGORIES 1-3 AND 8-10, SO THAT
+EXPECTED VALUE IN EACH IS >= 5, AS REQUIRED BY
+CHI-SQUARE TEST.
+
+FOR FIVE D.F., SHOULD HAVE 1.145476 <= CHI-SQ <= 11.0705
+(5% TAIL AT EACH END.)
+
+ACTUAL CHI-SQ =  .688889 
+
+ ***  TEST FAILED  *** 
+
+                    END TEST
+
+END PROGRAM 133

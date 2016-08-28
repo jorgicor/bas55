@@ -1,0 +1,1606 @@
+\input texinfo
+@c %**start of header
+@setfilename bas55.info
+
+@c To get @value{VERSION}
+@include version.texi
+
+@settitle bas55 - Minimal BASIC System @value{VERSION}
+@c %**end of header
+
+@dircategory Software development
+@direntry
+* bas55: (bas55)Invoking bas55.
+@end direntry
+
+@copying
+This manual is for bas55 (Minimal BASIC System) version @value{VERSION}
+(updated @value{UPDATED}).
+
+Copyright @copyright{} 2014, 2015, 2016 Jorge Giner Cordero
+
+@quotation
+Permission is hereby granted, free of charge, to any person obtaining
+a copy of this software and associated documentation files (the
+"Software"), to deal in the Software without restriction, including
+without limitation the rights to use, copy, modify, merge, publish,
+distribute, sublicense, and/or sell copies of the Software, and to
+permit persons to whom the Software is furnished to do so, subject to
+the following conditions:
+
+The above copyright notice and this permission notice shall be included
+in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+@end quotation
+@end copying
+
+@titlepage
+@title bas55
+@subtitle Minimal BASIC System
+@subtitle version @value{VERSION} (updated @value{UPDATED})
+@author Jorge Giner Cordero
+@page
+@vskip 0pt plus 1filll
+@insertcopying
+@end titlepage
+
+@contents
+
+@ifnottex
+@node Top
+@top Minimal BASIC System
+
+This manual is for bas55 (Minimal BASIC System) version @value{VERSION}
+(updated @value{UPDATED}).
+@end ifnottex
+
+@menu
+* About::		About @command{bas55}.
+* Tutorial::		How to program in BASIC and @command{bas55}.
+* Reference::		@command{bas55} reference manual.
+* Source guide::	How the program works.
+* Copyright::		Copyright and license.
+@end menu
+
+@node About
+@chapter About
+
+@command{bas55} is an editor, bytecode compiler and interpreter for the Minimal BASIC programming language as defined by the @uref{http://www.ecma-international.org,ECMA-55 standard}.
+
+@command{bas55} is free software.
+
+The latest version of the program, source code and documentation can be found at @uref{http://jorgicor.sdfeu.org/bas55}.
+
+@node Tutorial
+@chapter Tutorial
+
+In these first sections we are going to see how to use @command{bas55} and how to program in Minimal BASIC.
+
+@menu
+* Hello world::			Your first program.
+* Saving and loading::		SAVE, LOAD.
+* Comments::			REM.
+* Input and variables:: 	INPUT.
+* Using variables::		LET.
+* Numbers::			Real numbers.
+* Arrays::			DIM, OPTION BASE.
+* Printing::			PRINT.
+* Built in functions::		SIN, COS, TAN, etc.
+* Random numbers::		RND, RANDOMIZE.
+* Conditional execution::	IF, GOTO, ON, STOP.
+* Subroutines::			GOSUB, RETURN.
+* User functions::		DEF FN.
+* Loops::			FOR, NEXT, STEP.
+* Constant data::		DATA, READ, RESTORE.
+* Sieve of Eratosthenes::	The joy of programming.
+@end menu
+
+@node Hello world
+@section Hello world
+
+First, start @command{bas55} by executing it at the command line.
+You will see the program name and license, and then @samp{Ready.}.
+You have just started @command{bas55} in editor mode.
+Now, you can enter your program.
+Start by typing these two lines:
+
+@example
+10 print "Hello, world"
+20 end
+@end example
+
+This is your first program.
+A BASIC program is made by numbered lines, each line containing an statement.
+The first line contains the @samp{print} statement followed by a string of characters between quotes.
+With this line, we want to print on the screen the sentence @samp{Hello, world}.
+The second line (line number @code{20}) has an @samp{end} statement.
+Every BASIC program must have one and only one line with an @samp{end} statement, and this line must be the last one.
+
+Now that we have the program, let's run it. Type @samp{run}.
+The system will compile and run our program.
+We will see this result:
+
+@example
+HELLO, WORLD
+Ready.
+@end example
+
+It is ok, but the first thing you notice is that the letters are all upper case.
+This happens because every line you enter in @command{bas55} are translated to upper case when you are in editor mode.
+@command{bas55} allows you to enter lines in lower case letters but only as a convenience.
+A correct BASIC program must be always in upper case.
+
+You can see your program source by typing @samp{LIST}.
+You will see on the screen:
+
+@example
+10 PRINT "HELLO, WORLD"
+20 END
+@end example
+
+As you see, your program is all in upper case.
+
+If you want to change a line, you type the line again starting with the same line number.
+For example, we want to print @samp{GOODBYE, CRUEL WORLD} instead of @samp{HELLO, WORLD}.
+Just type the line:
+
+@example
+10 PRINT "GOODBYE, CRUEL WORLD"
+LIST
+10 PRINT "GOODBYE, CRUEL WORLD"
+20 END
+@end example
+
+Now we want to print another line after the first.
+We can add a new line to the program between the lines @code{10} and @code{20}.
+For that, we can use any line number from @code{11} to @code{19}.
+We choose @code{15}.
+
+@example
+15 PRINT "GOODBYE"
+LIST
+10 PRINT "GOODBYE, CRUEL WORLD"
+15 PRINT "GOODBYE"
+20 END
+@end example
+
+As you see, when using @command{LIST} the lines appear ordered by line number.
+
+Normally, the lines of a BASIC program are numbered 10, 20, 30, etc. so we can have space to insert a line between other two lines.
+But this is up to you.
+@command{bas55} gives you the @command{RENUM} command that you can use to renumber the lines of a program.
+Let's type it:
+
+@example
+RENUM
+LIST
+10 PRINT "GOODBYE, CRUEL WORLD"
+20 PRINT "GOODBYE"
+30 END
+@end example
+
+The lines have been renumbered.
+
+To remove a line, simply type its number and press @key{RET}.
+
+@example
+10
+LIST
+20 PRINT "GOODBYE"
+30 END
+@end example
+
+And renumber if you like:
+
+@example
+RENUM
+LIST
+10 PRINT "GOODBYE"
+20 END
+@end example
+
+You can list only one line:
+
+@example
+LIST 10
+10 PRINT "GOODBYE"
+@end example
+
+And you can list a range of lines:
+
+@example
+5 PRINT "HELLO, WORLD"
+RENUM
+LIST
+10 PRINT "HELLO, WORLD"
+20 PRINT "GOODBYE"
+30 END
+LIST 20-30
+20 PRINT "GOODBYE"
+30 END
+@end example
+
+Or the lines from one you specify to the last:
+
+@example
+LIST 20-
+20 PRINT "GOODBYE"
+30 END
+@end example
+
+Or the lines from the first to one you specify:
+
+@example
+LIST -20
+10 PRINT "HELLO, WORLD"
+20 PRINT "BYE"
+@end example
+
+@node Saving and loading
+@section Saving and loading
+
+To save our program on a file, use the @command{SAVE} command and the name of the file between quotes.
+
+@example
+SAVE "HELLO.BAS"
+@end example
+
+And your program will be saved as @file{HELLO.BAS}.
+
+To start a new program and remove the one in memory, simply use @command{NEW}.
+
+@example
+NEW
+LIST
+@end example
+
+Now, if we want to load our previous saved program, we use the @command{LOAD} command.
+
+@example
+LOAD "HELLO.BAS"
+LIST
+10 PRINT "HELLO, WORLD"
+20 PRINT "GOODBYE"
+30 END
+@end example
+
+You can use your favorite text editor to write a BASIC program and the load it into @command{bas55}.
+Only keep in mind that @command{bas55} allows to enter a program using lower case letters in editor mode, but when you are loading a program using @command{LOAD} the program bust be a valid BASIC program, that is, it must be all in upper case.
+
+@node Comments
+@section Comments
+
+You can use the @code{REM} statement to put comments in your program.
+A line starting with a @code{REM} statement is not executed, and you can put your comment after the @code{REM}.
+For example:
+
+@example
+10 REM THIS PROGRAM IS A TEST
+20 REM AND DOES NOTHING
+30 END
+@end example
+
+@node Input and variables
+@section Input and variables
+
+You can ask the user of your program to enter numbers or text.
+For that, you have to store the user's input into variables.
+A variable is a name we give to some data.
+This is an example:
+
+@example
+10 PRINT "ENTER A NUMBER:"
+20 INPUT A
+30 PRINT "YOUR NUMBER IS:"
+40 PRINT A
+50 END
+@end example
+
+If you run this program, you will see:
+
+@example
+ENTER A NUMBER:
+?
+@end example
+
+The editing cursor will be after the question mark.
+This means that the system is waiting for you to enter some data.
+We can enter a number, for example @samp{3.5}:
+
+@example
+ENTER A NUMBER:
+? 3.5
+YOUR NUMBER IS:
+ 3.5
+@end example
+
+When the user enters the number, @samp{A} will be equal to that number, so we can use it in another parts of the program.
+In this case, we use it in a @code{PRINT} statement to write back that number.
+@samp{A} is a numeric variable.
+
+BASIC distinguish between variables whose value is a number (numeric variables) and variables whose value is text (string variables).
+For numeric variables you use the letters @samp{A} to @samp{Z}, and also these letters followed by a number from 0 to 9.
+@samp{A}, @samp{B0}, @samp{Z6} are examples of numeric variables.
+
+String variables consist of one letter from @samp{A} to @samp{Z} followed by the dollar sign @samp{$}.
+@samp{A$}, @samp{B$}, @samp{Z$} are examples of string variables.
+
+We can use @code{INPUT} and @code{PRINT} with these two types of variables.
+
+@example
+10 PRINT "ENTER YOUR NAME:"
+20 INPUT A$
+30 PRINT "WELCOME"
+40 PRINT A$
+50 END
+@end example
+
+We can run this program and enter our name:
+
+@example
+ENTER YOUR NAME:
+? JAMES
+WELCOME
+JAMES
+@end example
+
+@code{INPUT} can be used to ask the user to enter a list of numbers or character strings, separated by commas.
+For example:
+
+@example
+10 PRINT "ENTER YOUR NAME AND YOUR AGE, SEPARATED BY A COMMA:"
+20 INPUT A$, A
+30 PRINT "YOUR NAME IS"
+40 PRINT A$
+50 PRINT "YOUR AGE IS"
+60 PRINT A
+70 END
+@end example
+
+Here you will have to enter your name first, a comma, and your age.
+
+@example
+ENTER YOUR NAME AND YOUR AGE, SEPARATED BY A COMMA:
+? JAMES, 33
+YOUR NAME IS
+JAMES
+YOUR AGE IS
+ 33
+@end example
+
+@node Using variables
+@section Using variables
+
+One way to make a variable equal to a value is by using @code{INPUT} and let the user enter the value.
+Another way is using @code{LET}.
+
+@example
+10 LET A$="PI"
+20 LET A=3.1416
+30 PRINT A$
+40 PRINT A
+50 END
+@end example
+
+With this program, @samp{A} will be equal to @samp{3.1416}, and @samp{A$} will be equal to the string @samp{PI}.
+You can change the value of a variable, simply by using @code{LET} with another value.
+Running this program:
+
+@example
+10 LET A=3.1416
+20 PRINT A
+30 LET A=123456
+40 PRINT A
+50 END
+@end example
+
+You will get:
+
+@example
+ 3.1416
+ 123456
+@end example
+
+A variable can be made equal to the value of other variable.
+
+@example
+10 LET A=1
+20 LET B=A
+30 PRINT B
+40 END
+@end example
+
+This will print
+
+@example
+ 1
+@end example
+
+The same can be done for string variables.
+
+We can use mathematical expressions in a @code{LET} or @code{PRINT} statement:
+
+@example
+10 PRINT "WRITE A NUMBER:"
+20 INPUT N
+30 LET N=N*N
+40 PRINT N+1
+50 END
+@end example
+
+If we run this program and input the number @samp{2}, the response will be @samp{5}:
+
+@example
+WRITE A NUMBER:
+? 2
+ 5
+@end example
+
+In a numeric expression, we can use the operators @samp{*}, @samp{/}, @samp{+}, @samp{-} and @samp{^} to multiply, divide, add, subtract or power.
+The power operator has the highest priority.
+Then multiplication and division.
+Then addition and subtraction.
+You can use parenthesis to change these priorities.
+Operations with the same priority are evaluated from left to right.
+
+@example
+10 PRINT 5+3*2
+20 PRINT (5+3)*2
+30 END
+@end example
+
+This will print:
+
+@example
+ 11
+ 16
+@end example
+
+At line @code{10}, as multiplication has higher priority, @samp{3*2} is calculated first, and the addition of @samp{5}.
+At line @code{20}, we are using parenthesis to select which operation is calculated first.
+
+If a numeric variable is used before any value has been assigned to it in the program, the value of the variable defaults to @samp{0}.
+For a string variable, it defaults to the empty string.
+You can enable the debug mode if you want the interpreter to warn you about any variable that is used before any value has been assigned to it.
+
+@node Numbers
+@section Numbers
+
+Numbers are written in your program following scientific notation.
+The general syntax is:
+
+@example
+sd..drd..dEsd..d
+@end example
+
+Here, @samp{s} is an optional sign symbol (@samp{+} or @samp{-}), @samp{d} is a number digit and @samp{r} is a full-stop.
+Some parts of this general syntax are optional.
+These are the possibilities, which can precede an optional @samp{Esd..d} part.
+
+@example
+sd..d
+sd..dr
+sd..drd..d
+srd..d
+@end example
+
+Example of numeric constants are:
+
+@example
+1	500	-21.	.255	1E10	5E-1	4.E+1
+@end example
+
+@command{bas55} only uses the six first significant digits of a numeric constant.
+A constant is rounded if it is written with more than six significant digits.
+@command{bas55} works internally IEEE double-precision floating-point numbers.
+Numbers printed with the @code{PRINT} statement use six significant digits.
+
+@node Arrays
+@section Arrays
+
+You can use tables of one dimension or two dimensions.
+We call them arrays.
+To store a value in an array slot we use the name of the array (which must be one letter) and using parenthesis to specify the required slot index.
+
+With this program we store @samp{1} and @samp{2} in the slots 0 and 1 of the one dimensional array @samp{A}.
+
+@example
+10 LET A(0)=1
+20 LET A(1)=2
+30 PRINT A(0)
+40 PRINT A(1)
+50 END
+@end example
+
+This will print @samp{1} and @samp{2}.
+Once you use a variable name as an array, it cannot be used as a simple numeric variable.
+And once a variable has been used as a numeric variable, it cannot be used as an array.
+This program commits both mistakes and will not run.
+
+@example
+10 LET A=1
+20 LET A(0)=1
+30 LET B(0)=1
+40 LET B=1
+50 END
+@end example
+
+The value of each array slot is @samp{0} if no other value has been assigned to it before.
+
+@example
+10 PRINT A(0)
+20 END
+@end example
+
+will print:
+
+@example
+ 0
+@end example
+
+You can enable the debug mode if you want the interpreter to warn you about variables that are used before any value has been assigned to them.
+
+Arrays always have a size of 11 elements by default, from 0 to 10.
+If you want to change this, you can use @code{DIM} to define the highest index the array can accept.
+This has to be done before any access to the array in your program.
+
+This program
+
+@example
+10 DIM A(100)
+20 LET A(100)=5
+30 PRINT A(100)
+40 END
+@end example
+
+will define the array @samp{A} to have 101 elements, from 0 to 100, and will print the number @samp{5}.
+
+When you write an array index, any numeric expression whose value is within the range of the array indexes is allowed.
+For example:
+
+@example
+10 LET A=5
+20 LET B(A+A)=33
+20 PRINT B(A+A)
+30 END
+@end example
+
+This will print @samp{33}, which is stored at index 10 in @samp{B}.
+
+You can use arrays of two dimensions as well:
+
+@example
+10 DIM B(15,15)
+20 LET B(15,15)=5
+30 PRINT B(15,15)
+40 END
+@end example
+
+Once an array has been used with one dimension, it cannot be used with two dimensions.
+And an array used with two dimensions, cannot be used with one.
+
+The index of the first element of an array is always zero.
+BASIC allows to change this and use arrays where the index of the first element starts at 1.
+To allow this, we have to use the @code{OPTION BASE 1} statement in our program, before using any array or any @code{DIM} statement.
+In that case, by default, the arrays will have 10 elements, indexed from 1 to 10.
+
+@example
+10 OPTION BASE 1
+20 REM USING LET A(0)=3 NOW IS AN ERROR, THE FIRST ELEMENT IS AT INDEX 1
+30 LET A(1)=3
+40 END
+@end example
+
+@node Printing
+@section Printing
+
+You can print more than one item using the @code{PRINT} statement by separating the items by commas or semicolons.
+Using commas will move the cursor to the next printing column.
+Each line has a printing column every 15 characters.
+
+@example
+10 PRINT "COLUMN 1", "COLUMN 2"
+20 PRINT 5, 6
+30 END
+@end example
+
+will print:
+
+@example
+COLUMN 1      COLUMN 2
+ 5             6
+@end example
+
+A semicolon will leave the cursor at the same position it is, that is, it is only used to separate items in a @code{PRINT} statement.
+
+@example
+10 PRINT "PI=";3.1416
+20 END
+@end example
+
+will print:
+
+@example
+PI= 3.1416
+@end example
+
+You can use @code{TAB} to move the cursor to a specific character column in the line.
+@code{TAB} needs a numeric expression between parenthesis.
+
+@example
+10 PRINT ,"A"
+10 PRINT TAB(15);"A"
+20 END
+@end example
+
+will print at character column 15:
+
+@example
+              A
+              A
+@end example
+
+Note that expressions or @code{TAB} specifiers must be separated by commas or semicolons, but commas or semicolons can appear one after the other several times.
+Also, the @code{PRINT} statement alone is correct and will pass to the next line.
+
+@example
+10 PRINT "LINE 1"
+20 PRINT
+30 PRINT "LINE 3"
+40 PRINT ,,"COLUMN 30"
+60 END
+@end example
+
+This program prints:
+
+@example
+LINE 1
+
+LINE 3
+                             COLUMN 30
+@end example
+
+@node Built in functions
+@section Built in functions
+
+BASIC allows some mathematical functions to be used in numeric expressions.
+For example, to calculate the square root of 4:
+
+@example
+10 PRINT SQR(4)
+20 END
+@end example
+
+Functions need an argument between parenthesis, which must be a numeric expression.
+The provided functions are:
+
+@table @code
+@item ABS(X)
+Absolute value of X.
+
+@item ATN(X)
+Arctangent of X in radians.
+
+@item COS(X)
+Cosine of X, where X is in radians.
+
+@item EXP(X)
+Exponential of X.
+
+@item INT(X)
+The largest integer not greater than X.
+
+@item LOG(X)
+The natural logarithm of X.
+
+@item SGN(X)
+1 if X is positive, -1 if it is negative, 0 if it is 0.
+
+@item SIN(X)
+Sine of X, X in radians.
+
+@item SQR(X)
+Square root of X.
+
+@item TAN(X)
+Tangent of X, X in radians.
+@end table
+
+@node Random numbers
+@section Random numbers
+
+You can use the function @code{RND} without any argument, to get a random number in the range @code{[0, 1[}.
+@code{RND} can be used in any numeric expression.
+The sequence of numbers you will get by calling @code{RND} will be always the same (given the same computer and operating system).
+If you want the sequence to start randomly, you can use the statement @code{RANDOMIZE}.
+
+@example
+10 PRINT RND, RND
+20 RANDOMIZE
+30 PRINT RND, RND
+40 END
+@end example
+
+When we run this program, we will get 4 numbers.
+If we run the program again, the we will see that the first two numbers are the same as in the previous execution, but not the last two.
+
+@node Conditional execution
+@section Conditional execution
+
+Imagine we want to present a menu to the user, wait for input, and execute a different code depending on his response.
+We can use the @code{IF} statement to check for conditions and jump to a line of our program if the condition is true.
+
+@example
+10 PRINT "1 - SAY HELLO"
+20 PRINT "2 - SAY GOODBYE"
+40 PRINT "3 - END"
+50 PRINT "SELECT AND OPTION (1,2,3):"
+60 INPUT N
+70 IF N=1 THEN 130
+80 IF N=2 THEN 150
+90 IF N<>3 THEN 100
+100 STOP
+110 PRINT "ERROR"
+120 GOTO 10
+130 PRINT "HELLO"
+140 GOTO 10
+150 PRINT "GOODBYE"
+160 GO TO 10
+170 END
+@end example
+
+You can see the @code{IF} statement at lines @code{70}, @code{80} and @code{90}.
+Its basic form is @code{IF condition THEN line}.
+It tests the condition, and if it is true, then the program continues its execution at the line after the @code{THEN} word.
+If the condition is false, execution continues at the next line as usual.
+
+In this program, if the user enters a @samp{1}, line @code{70} will jump to the line @code{130} and @samp{HELLO} will be printed.
+If the user enters @samp{2}, the condition at line @code{70} will be false, so we will continue at line @code{80}.
+Here, the condition will be true, so we will jump to the line @code{150} and @samp{GOODBYE} will be printed.
+If the user enters a number different than 1, 2 or 3, we will jump to line @code{110} and print @samp{ERROR}.
+Otherwise the execution continues at line @code{100}.
+
+The @code{STOP} statement is used to stop a program before we reach the @code{END} statement.
+A program can only have one @code{END} statement and must be at the last line, but can contain any number of @code{STOP} statements.
+
+The @code{GOTO} statement followed by a line number, can be used to jump to a line without checking for any condition.
+Note that @code{GOTO} can be written using two words as well: @code{GO TO}.
+
+The conditions that we can test in an @code{IF} statement are:
+
+@table @code
+@item A=B
+True if the numeric expression A is equal to the numeric expression B.
+True if the string constant or string variable A is equal to the string constant or string variable B.
+
+@item A<>B
+True if the numeric expression A is not equal to the numeric expression B.
+True if the string constant or string variable A is not equal to the string constant or string variable B.
+
+@item A>B
+True if the numeric expression A is greater than the numeric expression B.
+
+@item A>=B
+True if the numeric expression A is greater or equal than the numeric expression B.
+
+@item A<B
+True if the numeric expression A is less than the numeric expression B.
+
+@item A<=B
+True if the numeric expression A is less or equal than the numeric expression B.
+@end table
+
+With the @code{ON} statement we can jump to a line in a line list depending on the value of a numeric expression.
+The above program can be written this way:
+
+@example
+10 PRINT "1 - SAY HELLO"
+20 PRINT "2 - SAY GOODBYE"
+40 PRINT "3 - END"
+50 PRINT "SELECT AND OPTION (1,2,3):"
+60 INPUT N
+70 IF N<1 THEN 100
+80 IF N>3 THEN 100
+90 ON N GOTO 120, 140, 170
+100 PRINT "ERROR"
+110 GOTO 10
+120 PRINT "HELLO"
+130 GOTO 10
+140 PRINT "GOODBYE"
+150 GO TO 10
+160 END
+@end example
+
+A numeric expression must follow the @code{ON} word.
+The expression is rounded to an integer and this number is used to select one of the lines in the line list after the @code{GOTO}.
+The number @samp{1} will select the first line in the list, @samp{2} the second, etc.
+The program will stop with an error if the rounded integer is less than 1 or greater than the number of lines in the line list.
+We check that at lines @code{70} and @code{80}.
+
+@node Subroutines
+@section Subroutines
+
+Imagine that we want to calculate the roots of a second degree equation.
+We know the formula, for @samp{ax^2 + bx + c}, the roots are given by the equations @samp{(-b + SQR(b^2 - 4ac)) / 2a} and @samp{(-b - SQR(b^2 - 4ac)) / 2a}.
+
+We can write this program if we want to calculate it for two different equations:
+
+@example
+10 LET A=4
+20 LET B=7
+30 LET C=1
+40 LET R0=(-B + SQR(B^2 - 4*A*C))/2*A
+50 LET R1=(-B - SQR(B^2 - 4*A*C))/2*A
+60 PRINT R0, R1
+70 LET A=16
+80 LET B=25
+90 LET C=2
+100 LET R0=(-B + SQR(B^2 - 4*A*C))/2*A
+110 LET R1=(-B - SQR(B^2 - 4*A*C))/2*A
+120 PRINT R0, R1
+130 END
+@end example
+
+But in this example we are duplicating code.
+What we want is to have the code to calculate the roots only once.
+To achieve that, we can use a subroutine.
+@code{GOSUB} stands for @samp{go to subroutine}.
+We use it with a line number and the program will go to that line number and will continue the execution at that line.
+We can then use the statement @code{RETURN} to return to the line after the line with the @code{GOSUB}.
+
+For example, applied to the above program:
+
+@example
+10 LET A=4
+20 LET B=7
+30 LET C=1
+40 GOSUB 120
+50 PRINT R0, R1
+60 LET A=16
+70 LET B=25
+80 LET C=2
+90 GO SUB 120
+100 PRINT R0, R1
+110 STOP
+120 REM CALC ROOTS OF SECOND DEGREE EQUATION AX^2 + BX + C
+130 ON ENTRY: A, B, C ARE THE COEFICIENTS
+140 ON EXIT: R0, R1 ARE THE ROOTS
+150 LET R0=(-B + SQR(B^2 - 4*A*C))/2*A
+160 LET R1=(-B - SQR(B^2 - 4*A*C))/2*A
+170 RETURN
+180 END
+@end example
+
+Our subroutine starts at line @code{120}.
+It needs the variables @samp{A}, @samp{B} and @samp{C} to be defined, and will calculate the roots in @samp{R0} and @samp{R1}.
+You can call this subroutine by using @code{GOSUB 120}.
+The program will jump to that line and execute the next lines until a @code{RETURN} is found.
+When we reach the @code{RETURN} we will return to the point of the call.
+In this program, when we call the subroutine at line @code{40} and the subroutine ends with a @code{RETURN}, the execution will continue at line @code{50}.
+
+Note that we need a @code{STOP} statement at line @code{110} to stop our program.
+If not it will continue at line @code{120}, thus entering the subroutine and reaching the @code{RETURN} statement.
+This will be an error as we reach a @code{RETURN} without having issued any @code{GOSUB}.
+
+Note that @code{GOSUB} can be written with two words as well: @code{GO SUB}.
+
+@node User functions
+@section User functions
+
+BASIC allows to define your own functions by using @samp{DEF FNX}, where @samp{X} is a letter.
+You can define functions with zero or one argument.
+
+@example
+10 DEF FNA=2*X
+20 LET X=3
+30 PRINT FNA
+40 END
+@end example
+
+This program will print @samp{6}.
+
+Every function have to be declared before being used.
+And a function declared with an argument cannot be redeclared without arguments, or vice versa.
+
+If we define a function with an argument, the argument must be a letter.
+Once inside the function, when this argument is used, it takes the value we passed to the function, not the value of the variable of the same name in the program.
+For example:
+
+@example
+10 DEF FNA(X)=X+Y
+20 LET X=3
+30 LET Y=4
+30 PRINT FNA(5)
+40 END
+@end example
+
+This program will print @samp{9}.
+When the function @samp{FNA} is called, @samp{X} inside the function expression will take the value we have passed (@samp{5} in this case and not the value @samp{3} of the variable in the program) and will take the value of @samp{Y} in the program (@samp{4}).
+That is, @samp{FNA(5)=5+4=9}.
+The value of @samp{X} in the program will not change, it will be @samp{3}.
+
+@node Loops
+@section Loops
+
+Imagine that you want to print the values from 1 to 10.
+You can write something like this:
+
+@example
+10 LET I=1
+20 PRINT I
+30 LET I=I+1
+40 IF I<11 THEN 20
+50 END
+@end example
+
+You can achieve a similar effect using the @code{FOR} loop.
+With the @code{FOR} loop, you can forget about changing the value of the loop control variable (the variable @samp{I} in this case) and jumping back to the correct line (as we do at line @code{40}).
+
+@example
+10 FOR I=1 TO 10
+20   PRINT I
+30 NEXT I
+40 END
+@end example
+
+You can see here the general syntax.
+The variable @samp{I} will have the value of @samp{1} at the beginning.
+Then the next lines are executed until we reach a @code{NEXT} statement followed by the variable we use in the @code{FOR}.
+When we reach the @code{NEXT} we increment the loop variable @samp{I} by one.
+Then we check if @samp{I} is greater equal to the limit specified in the @code{FOR} statement after the word @code{TO}.
+If it is greater, the loop ends and the execution continues at the next line (at line @code{40} in this case).
+If not, we jump back to the line after the @code{FOR}.
+This means that after exiting the loop, the variable has the next value not used, in this case, @samp{11}.
+
+It is possible to specify an increment value different than 1.
+This program prints 2, 4, 6, 8 and 10.
+
+@example
+10 FOR I=2 TO 10 STEP 2
+20   PRINT I
+30 NEXT I
+40 END
+@end example
+
+The step value can be negative and the start value greater than the limit.
+This program prints 10, 8, 6, 4, 2.
+
+@example
+10 FOR I=10 TO 2 STEP -2
+20   PRINT I
+30 NEXT I
+40 END
+@end example
+
+We can have a @code{FOR} loop inside another @code{FOR} loop:
+
+@example
+10 FOR I=1 TO 5
+20   FOR J=1 TO 5
+30     PRINT I, J
+40   NEXT J
+50 NEXT I
+60 END
+@end example
+
+We cannot have a nested @code{FOR} loop inside another with the same control variable.
+This program is incorrect:
+
+@example
+10 FOR I=1 TO 5
+20   FOR I=2 TO 3
+30     PRINT I
+40   NEXT I
+50 NEXT I
+60 END
+@end example
+
+Also, you cannot jump into a line inside a @code{FOR} block from outside that block.
+This program is incorrect:
+
+@example
+10 FOR I=1 TO 5
+20   PRINT I
+30 NEXT I
+40 GOTO 20
+50 END
+@end example
+
+Line @code{40} is jumping inside the @code{FOR} block and this is not allowed.
+The same happens if we use a @code{GOSUB} or an @code{IF} statement jumping inside that block.
+
+Note that if inside a @code{FOR} block there is no other @code{FOR} block, the control variable of that @code{FOR} block must match the @code{NEXT} control variable ending that block.
+For example, this program is incorrect:
+
+@example
+10 FOR I=1 TO 10
+20   FOR J=1 TO 10
+30     PRINT I
+40   NEXT I
+50 NEXT J
+60 END
+@end example
+
+@node Constant data
+@section Constant data
+
+You can declare constants in your program by using the @code{DATA} statement followed by a list of numbers, quoted strings or unquoted strings separated by commas.
+You can then store this data in variables with the @code{READ} statement, which has the same syntax as the @code{INPUT} statement.
+
+@example
+10 DATA 1, "HELLO"
+20 FOR I=1 TO 4
+30   READ A, B$
+40   PRINT A, B$
+50 NEXT I
+60 DATA 2, BYE
+70 END
+@end example
+
+This program prints:
+
+@example
+ 1            HELLO
+ 2            BYE
+@end example
+
+Note that in a @code{DATA} statement, you can use character strings without starting and ending them with quotes, but in that case, you can only use letters, numbers, spaces, the plus and minus signs (@samp{+}, @samp{-}) or a full stop (@samp{.}).
+
+The @code{READ} statement reads elements starting from the first @code{DATA} statement in your program.
+If you want to read again from the first element, you must use the @code{RESTORE} statement.
+This program prints @samp{1} and @samp{2}, and then @samp{1} and @samp{2} again.
+
+@example
+10 DATA 1, 2, 3, 4
+20 READ A, B
+30 PRINT A, B
+40 RESTORE
+50 READ A, B
+60 PRINT A, B
+70 END
+@end example
+
+@node Sieve of Eratosthenes
+@section Sieve of Eratosthenes
+
+A gift from @uref{http://en.wikipedia.org/wiki/Sieve_of_Eratosthenes,Eratosthenes of Cyrene}, 276 BC - 194 BC...
+
+@example
+10  PRINT "FIND PRIMES FROM 2 TO N (N <= 1000). ENTER N: "
+20  INPUT N
+30  IF N<2 THEN 10
+40  IF N>1000 THEN 10
+50  DIM A(1000)
+60  LET S=SQR(N)
+70  FOR I=2 TO S
+80    IF A(I)=1 THEN 130
+90    LET D=N/I
+100   FOR J=I TO D
+110     LET A(I*J)=1
+120   NEXT J
+130 NEXT I
+140 FOR I=2 TO N
+150   IF A(I)=1 THEN 170
+160   PRINT I
+170 NEXT I
+180 END
+@end example
+
+@node Reference
+@chapter Reference
+
+@menu
+* Editor::				How to use the editor.
+* Invoking bas55::			How to invoke @command{bas55}.
+* Implementation-defined features::	Features specific to @command{bas55}.
+@end menu
+
+@node Editor
+@section Editor
+When @command{bas55} is invoked without arguments, it starts in editor mode.
+You can then write a BASIC program by entering lines beginning with a number.
+The number will be used to order the lines in the program.
+To delete a line, simply write the line number you want to delete and press @key{RET}.
+To replace a line, rewrite the line with using the same line number as the line you want to substitute.
+
+If you write a line that does not begin with a line number, it will be taken as an editor command.
+Available commands are:
+
+@table @code
+@item HELP
+Display the list of commands available.
+
+@item COMPILE or C
+Compile the current program to bytecode (in memory).
+
+@item RUN
+Compile (if needed) and run the current program.
+
+@item LIST
+List the current program lines.
+You can optionally pass a range of lines.
+@samp{LIST n} will only print line number @samp{n}.
+@samp{LIST a-n} will print lines from line number @samp{a} to @samp{b}.
+@samp{LIST a-} will print lines from line number @samp{a} to the last.
+@samp{LIST -b} will print lines from the first to the line number @samp{b}.
+
+@item NEW
+Start editing a new program.
+
+@item LOAD "program.bas"
+Load the BASIC program in the file @file{program.bas}.
+
+@item SAVE "program.bas"
+Save the current program lines to the file @file{program.bas}.
+
+@item RENUM
+Renumber the lines of the current program.
+
+@item SETGOSUB n
+Allocate enough space so that, at maximum, @samp{n} @code{GOSUB} statements can be executed without any @code{RETURN} statement.
+
+@item DEBUG ON/OFF
+@code{DEBUG ON} will enable the debug mode; @code{DEBUG OFF} will disable it.
+It is enabled by default in edit mode, and disabled in batch mode.
+It will warn if a variable is used before a value is assigned to it.
+
+@item QUIT
+Quit to the OS.
+@end table
+
+@node Invoking bas55
+@section Invoking bas55
+
+To compile and run @file{program.bas}:
+
+@example
+bas55 program.bas
+@end example
+
+To start @command{bas55} in editor mode:
+
+@example
+bas55
+@end example
+
+Additional command line options are:
+
+@table @code
+@item -h, --help
+Display usage information and exit.
+
+@item -v, --version
+Display version information and exit.
+
+@item -g n, --gosub n
+Allocate enough space so that, at maximum, @samp{n} @code{GOSUB} statements can be executed without any @code{RETURN} statement.
+The default is 256.
+
+@item -d, --debug
+Enable debug mode.
+It will warn if a variable is used before a value is assigned to it.
+@end table
+
+@node Implementation-defined features
+@section Implementation-defined features
+
+The ECMA-55 Standard leaves some features to be defined by the implementor, given that the limits recommended by the standard are respected.
+In @command{bas55} they are:
+
+@itemize @minus
+
+@item
+Accuracy of evaluation of numeric expressions: we use IEEE 754 double-precision binary floating-point format. The accuracy is defined by that standard. Additionally, we use the system library for mathematical functions. Warning: this makes the results dependant on the operating system where @command{bas55} is compiled or executed.
+@item
+End-of-line: we accept Windows and Unix end-of-lines.
+@item
+Exrad-width for printing numeric representations: 3 digits.
+@item
+Initial value of variables: 0 for numeric variables and array slots; the empty string for string variables.
+@item
+Input-prompt: question mark followed by a single space.
+@item
+Longest string that can be retained: this is limited by the longest program line allowed, which is 72 as required by the standard. Thus 65 characters can be retined.
+@item
+Value of machine infinitesimal: the minimum normal value is 2.2250738585072014 * 10^(-308) approximately, although smaller values can be represented by losing precision. The minimum subnormal value is 4.9406564584124654 * 10^(-324) approximately.
+@item
+Value of machine infinity: it is defined by the IEEE 754 standard as a special binary value. You can obtain infinity by dividing one by zero, and a negative infinity by dividing minus one by zero. The maximum normal value is 1.7976931348623157 * 10^(308) approximately.
+@item
+Margin for output lines: 80 characters.
+@item
+Precision of numeric values: six significant decimal digits; three digits for the exrad.
+@item
+Print-zone length: 14 characters.
+@item
+Pseudo-random number sequence: we use the system library for random number sequences. Warning: this makes the results dependant on the operating system where @command{bas55} is compiled or executed.
+@item
+Significance width for printing numeric representations: a maximum of 14 characters are used: six decimal digits plus three digits for the exrad plus 5 characters to accomodate signs, final space, etc.
+@item
+Is unary minus accepted after an operator? Yes, we accept this 1 + -3; and this 1 + --3. Warning: this is not required or accepted by the standard.
+@item
+Contrary to the standard, in @command{bas55} zero divided by zero gives an undefined value (not-a-number or NAN), and not positive infinity.
+
+@end itemize
+
+@node Source guide
+@chapter Source guide
+
+@menu
+* Modules::		Source code as layers of dependencies.
+* Operation::		How it works.
+* Translation::		Byte code description.
+@end menu
+
+@node Modules
+@section Modules
+
+@itemize @bullet
+
+@item Layer 0: Base modules
+@itemize @minus
+@item
+@file{list.h}: single linked list macros.
+@item
+@file{ngetopt.c}: command line argument parsing.
+@item
+@file{utils.c}: generic functions.
+@item 
+@file{err.c}: error reporting functions and error text.
+@item
+@file{datalex.c}: parsing of quoted or unquoted strings, numbers or comma separated lists of these elements.
+@item
+@file{codedvar.c}: utilities for encoding a variable name as an integer.
+@end itemize
+
+@item Layer 1: BASIC source store and byte compiled code
+@itemize @minus
+@item
+@file{str.c}: string constants and garbage collected dynamic strings appearing in the BASIC program.
+@item
+@file{ifun.c}: internal BASIC functions (SIN, COS, etc.).
+@item
+@file{data.c}: compiled DATA statements.
+@item
+@file{code.c}: compiled bytecode representing the BASIC program.
+@item
+@file{line.c}: BASIC source stored as lines.
+@end itemize
+
+@item Layer 2: The virtual machine
+@itemize @minus
+@item
+@file{vm.c}: virtual machine that can execute the byte compiled BASIC program stored in modules @file{code.c}, @file{str.c} and @file{data.c}.
+@end itemize
+
+@item Layer 3: Compiler
+@itemize @minus
+@item
+@file{grammar.y}: Yacc BASIC grammar.
+@item
+@file{parse.c}: bytecode compiler, compiles the lines in module @file{lines.c} and generates the compiled program in modules @file{code.c}, @file{str.c} and @file{data.c}.
+@item
+@file{lex.c}: lexical analysis.
+@end itemize
+
+@item Layer 4: Program
+@itemize @minus
+@item
+@file{edit.c}: editor mode.
+@item
+@file{cmd.c}: editor mode command handling.
+@item
+@file{ecma55.c}: main program, starts editor or compiles and executes program.
+@end itemize
+
+@end itemize
+
+@node Operation
+@section Operation
+
+A BASIC source code is stored as separated lines in @file{line.c}.
+The compiler translates those lines into opcodes (in @file{code.c}), string constants as they appear in the code (in @file{str.c}) and DATA statements (in @file{data.c}).
+If there are not compilation errors, then the program can be run by @file{vm.c}, which takes the generated program and starts interpreting the opcodes.
+During the program execution, probably new strings will be generated in @file{str.c} and others will be discarded (but not the ones defined in the program).
+
+In both compilation and execution phases, memory is allocated at start and deallocated when the operation ends.
+
+The compiler can calculate the amount of stack required by all the program, as we can now the stack needed by each statement, and BASIC does not allow a user defined function to call itself or call another function defined after it.
+But it can't calculate the amount of stack needed for GOSUB calls.
+If your program does more than 256 consecutive GOSUB calls without using any RETURN statement, you will need to raise the number of allowed calls by a command line option or by using @command{SETGOSUB} in editor mode.
+
+If we run out of memory while compiling or running the program, the operation will stop.
+
+@node Translation
+@section Translation
+
+@menu
+* LET::		LET statements.
+* ON GOTO::	ON expr GOTO line, line
+* IF::		IF statements.
+* FOR::		FOR, NEXT statements.
+* DEF::		User defined functions.
+* INPUT::	INPUT statements.
+* PRINT::	PRINT statements.
+* DEBUG::	debug generated code.
+@end menu
+
+The program is compiled for a typical stack machine.
+The compilation generates a series of slots, each slot being an instruction opcode, an integer or a floating number.
+A typical expression like @samp{3*2+5} is translated to:
+
+@example
+    0: PUSH_NUM_OP
+    1: 3.0
+    2: PUSH_NUM_OP
+    3: 2.0
+    4: MUL_OP
+    5: PUSH_NUM_OP
+    6: 5.0
+    7: ADD_OP
+@end example
+
+When executing this code, the values are put on the stack until they are used by the operators.
+For example, @code{PUSH_OP} puts the next number on the top of the stack.
+@code{MUL_OP} takes the two numbers on the top of the stack and multiplies them, pops them from the stack, and puts the result back to the top of the stack.
+For instance, when we execute the opcode at 0, we get this stack:
+
+@example
+	0: 3.0
+@end example
+
+After executing the opcode at 2:
+
+@example
+	1: 2.0
+	0: 3.0
+@end example
+
+After executing the opcode @code{MUL_OP} at 4 we get this stack:
+
+@example
+	0: 6.0
+@end example
+
+In the following sections we describe how other more complex BASIC statements are translated.
+
+@node LET
+@subsection LET
+
+@example
+10 LET A=B(1)+C(2,3)
+@end example
+
+is translated to:
+
+@example
+	0:  PUSH_NUM_OP
+	1:  1.0
+	2:  GET_LIST_OP
+	3:  address of B
+	4:  dimension of B
+	5:  PUSH_NUM_OP
+	6:  2.0
+	7:  PUSH_NUM_OP
+	8:  3.0
+	9:  GET_TABLE_OP
+	10: address of C
+	11: dimension 1 of C
+	12: dimension 2 of C
+	13: LET_VAR_OP
+	14: address of A  
+@end example
+
+And
+
+@example
+10 LET A(1,2)=3
+@end example
+
+is translated to:
+
+@example
+	0:  PUSH_NUM_OP
+	1:  1.0
+	2:  PUSH_NUM_OP
+	3:  2.0
+	4:  PUSH_NUM_OP
+	5:  3.0
+	6:  LET_TABLE_OP
+	7:  address of A
+	8:  dimension 1 of A
+	9:  dimension 2 of A
+@end example
+
+@node ON GOTO
+@subsection ON GOTO
+
+@example
+10 ON A GOTO 100, 200
+@end example
+
+is translated to:
+
+@example
+	0: GET_VAR_OP
+	1: address of A
+	2: ON_GOTO_OP
+	3: 2
+	4: 100
+	5: 200
+@end example
+
+The number @code{2} at slot @code{3} is the number of elements in the @code{GOTO} list; in this case 2: 100 and 200.
+
+@node IF
+@subsection IF
+
+@example
+10 IF A>3 THEN 100
+@end example
+
+is translated to:
+
+@example
+	0: GET_VAR_OP
+	1: address of A
+	2: PUSH_NUM_OP
+	3: 3.0
+	4: GREATER_OP
+	5: GOTO_IF_TRUE
+	6: 100
+@end example
+
+@node FOR
+@subsection FOR
+
+@example
+10 FOR I=1 TO 10 STEP 2
+15 LET A=I*2
+20 NEXT I
+@end example
+
+is translated to:
+
+@example
+	0:  PUSH_NUM_OP
+	1:  1.0
+	2:  PUSH_NUM_OP
+	3:  10.0
+	4:  PUSH_NUM_OP
+	5:  2.0
+	6:  FOR_OP
+	7:  address of temporary var (call it @samp{vstep})
+	8:  address of temporary var (call it @samp{vlimit})
+	9:  address of I
+	10: FOR_CMP_OP
+	11: 21 (index past NEXT)
+	12: GET_VAR_OP
+	13: address of I
+	14: PUSH_NUM_OP
+	15: 2.0
+	16: MUL_OP
+	17: LET_VAR_OP
+	18: address of A
+	19: NEXT_OP
+	20: 10 (index to FOR_CMP_OP)
+	21: 
+@end example
+
+When executed, @code{FOR_OP} takes the 3 values on top of the stack and sets @samp{vstep}, @samp{vlimit} and the loop control variable (@samp{I} in this case).
+@code{FOR_CMP_OP} checks for loop termination.
+@code{NEXT_OP} increments the loop variable by the loop step and returns to the @code{FOR_CMP_OP}.
+
+@node DEF
+@subsection DEF
+
+@example
+10 DEF FNA(X)=X*X
+20 LET X=FNA(2)
+@end example
+
+is translated to:
+
+@example
+	0:  GOTO_OP
+	1:  8 (index past RETURN_OP)
+	2:  GET_VAR_OP
+	3:  address of FNA's X
+	4:  GET_VAR_OP
+	5:  address of FNA's X
+	6:  MUL_OP
+	7:  RETURN_OP
+	8:  PUSH_NUM_OP
+	9:  2.0
+	10: LET_VAR_OP
+	11: address of FNA's X
+	12: GOSUB_OP
+	13: 2 (index of FNA start code)
+	14: LET_VAR_OP
+	15: address of X
+@end example
+
+@node INPUT
+@subsection INPUT
+
+@example
+10 INPUT A, B(1), S$
+@end example
+
+is translated to:
+
+@example
+	0:  INPUT_OP
+	1:  INPUT_NUM_OP
+	2:  5 (index to the end of INPUT A) 
+	3:  LET_VAR_OP
+	4:  address of A
+	5:  INPUT_NUM_OP
+	6:  12 (index to the end of INPUT B(1))
+	7:  PUSH_NUM_OP
+	8:  1.0
+	9:  INPUT_LIST_OP
+	10: address of B
+	11: dimension of B
+	12: INPUT_STR_OP
+	13: 16 (index to the end of INPUT S$)
+	14: LET_STRVAR_OP
+	15: address of S$
+	16: INPUT_END_OP
+@end example
+
+@node PRINT
+@subsection PRINT
+
+@example
+10 PRINT "RESULT="; 2+3
+@end example
+
+is translated to:
+
+@example
+	0:  PUSH_STR_OP
+	1:  address of "RESULT="
+	2:  PRINT_STR_OP
+	3:  PUSH_NUM_OP
+	4:  2.0
+	5:  PUSH_NUM_OP
+	6:  3.0
+	7:  ADD_OP
+	8:  PRINT_NUM_OP
+@end example
+
+@node DEBUG
+@subsection DEBUG
+
+When in debug mode, we add some instructions to the code so we can print
+more information to the user.
+
+Right now, in debug mode we check if a variable has been assigned a value before it is used.
+If a variable is used before a value has been assigned to it, we issue a warning.
+To allow this, we have two opcodes: @code{CHECK_INIT_VAR_OP} and @code{SET_INIT_VAR_OP}.
+
+Before we assign a value to a variable (with @code{LET_VAR_OP}, for instance) we issue a @code{SET_INIT_VAR_OP} opcode followed by the encoded variable name.
+It will mark that we have assigned a value to the variable.
+
+@code{CHECK_INIT_VAR_OP} is inserted before we get the value of a variable with @code{GET_VAR_OP}, @code{GET_LIST_OP}, etc.
+The opcode is followed by the encoded variable name.
+The operation will check if we have assigned a value to the variable before
+or not.
+
+The variable name is encoded as an integer.
+The least significant byte is the ASCII code for the suffix: @samp{0} to @samp{9} for a variable with a digit suffix, @samp{$} for a string variable or the character code 0 for a variable without suffix.
+Then next byte contains the character code of the variable name: @samp{A},
+@samp{B}, etc.
+
+@node Copyright
+@chapter Copyright
+@insertcopying
+
+@bye

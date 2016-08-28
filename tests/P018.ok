@@ -1,0 +1,52 @@
+PROGRAM FILE 18: THE IF-THEN STATEMENT WITH STRING OPERANDS.
+    ANSI STANDARD 10.2, 10.4
+
+SECTION 18.1: THE IF-THEN STATEMENT WITH STRING OPERANDS.
+
+THIS SECTION TESTS THE COMPARISON OF STRING VARIABLES AND
+CONSTANTS WITH A VARIETY OF VALUES. BOTH RELATIONSHIPS
+(= AND <>) ARE TESTED FOR EACH PAIR OF VALUES. THE 'V' OR
+'C' FOLLOWING THE COMPARAND VALUE INDICATES WHETHER IT IS
+A VARIABLE OR A CONSTANTS.
+
+'T' OR 'F' IS PRINTED TO SHOW THE OUTCOME OF THE
+COMPARISON. FOR INCORRECT COMPARES, AN '*' IS PRINTED
+NEXT TO THE ERRONEOUS RESULT.  WHEN DISPLAYING COMPARAND
+VALUES, THE UNDERLINE CHARACTER, '_', IS USED TO REPRESENT
+THE SPACE CHARACTER (THUS A DISPLAYED 'ONE_BLANK' 
+INDICATES AN INTERNAL VALUE OF 'ONE BLANK').
+ALSO, THE NULL STRING (LENGTH OF ZERO) IS DENOTED BY THE
+LABEL '(NULL STRING)'.
+
+CHARACTER STRINGS SHOULD TEST EQUAL IF AND ONLY IF THE
+STRINGS ARE EQUAL IN LENGTH AND CONTAIN IDENTICAL SEQUENCES
+OF CHARACTERS.
+
+                  BEGIN TEST.
+
+LEFT                 : RIGHT
+COMPARAND         V/C: COMPARAND         V/C  =   <>  RESULT
+
+ABC                C : __ABC              V   F   T     OK  
+ABC                C : ABC                V   T   F     OK  
+ABC                C : ABC_               V   F   T     OK  
+ABC                C : ___ABC__           V   F   T     OK  
+ABC                C : (NULL STRING)      V   F   T     OK  
+ABC                C : ABCD               V   F   T     OK  
+___0X9             V : _0X9__             C   F   T     OK  
+0X9                V : _0X9__             C   F   T     OK  
+0X9__              V : _0X9__             C   F   T     OK  
+_0X9__             V : _0X9__             C   T   F     OK  
+__                 V : ____               V   F   T     OK  
+_                  V : (NULL STRING)      V   F   T     OK  
+18_CHARACTERS_LONG V : 18_CHARACTERS_LONG V   T   F     OK  
+18_CHARACTERS_LONG V : 18_CHARACTERS_LONK V   F   T     OK  
+!#$%&'()0=+*<>?    V : !#$%&'()0=+*<>?    V   T   F     OK  
+(NULL STRING)      V : (NULL STRING)      V   T   F     OK  
+UVWXYZ_            V : UVWXYZ__           V   F   T     OK  
+
+*** TEST PASSED ***
+
+                  END TEST.
+
+END PROGRAM 18

@@ -1,0 +1,41 @@
+PROGRAM FILE 19: THE IF-THEN STATEMENT WITH NUMERIC OPERANDS
+    ANSI STANDARD 10.2, 10.4
+
+SECTION 19.1: THE IF-THEN STATEMENT WITH NUMERIC OPERANDS.
+
+THIS SECTION TESTS THE COMPARISON OF NUMERIC VARIABLES AND
+CONSTANTS WITH A VARIETY OF NUMERIC VALUES. ALL RELATIONSHIPS
+(=, <, >, <>, <=, >=) ARE TESTED FOR EACH PAIR OF VALUES.
+THE 'V' OR 'C' FOLLOWING THE COMPARAND VALUE INDICATES
+WHETHER IT IS A VARIABLE OR A CONSTANT.
+
+'T' OR 'F' IS PRINTED TO SHOW THE OUTCOME OF THE
+COMPARISON. FOR INCORRECT COMPARES, AN '*' IS PRINTED
+NEXT TO THE ERRONEOUS RESULT.
+
+                 BEGIN TEST.
+
+LEFT                RIGHT            =   <   >   <>  <=  >=  RESULT
+COMPARAND           COMPARAND  
+
++5.4321E-22 C    :  3.14159 V        F   T   F   T   T   F     OK  
++5.4321E-22 C    :  5.4321E-22 V     T   F   F   F   T   T     OK  
++5.4321E-22 C    :  3.14159E-26 V    F   F   T   T   F   T     OK  
++5.4321E-22 C    :  0 V              F   F   T   T   F   T     OK  
++5.4321E-22 C    : -3.14159E-26 V    F   F   T   T   F   T     OK  
++5.4321E-22 C    : -3.14159 V        F   F   T   T   F   T     OK  
+-9.87655E+10 V   : -98765400000 C    F   T   F   T   T   F     OK  
+-9.87654E+10 V   : -98765400000 C    T   F   F   F   T   T     OK  
+-3 V             : -98765400000 C    F   F   T   T   F   T     OK  
+ 1.23456E-30 V   : -98765400000 C    F   F   T   T   F   T     OK  
+ 456.789 V       : -98765400000 C    F   F   T   T   F   T     OK  
+-1.23456E-15 C   : -.011E-13 C       F   T   F   T   T   F     OK  
+ 0 V             :  0 V              T   F   F   F   T   T     OK  
+-3.E+36 V        : -3.001E+36 V      F   F   T   T   F   T     OK  
+ 0 V             :  1.E-38 V         F   T   F   T   T   F     OK  
+
+*** TEST PASSED ***
+
+                END TEST.
+
+END PROGRAM 19

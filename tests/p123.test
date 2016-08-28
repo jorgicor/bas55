@@ -1,0 +1,4 @@
+#!/bin/sh
+
+nom=P123
+. ./chkout.inc
