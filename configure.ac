@@ -10,8 +10,8 @@ AC_INIT([bas55 - Minimal BASIC System],
 AC_CONFIG_MACRO_DIR([m4])
 
 AC_CONFIG_AUX_DIR(config)
-AM_INIT_AUTOMAKE(-Wall -Werror -Wportability gnu subdir-objects
-		 check-news color-tests parallel-tests)
+AM_INIT_AUTOMAKE(-Wall -Werror -Wportability foreign subdir-objects
+		 color-tests parallel-tests)
 AC_CONFIG_HEADERS([config.h])
 
 # Checks for programs.
