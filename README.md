@@ -25,7 +25,8 @@ bas55.exe	The program.
 bas55.html	The manual.
 readme.txt	This file.
 copying.txt	License.
-news.txt	What's new in this version.
+changelog.txt	What's new in this version.
+news-old.txt	Historic file documenting changes in previous releases.
 sieve.bas	The sieve of Eratosthenes algorithm in Minimal BASIC.
 ~~~
 
@@ -72,8 +73,10 @@ Normally, after installing from source, you can find this on your system:
 /usr/local/share/man/man1/bas55.1	The manual page.
 /usr/local/share/info/bas55.info	The info manual.
 /usr/local/share/doc/bas55/COPYING	License.
-/usr/local/share/doc/bas55/README	This file.
-/usr/local/share/doc/bas55/NEWS		What's new in this version.
+/usr/local/share/doc/bas55/README.md	This file.
+/usr/local/share/doc/bas55/CHANGELOG.md	What's new in this version.
+/usr/local/share/doc/bas55/NEWS.old	Historic NEWS file.
+/usr/local/share/doc/bas55/ChangeLog	Historic ChangeLog file.
 /usr/local/share/bas55/sieve.bas	The sieve of Eratosthenes algorithm.
 ~~~
 

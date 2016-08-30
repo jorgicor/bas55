@@ -57,8 +57,9 @@ make_zip () {
 	cp ../$bas55_xname/ecma55/bas55.exe .
 	cp ../$bas55_xname/doc/bas55.html .
 	cp ../$bas55_xname/COPYING copying.txt
-	cp ../$bas55_xname/README readme.txt
-	cp ../$bas55_xname/NEWS news.txt
+	cp ../$bas55_xname/README.md readme.txt
+	cp ../$bas55_xname/NEWS.old news-old.txt
+	cp ../$bas55_xname/CHANGELOG.md changelog.txt
 	sed $sedmask ../$bas55_xname/data/SIEVE.BAS > sieve.bas
 	for i in *.txt
 	do
