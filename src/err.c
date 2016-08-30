@@ -24,7 +24,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <ctype.h>
 #include <stdio.h>
 #include <string.h>
-#include "../config.h"
+#include "config.h"
 #include "ecma55.h"
 
 static const char *s_errors[] = {

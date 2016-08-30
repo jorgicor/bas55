@@ -1,4 +1,4 @@
 #!/bin/sh
 
 nom=P008
-. ./chkout.inc
+. "$srcdir"/chkout.inc

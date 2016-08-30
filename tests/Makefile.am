@@ -1,4 +1,6 @@
-TESTS_ENVIRONMENT = top_builddir=$(top_builddir) srcdir=$(srcdir)
+TESTS_ENVIRONMENT = bas55=$(top_builddir)/src/bas55$(EXEEXT) \
+		    srcdir=$(srcdir) \
+		    builddir=$(builddir)
 
 dist_check_SCRIPTS = p001.test p002.test p003.test p004.test p005.test \
 		     p006.test p007.test p008.test p009.test p010.test \

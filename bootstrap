@@ -1,0 +1,19 @@
+#!/bin/sh
+
+# When you get the source from a version control repository, it is not
+# ready for distribution. Some files have to be generated first but these
+# generated files depend on the version of the tools you have on your system:
+# autoconf, automake, help2man, texinfo, bison, etc
+#
+# You use this script only if you are a developer and you cloned the
+# repository. You will need the above tools. This will generate some files:
+# INSTALL, configure, some Makefile.in, etc
+#
+# This generated files should not be in version control. We have rules for that
+# in the .gitignore file.
+#
+# After this 'bootstrap' you should be able to use the usual
+#
+# $ ./configure & make
+
+autoreconf -vi

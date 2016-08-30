@@ -1,4 +1,4 @@
 #!/bin/sh
 
 nom=P043
-. ./chkout.inc
+. "$srcdir"/chkout.inc

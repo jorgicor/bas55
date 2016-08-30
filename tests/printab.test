@@ -1,4 +1,4 @@
 #!/bin/sh
 
 nom=printab
-. ./chkout.inc
+. "$srcdir"/chkout.inc

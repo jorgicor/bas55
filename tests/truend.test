@@ -1,4 +1,4 @@
 #!/bin/sh
 
 nom=truend
-. ./chkout.inc
+. "$srcdir"/chkout.inc
