@@ -48,7 +48,7 @@ dist_check_SCRIPTS = p001.test p002.test p003.test p004.test p005.test \
 
 TESTS = $(dist_check_SCRIPTS)
 
-EXTRA_DIST = README \
+EXTRA_DIST = README.md \
 	     chkout.inc \
 	     P001.BAS P002.BAS P003.BAS P004.BAS P005.BAS \
 	     P001.ok P002.ok P003.ok P004.ok P005.ok \
