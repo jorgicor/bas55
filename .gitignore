@@ -18,7 +18,7 @@ stamp-h1
 /doc/*.info
 /doc/*.html
 /doc/*.1
-/ecma55/grammar.c
-/ecma55/grammar.h
-/ecma55/.deps
-/ecma55/bas55
+/src/grammar.c
+/src/grammar.h
+/src/.deps
+/src/bas55
