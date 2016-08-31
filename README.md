@@ -82,4 +82,4 @@ If you are installing bas55 using your OS distribution package system, these
 folders will probably be different.  Try changing `/usr/local` to `/usr`.
 
 [1]: http://www.ecma-international.org/publications/standards/Standardwithdrawn.htm
-[2]: http://jorgicor.sdfeu.org/bas55  
+
