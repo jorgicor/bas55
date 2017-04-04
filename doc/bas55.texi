@@ -5,7 +5,7 @@
 @c To get @value{VERSION}
 @include version.texi
 
-@settitle bas55 - ECMA-55 Minimal BASIC Interpreter @value{VERSION}
+@settitle bas55 (ECMA-55 Minimal BASIC Interpreter) @value{VERSION}
 @c %**end of header
 
 @dircategory Software development

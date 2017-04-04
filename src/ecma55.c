@@ -37,7 +37,6 @@ static const char *s_version[] =
 PACKAGE_STRING,
 "",
 "Copyright (C) 2014-2017 Jorge Giner Cordero",
-"License MIT: <http://opensource.org/licenses/MIT>",
 "This is free software: you are free to change and redistribute it.",
 "There is NO WARRANTY, to the extent permitted by law."
 };
@@ -50,16 +49,9 @@ void print_version(FILE *f)
 		fprintf(f, "%s\n", s_version[i]);
 }
 
-static void print_author(void)
-{
-	printf("\nWritten by Jorge Giner Codero.\n");
-}
-
 static void print_help(const char *argv0)
 {
 	static const char *help =
-"bas55 is a Minimal BASIC (ECMA-55) interpreter.\n"
-"\n"
 "Usage: %s [OPTION]... [BASIC_FILE]\n"
 "\n"
 "Options:\n"
@@ -129,7 +121,6 @@ int main(int argc, char *argv[])
 		switch (c) {
 		case 'v':
 			print_version(stdout);
-			print_author();
 			exit(EXIT_SUCCESS);
 		case 'h':
 			print_help(argv[0]);
