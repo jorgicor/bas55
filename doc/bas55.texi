@@ -5,7 +5,7 @@
 @c To get @value{VERSION}
 @include version.texi
 
-@settitle bas55 - Minimal BASIC System @value{VERSION}
+@settitle bas55 - ECMA-55 Minimal BASIC Interpreter @value{VERSION}
 @c %**end of header
 
 @dircategory Software development
@@ -14,10 +14,10 @@
 @end direntry
 
 @copying
-This manual is for bas55 (Minimal BASIC System) version @value{VERSION}
-(updated @value{UPDATED}).
+This manual is for bas55 (ECMA-55 Minimal BASIC Interpreter) version
+@value{VERSION} (updated @value{UPDATED}).
 
-Copyright @copyright{} 2014, 2015, 2016 Jorge Giner Cordero
+Copyright @copyright{} 2014-2017 Jorge Giner Cordero
 
 @quotation
 Permission is hereby granted, free of charge, to any person obtaining
@@ -43,7 +43,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 @titlepage
 @title bas55
-@subtitle Minimal BASIC System
+@subtitle ECMA-55 Minimal BASIC Interpreter
 @subtitle version @value{VERSION} (updated @value{UPDATED})
 @author Jorge Giner Cordero
 @page
@@ -55,10 +55,10 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 @ifnottex
 @node Top
-@top Minimal BASIC System
+@top ECMA-55 Minimal BASIC Interpreter
 
-This manual is for bas55 (Minimal BASIC System) version @value{VERSION}
-(updated @value{UPDATED}).
+This manual is for bas55 (ECMA-55 Minimal BASIC Interpreter) version
+@value{VERSION} (updated @value{UPDATED}).
 @end ifnottex
 
 @menu
@@ -72,7 +72,8 @@ This manual is for bas55 (Minimal BASIC System) version @value{VERSION}
 @node About
 @chapter About
 
-@command{bas55} is an editor, bytecode compiler and interpreter for the Minimal BASIC programming language as defined by the @uref{http://www.ecma-international.org,ECMA-55 standard}.
+@command{bas55} is an interpreter for the Minimal BASIC programming language as
+defined by the @uref{http://www.ecma-international.org,ECMA-55 standard}.
 
 @command{bas55} is free software.
 
