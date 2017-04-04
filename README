@@ -1,8 +1,6 @@
 Intro
 =====
 
-This is the `README` file for `bas55`, the *Minimal BASIC System* distribution.
-
 `bas55` is an editor, byte compiler and interpreter for the *Minimal BASIC*
 programming language as described by the ECMA standard 55 [1].
 

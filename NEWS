@@ -1,5 +1,8 @@
 1.11	2017-04-04
 
+	* Separating a long command line option from its argument using '=' now
+	  is accepted, for example, `--gosub=10`.
+
 	Source changes
 	--------------
 
