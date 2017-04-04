@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2014 Jorge Giner Cordero
+Copyright (c) 2014-2017 Jorge Giner Cordero
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
@@ -21,8 +21,8 @@ TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-#include <string.h>
 #include "ngetopt.h"
+#include <string.h>
 
 static int find_short_opt(int val, struct ngetopt_opt *ops)
 {
@@ -41,11 +41,19 @@ static int find_short_opt(int val, struct ngetopt_opt *ops)
 static int find_long_opt(char *str, struct ngetopt_opt *ops)
 {
 	int i;
+	const char *p, *q;
 
 	i = 0;
 	while (ops[i].name != NULL) {
-		if (strcmp(ops[i].name, str) == 0)
+		p = ops[i].name;
+		q = str;
+		while (*p != '\0' && *p == *q) {
+			p++;
+			q++;
+		}
+		if (*p == '\0' && (*q == '\0' || *q == '=')) {
 			return i;
+		}
 		i++;
 	}
 
@@ -60,7 +68,7 @@ void ngetopt_init(struct ngetopt *p, int argc, char *const *argv,
 	p->ops = ops;
 	p->optind = 1;
 	p->subind = 0;
-	p->str[1] = '\0';
+	strcpy(p->str, "-X");
 }
 
 static int get_short_opt(struct ngetopt *p)
@@ -72,7 +80,7 @@ static int get_short_opt(struct ngetopt *p)
 	i = find_short_opt(opt[p->subind], p->ops);
 	if (i < 0) {
 		/* unrecognized option */
-		p->str[0] = (unsigned char) opt[p->subind];
+		p->str[1] = (char) opt[p->subind];
 		p->optarg = p->str;
 		p->subind++;
 		return '?';
@@ -103,14 +111,15 @@ static int get_short_opt(struct ngetopt *p)
 	}
 
 	/* ups, argument missing */
-	p->optopt = p->ops[i].val;
+	p->str[1] = (char) p->ops[i].val;
+	p->optarg = p->str;
 	return ':';
 }
 
 static int get_opt(struct ngetopt *p)
 {
 	int i;
-	char *opt;
+	char *opt, *optnext;
 
 	if (p->optind >= p->argc)
 		return -1;
@@ -145,28 +154,49 @@ static int get_opt(struct ngetopt *p)
 	if (i < 0) {
 		/* not found */
 		p->optind++;
-		p->optarg = &opt[2];
+		p->optarg = opt;
+		while (*opt != '\0' && *opt != '=') {
+			opt++;
+		}
+		*opt = '\0';
 		return '?';
 	}
 
-	/* found */
-	if (!p->ops[i].has_arg) {
+	/* found, go to end of option */
+	optnext = opt + 2 + strlen(p->ops[i].name);
+
+	if (*optnext == '\0' && !p->ops[i].has_arg) {
 		/* doesn't need arguments */
 		p->optind++;
 		return p->ops[i].val;
 	}
 
-	/* the argument is the next token */
-	p->optind++;
-	if (p->optind < p->argc) {
-		p->optarg = p->argv[p->optind];
-		p->optind++;
-		return p->ops[i].val;
+	if (*optnext == '=' && !p->ops[i].has_arg) {
+		/* does not need arguments but argument supplied */
+		*optnext = '\0';
+		p->optarg = opt;
+		return ';';
 	}
 
-	/* ups, argument missing */
-	p->optopt = p->ops[i].val;
-	return ':';
+	/* the argument is the next token */
+	if (*optnext == '\0') {
+		p->optind++;
+		if (p->optind < p->argc) {
+			p->optarg = p->argv[p->optind];
+			p->optind++;
+			return p->ops[i].val;
+		}
+
+		/* ups, argument missing */
+		p->optarg = opt;
+		p->optind++;
+		return ':';
+	}
+
+	/* *optnext == '=' */
+	p->optarg = optnext + 1;
+	p->optind++;
+	return p->ops[i].val;
 }
 
 /*
@@ -174,10 +204,15 @@ static int get_opt(struct ngetopt *p)
  * option argument or NULL.
  *
  * If the option is not recognized, '?' is returned, and optarg is the
- * literal string of the option not recognized.
+ * literal string of the option not recognized (already with '-' or '--'
+ * prefixed).
  *
  * If the option is recognized but the argument is missing, ':' is
- * returned and optopt is the option.
+ * returned and optarg is the option as supplied (with '-' or '--' prefixed).
+ *
+ * If the option is recognized and it is a long option followed by '=', but the
+ * option does not take arguments, ';' is returned and optarg is the option
+ * (with '-' or '--' prefixed).
  *
  * -1 is returned if no more options.
  */

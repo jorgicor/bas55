@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2014 Jorge Giner Cordero
+Copyright (c) 2014-2017 Jorge Giner Cordero
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
@@ -32,13 +32,12 @@ struct ngetopt_opt {
 
 struct ngetopt {
 	int optind;
-	int optopt;
 	char *optarg;
 	int argc;
 	char *const *argv;
 	struct ngetopt_opt *ops;
 	int subind;
-	char str[2];
+	char str[3];
 };
 
 void ngetopt_init(struct ngetopt *p, int argc, char *const *argv,

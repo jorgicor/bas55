@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2014, 2015, 2016 Jorge Giner Cordero
+Copyright (c) 2014-2017 Jorge Giner Cordero
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
@@ -36,7 +36,7 @@ static const char *s_version[] =
 {
 PACKAGE_STRING,
 "",
-"Copyright (C) 2014, 2015, 2016 Jorge Giner Cordero",
+"Copyright (C) 2014-2017 Jorge Giner Cordero",
 "License MIT: <http://opensource.org/licenses/MIT>",
 "This is free software: you are free to change and redistribute it.",
 "There is NO WARRANTY, to the extent permitted by law."
@@ -147,8 +147,13 @@ int main(int argc, char *argv[])
 			exit(EXIT_FAILURE);
 		case ':':
 			eprogname();
-			fprintf(stderr, "the -%c option needs an argument\n",
-				(char) ngo.optopt);
+			fprintf(stderr, "%s needs an argument\n",
+				ngo.optarg);
+			exit(EXIT_FAILURE);
+		case ';':
+			eprogname();
+			fprintf(stderr, "%s does not allow for arguments\n",
+				ngo.optarg);
 			exit(EXIT_FAILURE);
 		}
 	} while (c != -1);
