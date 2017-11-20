@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_INIT([bas55 (ECMA-55 Minimal BASIC Interpreter)],
-	[1.11],
+	[1.12],
 	[jorge.giner@hotmail.com],
 	bas55,
 	[http://jorgicor.sdfeu.org/bas55])

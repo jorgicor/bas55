@@ -1,3 +1,11 @@
+1.12	2017-11-20
+
+	Source changes
+	--------------
+
+	* Fixed the P206.BAS test file which had typographical errors. Thanks
+	  to John Gatewood Ham.
+
 1.11	2017-04-04
 
 	* Separating a long command line option from its argument using '=' now
