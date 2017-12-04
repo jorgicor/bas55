@@ -21,6 +21,7 @@ TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
+#include <config.h>
 #include <assert.h>
 #include <ctype.h>
 #include <errno.h>
@@ -28,7 +29,6 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "config.h"
 #include "ecma55.h"
 #include "ngetopt.h"
 
@@ -154,6 +154,8 @@ int main(int argc, char *argv[])
 		fprintf(stderr, "wrong number of arguments\n");
 		exit(EXIT_FAILURE);
 	}
+
+	init_readline();
 
 	if (argc == ngo.optind) {
 		s_debug_mode = 1;

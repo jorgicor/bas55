@@ -15,6 +15,7 @@ AM_INIT_AUTOMAKE(-Wall -Werror -Wportability subdir-objects
 AC_CONFIG_HEADERS([config.h])
 
 # Checks for programs.
+PKG_PROG_PKG_CONFIG
 AC_PROG_CC
 AC_PROG_YACC
 AM_MISSING_PROG(HELP2MAN, help2man, $missing_dir)
@@ -34,6 +35,13 @@ AC_SUBST(WARN_CFLAGS)
 
 # Checks for library functions.
 AC_SEARCH_LIBS([pow], [m])
+# AC_SEARCH_LIBS([initscr], [ncurses])
+# AC_SEARCH_LIBS([el_init], [edit])
+# AC_SEARCH_LIBS([readline], [readline], , ,[-lncurses])
+# AC_SEARCH_LIBS([readline], [edit], , ,[-lncurses])
+PKG_CHECK_MODULES([LIBEDIT], [libedit],
+	[ AC_DEFINE([HAVE_LIBEDIT], [1], [Use libedit]) ],
+	[ AC_DEFINE([HAVE_LIBEDIT], [0], [Use libedit]) ])
 
 AC_CONFIG_FILES([Makefile
 		 src/Makefile

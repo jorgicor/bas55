@@ -21,6 +21,7 @@ TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
+#include <config.h>
 #include <assert.h>
 #include <ctype.h>
 #include <limits.h>
@@ -28,6 +29,11 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+#if HAVE_LIBEDIT
+#include <editline/readline.h>
+#endif
+
 #include "ecma55.h"
 
 /**
@@ -102,7 +108,7 @@ nomem:	*new_array = p;
  * maxlen must be greater than 0.
  * The newline character is NOT stored and not counted.
  */
-enum error_code get_line(char *buf, int maxlen, FILE *fp)
+static enum error_code std_get_line(char *buf, int maxlen, FILE *fp)
 {
 	int c, nread;
 	enum error_code ecode;
@@ -145,6 +151,288 @@ enum error_code get_line(char *buf, int maxlen, FILE *fp)
 	assert(nread <= maxlen - 1);
 
 	return ecode;
+}
+
+#if !HAVE_LIBEDIT
+static char *readline(const char *prompt)
+{
+	return NULL;
+}
+
+static void add_history(const char *line)
+{
+}
+#endif
+
+static const char *s_basic_words[] = {
+	"ABS", "ATN",
+	"BASE",
+	"COS",
+       	"DATA", "DEF", "DIM",
+       	"END", "EXP",
+       	"FOR",
+	"GO", "GOSUB", "GOTO",
+	"IF", "INPUT", "INT",
+       	"LET", "LOG",
+	"NEXT",
+       	"ON", "OPTION",
+       	"PRINT",
+       	"RANDOMIZE", "READ", "REM", "RESTORE", "RETURN", "RND",
+	"SGN", "SIN", "SQR", "STEP", "STOP", "SUB",
+      	"TAB", "TAN", "THEN", "TO",
+	NULL
+};
+
+static const char *s_edit_words[] = {
+	"COMPILE",
+       	"DEBUG",
+	"HELP",
+       	"LIST", "LOAD",
+	"NEW",
+       	"OFF", "ON",
+       	"RENUM", "RUN",
+	"SAVE", "SETGOSUB",
+	NULL
+};
+
+static int str_starts_nocase(const char *str, const char *sub)
+{
+	const char *q;
+
+	q = sub;
+	while (*str && *q && toupper(*str) == toupper(*q)) {
+		str++;
+		q++;
+	}
+
+	return *q == '\0' && q != sub;
+}
+
+static const char *find_word(const char *text, const char **words, int state)
+{
+	static int index = 0;
+	const char *cstr;
+
+	if (state == 0) {
+		index = 0;
+	}
+
+	cstr = NULL;
+	while (!cstr && words[index] != NULL) {
+		if (str_starts_nocase(words[index], text)) {
+			cstr = words[index];
+		}
+		index++;
+	}
+
+	return cstr;
+}
+
+static int inside_quotes(void)
+{
+	int flip, i;
+
+	flip = 0;
+	for (i = 0; i < rl_point; i++) {
+		if (rl_line_buffer[i] == '"') {
+			flip = !flip;
+		}
+	}
+	return flip;
+}
+
+static const char *find_basic_line(int n)
+{
+	struct basic_line *bline;
+
+	bline = s_line_list;
+	while (bline && bline->number != n) {
+		bline = bline->next;
+	}
+
+	if (bline && bline->number == n) {
+		return bline->str;
+	}
+
+	return NULL;
+}
+
+static int start_of_basic_line(void)
+{
+	int i;
+
+	i = 0;
+	while (i < rl_point && isspace(rl_line_buffer[i])) {
+		i++;
+	}
+
+	if (i == rl_point || !isdigit(rl_line_buffer[i])) {
+		return 0;
+	}
+
+	while (i < rl_point && isdigit(rl_line_buffer[i])) {
+		i++;
+	}
+
+	return i == rl_end;
+}
+
+static int inside_basic_line(void)
+{
+	int i;
+
+	i = 0;
+	while (i < rl_point && isspace(rl_line_buffer[i])) {
+		i++;
+	}
+
+	if (i == rl_point || !isdigit(rl_line_buffer[i])) {
+		return 0;
+	}
+
+	while (i < rl_point && isdigit(rl_line_buffer[i])) {
+		i++;
+	}
+
+	return i < rl_point && isspace(rl_line_buffer[i]);
+}
+
+static char *complete_basic_line(const char *text)
+{
+	int n;
+	const char *cstr;
+	char *line;
+
+	cstr = text;
+	n = 0;
+	while (isdigit(*cstr) && n <= LINE_NUM_MAX) {
+		n = n * 10 + (*cstr - '0');
+		cstr++;
+	}
+
+	if (*cstr == '\0' && n <= LINE_NUM_MAX) {
+		cstr = find_basic_line(n);
+		if (cstr) {
+			line = malloc(strlen(cstr) + 1 +
+				      strlen(text) + 1);
+			if (line != NULL) {
+				strcpy(line, text);
+				strcat(line, " "); 
+				strcat(line, cstr);
+				return line;
+			}
+		}
+	}
+
+	return NULL;
+}
+
+static char *complete_basic_cmd(const char *text, int state)
+{
+	const char *word;
+
+	word = find_word(text, s_basic_words, state);
+	if (word) {
+		return strdup(word);
+	}
+
+	return NULL;
+}
+
+static char *complete_edit_cmd(const char *text, int state)
+{
+	const char *word;
+
+	word = find_word(text, s_edit_words, state);
+	if (word) {
+		return strdup(word);
+	}
+
+	return NULL;
+}
+
+static char *tab_completion(const char *text, int state)
+{
+	static int option;
+
+	if (state == 0) {
+		option = 0;
+		if (start_of_basic_line()) {
+			option = 1;
+		} else if (inside_basic_line()) {
+		       if (!inside_quotes()) {
+			       option = 2;
+		       }
+		} else if (inside_quotes()) {
+			option = 3;
+		} else {
+			option = 4;
+		}
+	}
+
+	switch (option) {
+	case 1:
+		option = 0;
+		return complete_basic_line(text);
+	case 2:
+		return complete_basic_cmd(text, state);
+	case 3:
+		return rl_filename_completion_function(text, state);
+	case 4:
+		return complete_edit_cmd(text, state);
+	default:
+		return NULL;
+	}
+}
+
+void init_readline(void)
+{
+	rl_completion_entry_function = tab_completion;
+	using_history();
+}
+
+static enum error_code libedit_get_line(const char *prompt, char *buf,
+	int maxlen)
+{
+	int i;
+	char *line;
+	enum error_code rcode;
+
+	line = readline(prompt);
+	if (line == NULL) {
+		rcode = E_EOF;
+	} else {
+		if (*line) {
+			add_history(line);
+		}
+
+		for (i = 0; line[i] != '\0' && i < maxlen - 1; i++) {
+			buf[i] = line[i];
+		}
+		buf[i] = '\0';
+
+		if (line[i] != '\0') {
+			rcode = E_LINE_TOO_LONG;
+		} else {
+			rcode = E_OK;
+		}
+
+		free(line);
+	}
+
+	return rcode;
+}
+
+enum error_code get_line(const char *prompt, char *buf, int maxlen, FILE *fp)
+{
+	if (HAVE_LIBEDIT && fp == stdin) {
+		return libedit_get_line(prompt, buf, maxlen);
+	} else {
+		if (fp == stdin && prompt != NULL) {
+			puts(prompt);
+		}
+		return std_get_line(buf, maxlen, fp);
+	}
 }
 
 size_t min_size(size_t a, size_t b)

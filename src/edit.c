@@ -25,6 +25,13 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <ctype.h>
 #include <limits.h>
 #include <stdio.h>
+
+// #include <stdlib.h>
+// #include <string.h>
+// #include <editline/readline.h>
+// #include <readline/readline.h>
+// #include <readline/history.h>
+
 #include "ecma55.h"
 
 static void pready (void)
@@ -43,7 +50,7 @@ void edit(void)
 	print_version(stderr);
 	fputs("\nType HELP for a list of allowed commands.\n\n", stderr);
 	pready();
-	while ((ecode = get_line(line, sizeof(line), stdin)) != E_EOF) {
+	while ((ecode = get_line("", line, sizeof(line), stdin)) != E_EOF) {
 		if (ecode == E_LINE_TOO_LONG) {
 			eprint(E_LINE_TOO_LONG);
 			enl();

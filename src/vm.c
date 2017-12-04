@@ -1089,8 +1089,7 @@ static void input_op(void)
 	s_input_comma = 0;
 	s_print_column = 0;
 
-retry:	printf("? ");
-	r = get_line(s_input_line, sizeof s_input_line, stdin);
+retry:	r = get_line("? ", s_input_line, sizeof s_input_line, stdin);
 	if (r == E_EOF) {
 		eprint(E_VOID_INPUT);
 		enl();

@@ -312,7 +312,7 @@ int load(const char *fname, int max_errors, int batch_mode)
 
 	nerrors = 0;
 	linecnt = 0;
-	while ((ecode = get_line(line, sizeof line, fp)) != E_EOF) {
+	while ((ecode = get_line("", line, sizeof line, fp)) != E_EOF) {
 		linecnt++;
 		if (ecode == E_LINE_TOO_LONG) {
 print_and_continue:	fprintf(stderr, "%s:", fname);

@@ -65,7 +65,8 @@ void edit(void);
 
 enum error_code grow_array(void *p, int elem_size, int cur_len, int grow_k,
     void **new_array, int *new_len);
-enum error_code get_line(char *buf, int maxlen, FILE *fp);
+void init_readline(void);
+enum error_code get_line(const char *prompt, char *buf, int maxlen, FILE *fp);
 size_t min_size(size_t a, size_t b);
 void toupper_str(char *str);
 void copy_to_str(char *dst, const char *src, size_t len);
