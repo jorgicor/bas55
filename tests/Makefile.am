@@ -1,3 +1,7 @@
+# ===========================================================================
+# bas55, an implementation of the Minimal BASIC programming language.
+# ===========================================================================
+
 TESTS_ENVIRONMENT = bas55=$(top_builddir)/src/bas55$(EXEEXT) \
 		    srcdir=$(srcdir) \
 		    builddir=$(builddir)

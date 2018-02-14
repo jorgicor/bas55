@@ -1,5 +1,9 @@
 #!/bin/sh
 
+# ===========================================================================
+# bas55, an implementation of the Minimal BASIC programming language.
+# ===========================================================================
+
 # When you get the source from a version control repository, it is not
 # ready for distribution. Some files have to be generated first but these
 # generated files depend on the version of the tools you have on your system:

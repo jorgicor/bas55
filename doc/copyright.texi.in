@@ -1,0 +1,5 @@
+@c ===========================================================================
+@c bas55, an implementation of the Minimal BASIC programming language.
+@c ===========================================================================
+
+@set COPYRIGHT_YEARS @COPYRIGHT_YEARS@ 

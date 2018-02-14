@@ -1,28 +1,14 @@
-/*
-Copyright (c) 2014, 2015 Jorge Giner Cordero
-
-Permission is hereby granted, free of charge, to any person obtaining
-a copy of this software and associated documentation files (the
-"Software"), to deal in the Software without restriction, including
-without limitation the rights to use, copy, modify, merge, publish,
-distribute, sublicense, and/or sell copies of the Software, and to
-permit persons to whom the Software is furnished to do so, subject to
-the following conditions:
-
-The above copyright notice and this permission notice shall be included
-in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
-CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
-TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
-SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-*/
+/* ===========================================================================
+ * bas55, an implementation of the Minimal BASIC programming language.
+ * ===========================================================================
+ */
 
 #ifndef ECMA55_H
 #define ECMA55_H
+
+#ifndef STDIO_H
+#include <stdio.h>
+#endif
 
 /* Max number of characters in a BASIC line, without new line characters. */
 #define LINE_MAX_CHARS	80
@@ -56,6 +42,7 @@ enum { N_VARNAMES = 'Z' - 'A' + 1 };
 /* ecma55.c */
 
 void print_version(FILE *);
+void print_copyright(FILE *);
 
 /* edit.c */
 
@@ -65,8 +52,6 @@ void edit(void);
 
 enum error_code grow_array(void *p, int elem_size, int cur_len, int grow_k,
     void **new_array, int *new_len);
-void init_readline(void);
-enum error_code get_line(const char *prompt, char *buf, int maxlen, FILE *fp);
 size_t min_size(size_t a, size_t b);
 void toupper_str(char *str);
 void copy_to_str(char *dst, const char *src, size_t len);
@@ -76,6 +61,12 @@ int is_nan(double d);
 double round(double d);
 int round_to_int(double d);
 void print_chars(FILE *f, const char *s, size_t len);
+
+/* get_line.c */
+
+void get_line_init(void);
+void get_line_set_question_mode(int set);
+enum error_code get_line(const char *prompt, char *buf, int maxlen, FILE *fp);
 
 /* line.c */
 

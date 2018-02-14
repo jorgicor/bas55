@@ -1,3 +1,23 @@
+1.13	2018-02-14
+
+	* Added support for the NetBSD libedit library to add enhanced editing
+	  capabilities on GNU/Linux or BSD systems, like a history of previous
+	  typed lines, command autocompletion, direct access to a line by its
+	  number to edit it, etc. See the manual for details and the README
+	  file to know how to compile bas55 with libedit support.
+
+	  Note: This does not apply to the Windows version.
+
+	Source changes
+	--------------
+
+	* Updated the manual, to talk about the editing capabilites on Windows
+	  and Unix-like systems. Also fixed some typographical errors.
+
+	* Removed all permission notices from source files.  The license and
+	  the copyright is at the top level of the project in the file COPYING
+	  and applies to all the project except otherwise noted.
+
 1.12	2017-11-20
 
 	Source changes

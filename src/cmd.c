@@ -1,34 +1,18 @@
-/*
-Copyright (c) 2014 Jorge Giner Cordero
+/* ===========================================================================
+ * bas55, an implementation of the Minimal BASIC programming language.
+ *
+ * Editor mode command handling.
+ * ===========================================================================
+ */
 
-Permission is hereby granted, free of charge, to any person obtaining
-a copy of this software and associated documentation files (the
-"Software"), to deal in the Software without restriction, including
-without limitation the rights to use, copy, modify, merge, publish,
-distribute, sublicense, and/or sell copies of the Software, and to
-permit persons to whom the Software is furnished to do so, subject to
-the following conditions:
-
-The above copyright notice and this permission notice shall be included
-in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
-CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
-TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
-SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-*/
-
+#include <config.h>
+#include "ecma55.h"
 #include <assert.h>
 #include <ctype.h>
 #include <errno.h>
 #include <limits.h>
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "ecma55.h"
 
 #define CMD_MAX_CHARS		8
 #define MAX_PARSE_NERRORS	20
@@ -44,32 +28,49 @@ struct command {
 
 static int retry_q(const char *str)
 {
-	int c, yes;
+	static char linebuf[LINE_MAX_CHARS + 1];
+	enum error_code ecode;
+	const char *p;
 
-retry:
-	fprintf(stderr, "%s", str);
-	c = getc(stdin);
-	while (c == ' ' || c == '\t')
-		c = getc(stdin);
-	if (c == 'Y' || c == 'y')
-		yes = 1;
-	else if (c == 'N' || c == 'n')
-		yes = 0;
-	else {
-		while (c != '\n')
-			c = getc(stdin);
-		goto retry;
-	}
+	/* 0 invalid, 1 yes, 2 no */
+	int op;
 
-	c = getc(stdin);
-	while (c == ' ' || c == '\t' || c == '\r')
-		c = getc(stdin);
-	if (c != '\n') {
-		while (c != '\n')
-			c = getc(stdin);
-		goto retry;
-	}
-	return yes ? 'Y' : 'N';
+	get_line_set_question_mode(1);
+
+	do {
+		op = 0;
+		ecode = get_line(str, linebuf, sizeof(linebuf), stdin);
+		if (ecode == E_OK) {
+			p = linebuf;
+			while (isspace(*p)) {
+				p++;
+			}
+			if (*p == 'y' || *p == 'Y') {
+				op = 1;
+			} else if (*p == 'n' || *p == 'N') {
+				op = 2;
+			}
+			if (op != 0) {
+				p++;
+				while (isspace(*p)) {
+					p++;
+				}
+				if (*p != '\0') {
+					op = 0;
+				}
+			}
+		} else if (ecode == E_LINE_TOO_LONG) {
+			eprint(E_LINE_TOO_LONG);
+			enl();
+		} else {
+			assert(ecode == E_EOF);
+			exit(EXIT_SUCCESS);
+		}
+	} while (op == 0);
+
+	get_line_set_question_mode(0);
+
+	return (op == 1) ? 'Y' : 'N';
 }
 
 static void free_run_data(void)
@@ -440,6 +441,7 @@ static const char *s_help[] = {
 "RENUM          Change the line numbers to be evenly spaces.",
 "DEBUG ON/OFF   Use DEBUG ON to enable debug mode, DEBUG OFF to disable it.",
 "SETGOSUB N     Allow for N GOSUB calls without RETURN.",
+"LICENSE        Show the license.",
 "QUIT           Quit the editor."
 };
 
@@ -447,8 +449,9 @@ static void help_cmd(struct cmd_arg *args, int nargs)
 {
 	int i;
 
-	for (i = 0; i < NELEMS(s_help); i++)
+	for (i = 0; i < NELEMS(s_help); i++) {
 		printf("%s\n", s_help[i]);
+	}
 }
 
 static void set_gosub_cmd(struct cmd_arg *args, int nargs)
@@ -510,6 +513,39 @@ static void debug_cmd(struct cmd_arg *args, int nargs)
 	}
 }
 
+static void license_cmd(struct cmd_arg *args, int nargs)
+{
+	static const char *license[] = {
+"Permission is hereby granted, free of charge, to any person obtaining",
+"a copy of this software and associated documentation files (the",
+"\"Software\"), to deal in the Software without restriction, including",
+"without limitation the rights to use, copy, modify, merge, publish,",
+"distribute, sublicense, and/or sell copies of the Software, and to",
+"permit persons to whom the Software is furnished to do so, subject to",
+"the following conditions:",
+"",
+"The above copyright notice and this permission notice shall be included",
+"in all copies or substantial portions of the Software.",
+"",
+"THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND,",
+"EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF",
+"MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.",
+"IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY",
+"CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,",
+"TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE",
+"SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE."
+       	};
+
+	int i;
+
+	print_copyright(stdout);
+	fputs("\n", stdout);
+	for (i = 0; i < NELEMS(license); i++) {
+		printf("%s\n", license[i]);
+	}
+	fputs("\n", stdout);
+}
+
 static const struct command s_commands[] = {
 	{ "COMPILE", compile_cmd, 0, 0 },
 	{ "C", compile_cmd, 0, 0 },
@@ -522,7 +558,8 @@ static const struct command s_commands[] = {
 	{ "RENUM", renum_cmd, 0, 0 },
 	{ "RUN", run_cmd, 0, 0 },
 	{ "SAVE", save_cmd, 1, 0 },
-	{ "SETGOSUB", set_gosub_cmd, 1, 0 }
+	{ "SETGOSUB", set_gosub_cmd, 1, 0 },
+	{ "LICENSE", license_cmd, 0, 0 },
 };
 
 /* Finds a command and returns the command index or -1 */

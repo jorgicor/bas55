@@ -1,6 +1,10 @@
 #!/bin/sh
 
+# ===========================================================================
+# bas55, an implementation of the Minimal BASIC programming language.
+#
 # This script is used by the author to build the Windows package under Cygwin.
+# ===========================================================================
 
 case $# in
 	2) bas55_vmaj=$1; bas55_vmin=$2 ;;
@@ -44,7 +48,6 @@ download_src () {
 compile_src () {
 	tar -xvzf $bas55_targz
 	cd $bas55_xname
-#	./configure CC=i686-w64-mingw32-gcc --target=i686-w64-mingw32
 	./configure --host=i686-w64-mingw32
 	make
 	make html

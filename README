@@ -1,14 +1,14 @@
-bas55 - ECMA-55 Minimal BASIC Interpreter
-=========================================
+bas55 - ECMA-55 Minimal BASIC System
+====================================
 
-`bas55` is an interpreter for the *Minimal BASIC* programming language as
-described by the ECMA standard 55 [1].
+`bas55` is an implementation of the *Minimal BASIC* programming language as
+described by the ECMA standard 55 [1]. bas55 provides an interpreter and an
+editor with line renumbering capabilities.
 
 bas55 is free software. See the file `COPYING` for copying conditions.
 
-Copyright (c) 2014-2017 Jorge Giner Cordero
-
 Home page: http://jorgicor.sdfeu.org/bas55  
+GitHub: https://github.com/jorgicor/bas55
 Send bug reports to: jorge.giner@hotmail.com
 
 [1]: http://www.ecma-international.org/publications/standards/Standardwithdrawn.htm
@@ -52,10 +52,10 @@ to generate the required files. You will need *GNU autoconf*, *GNU automake*,
 Compiling from the source distribution
 --------------------------------------
 
-If you have the official source package, and you are building on a Unix
-environment (this includes *Cygwin* on *Windows*), you can find detailed
-instructions in the file `INSTALL`. The complete source distribution can always
-be found at http://jorgicor.sdfeu.org/bas55 .  
+If you have the official source package, and you are building on a Unix-like
+environment (this includes *Cygwin* on *Windows*), you can find generic
+instructions in the file `INSTALL`. The complete source distribution can
+always be found at http://jorgicor.sdfeu.org/bas55 .  
 
 After installing, you can type `man bas55` to see a brief explanation on how to
 use the `bas55` program.  More detailed documentation, including a tutorial on
@@ -81,4 +81,33 @@ Normally, after installing from source, you can find this on your system:
 
 If you are installing bas55 using your OS distribution package system, these
 folders will probably be different.  Try changing `/usr/local` to `/usr`.
+
+Enhanced editing capabilities on GNU/Linux or *BSD
+--------------------------------------------------
+
+On GNU/Linux, if you have the NetBSD Editline library (libedit, see
+<http://thrysoee.dk/editline>) installed on your system, then you will have
+some editing enhancements while `bas55` is in editor mode, like a history of
+previous typed lines, command autocompletion, direct access to a line by its
+number to edit it, etc. See the manual for details.
+
+On FreeBSD, NetBSD or OpenBSD, this library should already be installed in the
+base system.
+
+So, to compile with libedit support, you can pass `--with-libedit` to the
+configure script, and it will try to detect the library. Sometimes, the
+library is already linked with its dependencies and you don't need to do
+anything else, but sometimes it is not. In this case, you have to link also
+with one the termcap, curses or ncurses libraries. For this, you have the
+options `--with-termcap`, `--with-curses` and `--with-ncurses`. This means
+that if using `--with-libedit` gives you an error but you know that libedit is
+installed, try combining this option with one of the others.
+
+This are some tests I did:
+
+* Slackware Linux with the SlackBuild libedit 3.1 installed: `--with-libedit`
+  is enough.
+* FreeBSD 11.1: `--with-libedit` is enough.
+* NetBSD 7.1.1: `--with-libedit` is enough.
+* OpenBSD 6.2: `--with-libedit --with-curses` (or `--with-termcap`) is needed.
 

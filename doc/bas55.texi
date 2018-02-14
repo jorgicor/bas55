@@ -5,7 +5,10 @@
 @c To get @value{VERSION}
 @include version.texi
 
-@settitle bas55 (ECMA-55 Minimal BASIC Interpreter) @value{VERSION}
+@c To get the copyright years @value{COPYRIGHT_YEARS}
+@include copyright.texi
+
+@settitle bas55 (ECMA-55 Minimal BASIC System) @value{VERSION}
 @c %**end of header
 
 @dircategory Software development
@@ -14,10 +17,10 @@
 @end direntry
 
 @copying
-This manual is for bas55 (ECMA-55 Minimal BASIC Interpreter) version
+This manual is for bas55 (ECMA-55 Minimal BASIC System) version
 @value{VERSION} (updated @value{UPDATED}).
 
-Copyright @copyright{} 2014-2017 Jorge Giner Cordero
+Copyright @copyright{} @value{COPYRIGHT_YEARS} Jorge Giner Cordero
 
 @quotation
 Permission is hereby granted, free of charge, to any person obtaining
@@ -43,7 +46,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 @titlepage
 @title bas55
-@subtitle ECMA-55 Minimal BASIC Interpreter
+@subtitle ECMA-55 Minimal BASIC System
 @subtitle version @value{VERSION} (updated @value{UPDATED})
 @author Jorge Giner Cordero
 @page
@@ -55,9 +58,9 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 @ifnottex
 @node Top
-@top ECMA-55 Minimal BASIC Interpreter
+@top ECMA-55 Minimal BASIC System
 
-This manual is for bas55 (ECMA-55 Minimal BASIC Interpreter) version
+This manual is for bas55 (ECMA-55 Minimal BASIC System) version
 @value{VERSION} (updated @value{UPDATED}).
 @end ifnottex
 
@@ -72,8 +75,10 @@ This manual is for bas55 (ECMA-55 Minimal BASIC Interpreter) version
 @node About
 @chapter About
 
-@command{bas55} is an interpreter for the Minimal BASIC programming language as
-defined by the @uref{http://www.ecma-international.org,ECMA-55 standard}.
+@command{bas55} is an implementation of the Minimal BASIC programming
+language as defined by the @uref{http://www.ecma-international.org,ECMA-55
+standard}.
+@command{bas55} provides an interpreter and an editor with line renumbering capabilities.
 
 @command{bas55} is free software.
 
@@ -189,7 +194,7 @@ LIST
 
 The lines have been renumbered.
 
-To remove a line, simply type its number and press @key{RET}.
+To remove a line, simply type its number and press the @key{ENTER} key.
 
 @example
 10
@@ -1105,10 +1110,16 @@ A gift from @uref{http://en.wikipedia.org/wiki/Sieve_of_Eratosthenes,Eratosthene
 
 @node Editor
 @section Editor
+
+@menu
+* Microsoft Windows::	Editing on Windows.
+* Unix-like systems::	Editing on Unix-like systems.
+@end menu
+
 When @command{bas55} is invoked without arguments, it starts in editor mode.
 You can then write a BASIC program by entering lines beginning with a number.
 The number will be used to order the lines in the program.
-To delete a line, simply write the line number you want to delete and press @key{RET}.
+To delete a line, simply write the line number you want to delete and press the @key{ENTER} key.
 To replace a line, rewrite the line with using the same line number as the line you want to substitute.
 
 If you write a line that does not begin with a line number, it will be taken as an editor command.
@@ -1152,9 +1163,79 @@ Allocate enough space so that, at maximum, @samp{n} @code{GOSUB} statements can 
 It is enabled by default in edit mode, and disabled in batch mode.
 It will warn if a variable is used before a value is assigned to it.
 
+@item LICENSE
+Display the license text.
+
 @item QUIT
 Quit to the OS.
 @end table
+
+@node Microsoft Windows
+@subsection Microsoft Windows
+
+When running @command{bas55} on Microsoft Windows in editor mode, you can use the up and down arrows on your keyboard to show the lines that you typed before.
+For example, if you type:
+
+@example
+10 PRINT "HELLO"
+20 END
+@end example
+
+And the you press the up arrow, you will get:
+
+@example
+20 END
+@end example
+
+If you press it again, you will get:
+
+@example
+10 PRINT "HELLO"
+@end example
+
+If you press now the down arrow key you will get again:
+
+@example
+20 END
+@end example
+
+When you get one of these lines that you typed previously, you can use the left and right arrows to move through the line and make any modifications that you wish.
+If you then press the @key{ENTER} key, the line will be saved with the modifications.
+
+@node Unix-like systems
+@subsection Unix-like systems
+
+On GNU/Linux, BSD systems, etc, if @command{bas55} has been compiled with @samp{libedit} support, when executing the program in editor mode you will something like:
+
+@example
+bas55 1.13 (with libedit support)
+@end example
+
+In this case, you have the same editing enhancements as on Microsoft Windows, and some more.
+
+For example, you can access any line of your BASIC program by writting its number and then pressing the @key{TAB} key.
+Then you will get the line and you will be able to edit it.
+
+For example, if your program was:
+
+@example
+10 PRINT "HELLO"
+20 END
+@end example
+
+You can type @code{10} and then press the @key{TAB} key, and you will get
+
+@example
+10 PRINT "HELLO"
+@end example
+
+and you can move through this line and edit it.
+
+Another enhancement is that some commands can be autocompleted by pressing the @key{TAB} key.
+For example, if you type @samp{10 PR} and then you press @key{TAB}, @samp{PR} will be expanded to @samp{PRINT}.
+
+Finally, the names of the files provided to the @command{LOAD} and @command{SAVE} commands, will be autocompleted by using the @key{TAB} key with the files on your actual filesystem.
+For example, if in your current directory there is a file called @file{program.bas} and you type @samp{LOAD "pro} and then you press @key{TAB}, you will get @samp{LOAD "program.bas}.
 
 @node Invoking bas55
 @section Invoking bas55
@@ -1179,6 +1260,9 @@ Display usage information and exit.
 
 @item -v, --version
 Display version information and exit.
+
+@item -l, --license
+Show the license text and exit.
 
 @item -g n, --gosub n
 Allocate enough space so that, at maximum, @samp{n} @code{GOSUB} statements can be executed without any @code{RETURN} statement.
@@ -1247,11 +1331,13 @@ Contrary to the standard, in @command{bas55} zero divided by zero gives an undef
 @item Layer 0: Base modules
 @itemize @minus
 @item
+@file{get_line.c}: get a line from a file or console. Line editing support.
+@item
 @file{list.h}: single linked list macros.
 @item
 @file{ngetopt.c}: command line argument parsing.
 @item
-@file{utils.c}: generic functions.
+@file{util.c}: generic functions.
 @item 
 @file{err.c}: error reporting functions and error text.
 @item
@@ -1312,7 +1398,7 @@ During the program execution, probably new strings will be generated in @file{st
 
 In both compilation and execution phases, memory is allocated at start and deallocated when the operation ends.
 
-The compiler can calculate the amount of stack required by all the program, as we can now the stack needed by each statement, and BASIC does not allow a user defined function to call itself or call another function defined after it.
+The compiler can calculate the amount of stack required by all the program, as we can know the stack needed by each statement, and BASIC does not allow a user defined function to call itself or call another function defined after it.
 But it can't calculate the amount of stack needed for GOSUB calls.
 If your program does more than 256 consecutive GOSUB calls without using any RETURN statement, you will need to raise the number of allowed calls by a command line option or by using @command{SETGOSUB} in editor mode.
 
