@@ -8,6 +8,8 @@
 
 #include <config.h>
 #include "ecma55.h"
+#include "arraydsc.h"
+#include "dbg.h"
 #include "list.h"
 #include "grammar.h"
 #include <assert.h>
@@ -15,12 +17,6 @@
 #include <limits.h>
 #include <stdlib.h>
 #include <string.h>
-
-/* Vars 0-9 + without digit + strvar */
-enum { N_SUBVARS = 12 };
-
-/* Generate debug code when parsing. */
-int s_debug_mode = 0;
 
 /* Type of variables: VARTYPE_UNDEF, VARTYPE_NUM, etc... */
 static enum var_type s_vartype[N_VARNAMES][N_SUBVARS];
@@ -155,8 +151,9 @@ int get_parser_nerrors(void)
  * A new error has been seen. Only increment up to INT_MAX. */
 static void new_error(void)
 {
-	if (s_nerrors == INT_MAX)
+	if (s_nerrors == INT_MAX) {
 		return;
+	}
 	s_nerrors++;
 }
 
@@ -174,8 +171,9 @@ static void cerrorln(int ecode, int lineno, int nl)
 	}
 	new_error();
 	eprintln(ecode, lineno);
-	if (nl)
+	if (nl) {
 		enl();
+	}
 }
 
 /*
@@ -259,8 +257,9 @@ void compile_line(int num, const char *str)
 	add_id_instr(num);
 	set_lex_input(str);
 
-	if (s_end_seen)
+	if (s_end_seen) {
 		cerror(E_LINES_AFTER_END, 1);
+	}
 
 	yyparse();
 }
@@ -288,7 +287,7 @@ int get_dim(int coded_var, int ndim)
 }
 
 /* Given max_idx the max index declared for an array and s_base_index,
- * returns the size required for the array. If the array is to big,
+ * returns the size required for the array. If the array is too big,
  * will return INT_MAX.
  */
 static int adjust_dimension(int max_idx)
@@ -318,35 +317,26 @@ static void ram_exhausted(void)
 
 static void add_size_to_ram(int len)
 {
-	if (iadd_overflows_int(s_ramsize, len))
+	if (iadd_overflows_int(s_ramsize, len)) {
 		ram_exhausted();
-	else if (is_ram_too_big(s_ramsize + len))
+	} else if (is_ram_too_big(s_ramsize + len)) {
 		ram_exhausted();
-	else
+	} else {
 		s_ramsize += len;
+	}
+}
+
+static void add_list_size_to_ram(int len1)
+{
+	add_size_to_ram(len1);
 }
 
 static void add_table_size_to_ram(int len1, int len2)
 {
-	if (imul_overflows_int(len1, len2))
+	if (imul_overflows_int(len1, len2)) {
 		ram_exhausted();
-	else
+	} else {
 		add_size_to_ram(len1 * len2);
-}
-
-void add_check_init_var_code(int coded_var)
-{
-	if (s_debug_mode) {
-		add_op_instr(CHECK_INIT_VAR_OP);
-		add_id_instr(coded_var);
-	}
-}
-
-void add_set_init_var_code(int coded_var)
-{
-	if (s_debug_mode) {
-		add_op_instr(SET_INIT_VAR_OP);
-		add_id_instr(coded_var);
 	}
 }
 
@@ -365,17 +355,24 @@ void numvar_declared(int coded_var, int var_type)
 	if (s_vartype[vindex1][vindex2] == VARTYPE_UNDEF) {
 		s_vartype[vindex1][vindex2] = var_type;
 		s_rampos[vindex1][vindex2] = s_ramsize;
+		set_ram_var_pos(s_ramsize, coded_var); 
 		if (var_type == VARTYPE_LIST || var_type == VARTYPE_TABLE) {
 			s_dimensioned[vindex1] = 1;
 			s_array_access = 1;
 		}
-		if (var_type == VARTYPE_LIST)
-			add_size_to_ram(s_vardim[vindex1][0]);
-		else if (var_type == VARTYPE_TABLE)
+		if (var_type == VARTYPE_LIST) {
+			set_array_descriptor(vindex1, s_ramsize,
+					     s_vardim[vindex1][0], 1);
+			add_list_size_to_ram(s_vardim[vindex1][0]);
+		} else if (var_type == VARTYPE_TABLE) {
+			set_array_descriptor(vindex1, s_ramsize,
+					     s_vardim[vindex1][0],
+					     s_vardim[vindex1][1]);
 			add_table_size_to_ram(s_vardim[vindex1][0],
 					      s_vardim[vindex1][1]);
-		else
+		} else {
 			add_size_to_ram(1);		
+		}
 		return;
 	}
 
@@ -411,10 +408,16 @@ void numvar_dimensioned(int coded_var, int var_type, int max_idx1,
 		s_array_access = 1;
 		s_rampos[vindex1][vindex2] = rampos;
 		s_vardim[vindex1][0] = adjust_dimension(max_idx1);
+		set_ram_var_pos(s_ramsize, coded_var);
 		if (var_type == VARTYPE_LIST) {
-			add_size_to_ram(s_vardim[vindex1][0]);
+			set_array_descriptor(vindex1, rampos,
+					     s_vardim[vindex1][0], 1);
+			add_list_size_to_ram(s_vardim[vindex1][0]);
 		} else if (var_type == VARTYPE_TABLE) {
 			s_vardim[vindex1][1] = adjust_dimension(max_idx2);
+			set_array_descriptor(vindex1, rampos,
+					     s_vardim[vindex1][0],
+					     s_vardim[vindex1][1]);
 			add_table_size_to_ram(s_vardim[vindex1][0],
 					      s_vardim[vindex1][1]);
 		}
@@ -492,7 +495,8 @@ void strvar_decl(int coded_var)
 	index2 = var_index2(coded_var);
 	if (s_rampos[index1][index2] == -1) {
 		s_rampos[index1][index2] = s_ramsize;
-		add_size_to_ram(1);	
+		set_ram_var_pos(s_ramsize, coded_var);
+		add_size_to_ram(1);
 	}
 }
 
@@ -600,11 +604,10 @@ void numvar_expr(int coded_var)
 {
 	if (s_in_fun_def && s_cur_fun != NULL && s_cur_fun->nparams > 0 &&
 	    coded_var == s_cur_fun->param) {
-		add_op_instr(GET_VAR_OP);
+		add_op_instr(GET_FN_VAR_OP);
 		add_id_instr(usrfun_list->vrampos);
 	} else {
 		numvar_declared(coded_var, VARTYPE_NUM);
-		add_check_init_var_code(coded_var);
 		add_op_instr(GET_VAR_OP);
 		add_id_instr(get_rampos(coded_var));
 	}
@@ -618,10 +621,8 @@ void list_expr(int coded_var)
 		cerror(E_FUNARG_AS_ARRAY, 1);
 	} else {
 		numvar_declared(coded_var, VARTYPE_LIST);
-		add_check_init_var_code(coded_var);
 		add_op_instr(GET_LIST_OP);
-		add_id_instr(get_rampos(coded_var));
-		add_id_instr(get_dim(coded_var, 0));
+		add_id_instr(var_index1(coded_var));
 	}
 }
 
@@ -633,11 +634,8 @@ void table_expr(int coded_var)
 		cerror(E_FUNARG_AS_ARRAY, 1);
 	} else {
 		numvar_declared(coded_var, VARTYPE_TABLE);
-		add_check_init_var_code(coded_var);
 		add_op_instr(GET_TABLE_OP);
-		add_id_instr(get_rampos(coded_var));
-		add_id_instr(get_dim(coded_var, 0));
-		add_id_instr(get_dim(coded_var, 1));
+		add_id_instr(var_index1(coded_var));
 	}
 }
 
@@ -831,7 +829,6 @@ void for_decl(int coded_var)
 	}
 	
 	numvar_declared(coded_var, VARTYPE_NUM);
-	add_set_init_var_code(coded_var);
 	add_op_instr(FOR_OP);
 
 	/* own2, step */
@@ -950,6 +947,8 @@ int init_parser(void)
 	s_end_seen = 0;
 	s_stack_size = 0;
 	s_stack_max = 0;
+	reset_array_descriptors();
+	reset_ram_var_map();
 	for (i = 0; i < N_VARNAMES; i++) {
 		s_vardim[i][0] = s_vardim[i][1] = 11;
 		s_dimensioned[i] = 0;

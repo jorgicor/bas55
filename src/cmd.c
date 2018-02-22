@@ -26,6 +26,9 @@ struct command {
 	unsigned char nextra_args;
 };
 
+/* Debug mode. */
+int s_debug_mode = 0;
+
 static int retry_q(const char *str)
 {
 	static char linebuf[LINE_MAX_CHARS + 1];
@@ -493,10 +496,11 @@ static void debug_cmd(struct cmd_arg *args, int nargs)
 {
 	if (nargs == 0) {
 		printf("DEBUG MODE ");
-		if (s_debug_mode)
+		if (s_debug_mode) {
 			printf("ON\n");
-		else
+		} else {
 			printf("OFF\n");
+		}
 	} else if (strcmp_z_nz_ci("ON", args[0].str, args[0].len)) {
 		if (s_debug_mode == 0) {
 			s_debug_mode = 1;

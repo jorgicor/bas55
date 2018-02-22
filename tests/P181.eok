@@ -1,2 +1,2 @@
-300: warning: operation overflow (EXP)
+300: warning: operation overflow EXP(-1.E+11)
 300: error: index out of range 

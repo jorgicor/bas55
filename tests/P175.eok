@@ -1,5 +1,5 @@
 280: warning: operation overflow 
 280: warning: operation overflow 
-280: warning: operation overflow (EXP)
+280: warning: operation overflow EXP(-1.E+33)
 640: warning: operation overflow 
-640: warning: invalid TAB argument ( 0 )
+640: warning: invalid TAB argument (0)

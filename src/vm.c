@@ -8,6 +8,8 @@
 
 #include <config.h>
 #include "ecma55.h"
+#include "arraydsc.h"
+#include "dbg.h"
 #include <assert.h>
 #include <errno.h>
 #include <limits.h>
@@ -39,17 +41,6 @@ static union ram_value *s_ram = NULL;
 
 /* Program counter. */
 static int s_pc;
-
-/* For debug purposes, we track if a variable has been assigned a value
- * before use.
- * For each variable name (A, B, etc), we have an integer.
- * Bits 0-9 are for variables with a digit, bit 10 for a variable without
- * digit, bit 11 for a string variable.
- * A bit set means the something has been assigned to the variable.
- * If nothing has been assigned to the variable but we use it, we set the
- * bit so we don't issue a warning again.
- */
-static int s_inited_vars[N_VARNAMES];
 
 /* Stack. */
 static union ram_value *s_stack = NULL;
@@ -128,27 +119,52 @@ static enum error_code alloc_stack(int n)
 	return 0;
 }
 
-static void reset_inited_vars(void)
+static void check_rampos_inited(int rampos)
 {
-	memset(s_inited_vars, 0, sizeof(s_inited_vars));
+	int coded_var;
+
+	if (!is_rampos_inited(rampos)) {
+		/* Do not issue the warning again. */
+		set_rampos_inited(rampos);
+
+		wprintln(E_INIT_VAR, s_cur_line_num);
+		coded_var = get_var_from_rampos(rampos);
+		print_var(stderr, coded_var);
+		enl();
+	}
 }
 
-static int is_var_initialized(int coded_var)
+static void check_list_rampos_inited(int rampos, int index)
 {
-	int index1, index2;
-	
-	index1 = var_index1(coded_var);
-	index2 = var_index2(coded_var);
-	return (s_inited_vars[index1] & (1 << index2)) != 0;
+	int coded_var;
+
+	if (!is_rampos_inited(rampos)) {
+		/* Do not issue the warning again. */
+		set_rampos_inited(rampos);
+
+		wprintln(E_INIT_ARRAY, s_cur_line_num);
+		coded_var = get_var_from_rampos(rampos);
+		print_var(stderr, coded_var);
+		index += s_base_ix;
+		fprintf(stderr, "(%d)\n", index);
+	}
 }
 
-static void set_var_initialized(int coded_var)
+static void check_table_rampos_inited(int rampos, int index1, int index2)
 {
-	int index1, index2;
-	
-	index1 = var_index1(coded_var);
-	index2 = var_index2(coded_var);
-	s_inited_vars[index1] |= (1 << index2);
+	int coded_var;
+
+	if (!is_rampos_inited(rampos)) {
+		/* Do not issue the warning again. */
+		set_rampos_inited(rampos);
+
+		wprintln(E_INIT_ARRAY, s_cur_line_num);
+		coded_var = get_var_from_rampos(rampos);
+		print_var(stderr, coded_var);
+		index1 += s_base_ix;
+		index2 += s_base_ix;
+		fprintf(stderr, "(%d,%d)\n", index1, index2);
+	}
 }
 
 static void remove_leading_zero(int len, char *num)
@@ -282,13 +298,21 @@ static int sprint_num(char *rnum, double d)
 	}
 }
 
-static int print_num(FILE *f, double d)
+static int print_num_trim(FILE *f, double d)
 {
+	int i, j;
 	char num[NUM_CHARS_SCALED + 8]; /* \0 + safe space */
 
 	sprint_num(num, d);
+	for (i = 0, j = 0; num[i] != '\0'; i++) {
+		if (num[i] != ' ') {
+			num[j++] = num[i];
+		}
+	}
+	num[j] = '\0';
 	return fprintf(f, "%s", num);
 }
+
 
 static void push_num_op(void)
 {
@@ -331,7 +355,7 @@ static void print_tab_op(void)
 	if (n <= 0) {
 		wprintln(E_INVAL_TAB, s_cur_line_num);
 		putc('(', stderr);
-		print_num(stderr, n);
+		print_num_trim(stderr, n);
 		putc(')', stderr);
 		enl();
 		n = 1;
@@ -339,8 +363,9 @@ static void print_tab_op(void)
 
 	/* Consider columns from 0. */
 	n--;
-	if (n >= PRINT_MARGIN)
+	if (n >= PRINT_MARGIN) {
 		n = n % PRINT_MARGIN;
+	}
 
 	if (s_print_column > n) {
 		putc('\n', stdout);
@@ -406,6 +431,9 @@ static void let_var_op(void)
 	int rampos;
 
 	rampos = code[s_pc++].id;
+	if (s_debug_mode) {
+		set_rampos_inited(rampos);
+	}
 	s_ram[rampos].d = s_stack[--s_sp].d;
 }
 
@@ -414,6 +442,9 @@ static void let_strvar_op(void)
 	int rampos, stri, oldi;
 
 	rampos = code[s_pc++].id;
+	if (s_debug_mode) {
+		set_rampos_inited(rampos);
+	}
 	stri = s_stack[--s_sp].i;
 	oldi = s_ram[rampos].i;
 	if (oldi != stri) {
@@ -424,12 +455,38 @@ static void let_strvar_op(void)
 }
 
 /* Returns 0 if the index is ok, else E_INDEX_RANGE. */
-static int check_index(double index, int dim)
+static int check_list_index(int vindex1, double index, int dim)
 {
 	if (index < 0 || index >= dim) {
 		eprintln(E_INDEX_RANGE, s_cur_line_num);
+		putc(vindex1 + 'A', stderr);
 		putc('(', stderr);
-		print_num(stderr, index + s_base_ix);
+		print_num_trim(stderr, index + s_base_ix);
+		putc(')', stderr);
+		enl();
+		s_fatal = 1;
+		return E_INDEX_RANGE;
+	}
+
+	return 0;
+}
+
+static int check_table_index(int vindex1, double index1, int dim1,
+                             double index2, int dim2)
+{
+	if (index1 < 0 || index1 >= dim1) {
+		eprintln(E_INDEX_RANGE, s_cur_line_num);
+		putc(vindex1 + 'A', stderr);
+		putc('(', stderr);
+		print_num_trim(stderr, index1 + s_base_ix);
+		fputs(",...)\n", stderr);
+		s_fatal = 1;
+		return E_INDEX_RANGE;
+	} else if (index2 < 0 || index2 >= dim2) {
+		eprintln(E_INDEX_RANGE, s_cur_line_num);
+		putc(vindex1 + 'A', stderr);
+		fputs("(...,", stderr);
+		print_num_trim(stderr, index2 + s_base_ix);
 		putc(')', stderr);
 		enl();
 		s_fatal = 1;
@@ -442,81 +499,95 @@ static int check_index(double index, int dim)
 static void let_list_op(void)
 {
 	double value, dindex;
-	int rampos, index, dim;
+	int vindex1, rampos, index, dim;
 
-	rampos = code[s_pc++].id;
-	dim = code[s_pc++].id;
+	vindex1 = code[s_pc++].id;
+	dim = s_array_descs[vindex1].dim1;
 	value = s_stack[--s_sp].d;
 	dindex = round(s_stack[--s_sp].d) - s_base_ix;
-	if (check_index(dindex, dim) != 0)
+	if (check_list_index(vindex1, dindex, dim) != 0) {
 		return;
+	}
 
 	index = (int) dindex;
-	s_ram[rampos + index].d = value;
+	rampos = s_array_descs[vindex1].rampos + index;
+	if (s_debug_mode) {
+		set_rampos_inited(rampos);
+	}
+	s_ram[rampos].d = value;
 }
 
 static void let_table_op(void)
 {
 	double value;
-	int rampos, index1, index2, dim1, dim2;
+	int vindex1, rampos, index1, index2, dim1, dim2;
 	double dindex1, dindex2;
 
-	rampos = code[s_pc++].id;
-	dim1 = code[s_pc++].id;
-	dim2 = code[s_pc++].id;
+	vindex1 = code[s_pc++].id;
+	dim1 = s_array_descs[vindex1].dim1;
+	dim2 = s_array_descs[vindex1].dim2;
 	value = s_stack[--s_sp].d;
 	dindex2 = round(s_stack[--s_sp].d) - s_base_ix;
 	dindex1 = round(s_stack[--s_sp].d) - s_base_ix;
 
-	if (check_index(dindex1, dim1) != 0)
+	if (check_table_index(vindex1, dindex1, dim1, dindex2, dim2) != 0) {
 		return;
-
-	if (check_index(dindex2, dim2) != 0)
-		return;
+	}
 
 	index1 = (int) dindex1;
 	index2 = (int) dindex2;
-	s_ram[rampos + index1 * dim2 + index2].d = value;
+	rampos = s_array_descs[vindex1].rampos + index1 * dim2 + index2;
+	if (s_debug_mode) {
+		set_rampos_inited(rampos);
+	}
+	s_ram[rampos].d = value;
 }
 
 static void input_list_op(void)
 {
 	double value, dindex;
-	int rampos, index, dim;
+	int vindex1, rampos, index, dim;
 
-	rampos = code[s_pc++].id;
-	dim = code[s_pc++].id;
+	vindex1 = code[s_pc++].id;
+	dim = s_array_descs[vindex1].dim1;
 	dindex = round(s_stack[--s_sp].d) - s_base_ix;
 	value = s_stack[--s_sp].d;
 
-	if (check_index(dindex, dim) != 0)
+	if (check_list_index(vindex1, dindex, dim) != 0) {
 		return;
+	}
 
 	index = (int) dindex;
-	s_ram[rampos + index].d = value;
+	rampos = s_array_descs[vindex1].rampos + index;
+	if (s_debug_mode) {
+		set_rampos_inited(rampos);
+	}
+	s_ram[rampos].d = value;
 }
 
 static void input_table_op(void)
 {
 	double value, dindex1, dindex2;
-	int rampos, index1, index2, dim1, dim2;
+	int vindex1, rampos, index1, index2, dim1, dim2;
 
-	rampos = code[s_pc++].id;
-	dim1 = code[s_pc++].id;
-	dim2 = code[s_pc++].id;
+	vindex1 = code[s_pc++].id;
+	dim1 = s_array_descs[vindex1].dim1;
+	dim2 = s_array_descs[vindex1].dim2;
 	dindex2 = round(s_stack[--s_sp].d) - s_base_ix;
 	dindex1 = round(s_stack[--s_sp].d) - s_base_ix;
 	value = s_stack[--s_sp].d;
 
-	if (check_index(dindex1, dim1) != 0)
+	if (check_table_index(vindex1, dindex1, dim1, dindex2, dim2) != 0) {
 		return;
-
-	if (check_index(dindex2, dim2) != 0)
-		return;
+	}
 
 	index1 = (int) dindex1;
 	index2 = (int) dindex2;
-	s_ram[rampos + index1 * dim2 + index2].d = value;
+	rampos = s_array_descs[vindex1].rampos + index1 * dim2 + index2;
+	if (s_debug_mode) {
+		set_rampos_inited(rampos);
+	}
+	s_ram[rampos].d = value;
 }
 
 static double read_double(void)
@@ -578,52 +649,66 @@ static void read_var_op(void)
 	int rampos;
 
 	rampos = code[s_pc++].id;
+	if (s_debug_mode) {
+		set_rampos_inited(rampos);
+	}
 	s_ram[rampos].d = read_double();
 }
 
 static void read_list_op(void)
 {
 	double dindex;
-	int rampos, index, dim;
+	int vindex1, rampos, index, dim;
 
-	rampos = code[s_pc++].id;
-	dim = code[s_pc++].id;	
+	vindex1 = code[s_pc++].id;
+	dim = s_array_descs[vindex1].dim1;	
 	dindex = round(s_stack[--s_sp].d) - s_base_ix;
-	if (check_index(dindex, dim) != 0)
+
+	if (check_list_index(vindex1, dindex, dim) != 0) {
 		return;
+	}
 
 	index = (int) dindex;
-	s_ram[rampos + index].d = read_double();
+	rampos = s_array_descs[vindex1].rampos + index;
+	if (s_debug_mode) {
+		set_rampos_inited(rampos);
+	}
+	s_ram[rampos].d = read_double();
 }
 
 static void read_table_op(void)
 {
 	double dindex1, dindex2;
-	int rampos, index1, index2, dim1, dim2;
+	int vindex1, rampos, index1, index2, dim1, dim2;
 
-	rampos = code[s_pc++].id;
-	dim1 = code[s_pc++].id;
-	dim2 = code[s_pc++].id;
+	vindex1 = code[s_pc++].id;
+	dim1 = s_array_descs[vindex1].dim1;
+	dim2 = s_array_descs[vindex1].dim2;
 	dindex2 = round(s_stack[--s_sp].d) - s_base_ix;
 	dindex1 = round(s_stack[--s_sp].d) - s_base_ix;
 
-	if (check_index(dindex1, dim1) != 0)
+	if (check_table_index(vindex1, dindex1, dim1, dindex2, dim2) != 0) {
 		return;
-
-	if (check_index(dindex2, dim2) != 0)
-		return;
+	}
 
 	index1 = (int) dindex1;
 	index2 = (int) dindex2;
-	s_ram[rampos + index1 * dim2 + index2].d = read_double();
+	rampos = s_array_descs[vindex1].rampos + index1 * dim2 + index2;
+	if (s_debug_mode) {
+		set_rampos_inited(rampos);
+	}
+	s_ram[rampos].d = read_double();
 }
 
 static void read_strvar_op(void)
 {
-	int dst, stri, oldi;
+	int rampos, stri, oldi;
 	enum error_code ecode;
 
-	dst = code[s_pc++].id;
+	rampos = code[s_pc++].id;
+	if (s_debug_mode) {
+		set_rampos_inited(rampos);
+	}
 	if ((ecode = read_data_str(&stri, NULL)) != 0) {
 		eprintln(ecode, s_cur_line_num);
 		enl();
@@ -631,40 +716,26 @@ static void read_strvar_op(void)
 		return;
 	}
 
-	oldi = s_ram[dst].i;
+	oldi = s_ram[rampos].i;
 	if (stri != oldi) {
 		dec_string_refcount(oldi);
-		s_ram[dst].i = stri;
+		s_ram[rampos].i = stri;
 		inc_string_refcount(stri);
 	}
 }
 
-static void check_init_var_op(void)
-{
-	int coded_var;
-
-	coded_var = code[s_pc++].id;
-	if (!is_var_initialized(coded_var)) {
-		/* Do not issue the warning again. */
-		set_var_initialized(coded_var);
-
-		wprintln(E_INIT_VAR, s_cur_line_num);
-		putc('(', stderr);
-		print_var(stderr, coded_var);
-		putc(')', stderr);
-		enl();
-	}
-}
-
-static void set_init_var_op(void)
-{
-	int coded_var;
-
-	coded_var = code[s_pc++].id;
-	set_var_initialized(coded_var);
-}
-
 static void get_var_op(void)
+{
+	int rampos;
+
+	rampos = code[s_pc++].id;
+	if (s_debug_mode) {
+		check_rampos_inited(rampos);
+	}
+	s_stack[s_sp++].d = s_ram[rampos].d;
+}
+
+static void get_fn_var_op(void)
 {
 	int rampos;
 
@@ -677,45 +748,55 @@ static void get_strvar_op(void)
 	int rampos;
 
 	rampos = code[s_pc++].id;
+	if (s_debug_mode) {
+		check_rampos_inited(rampos);
+	}	
 	s_stack[s_sp++].i = s_ram[rampos].i;
 }
 
 static void get_list_op(void)
 {
-	int rampos, index, dim;
+	int vindex1, rampos, index, dim;
 	double dindex;
 
-	rampos = code[s_pc++].id;
-	dim = code[s_pc++].id;
+	vindex1 = code[s_pc++].id;
+	dim = s_array_descs[vindex1].dim1;
 	dindex = round(s_stack[--s_sp].d) - s_base_ix;
 
-	if (check_index(dindex, dim) != 0)
+	if (check_list_index(vindex1, dindex, dim) != 0) {
 		return;
+	}
 
 	index = (int) dindex;
-	s_stack[s_sp++].d = s_ram[rampos + index].d;
+	rampos = s_array_descs[vindex1].rampos + index;
+	if (s_debug_mode) {
+		check_list_rampos_inited(rampos, index);
+	}
+	s_stack[s_sp++].d = s_ram[rampos].d;
 }
 
 static void get_table_op(void)
 {
 	double dindex1, dindex2;
-	int rampos, index1, index2, dim1, dim2;
+	int vindex1, rampos, index1, index2, dim1, dim2;
 
-	rampos = code[s_pc++].id;
-	dim1 = code[s_pc++].id;
-	dim2 = code[s_pc++].id;
+	vindex1 = code[s_pc++].id;
+	dim1 = s_array_descs[vindex1].dim1;
+	dim2 = s_array_descs[vindex1].dim2;
 	dindex2 = round(s_stack[--s_sp].d) - s_base_ix;
 	dindex1 = round(s_stack[--s_sp].d) - s_base_ix;
 
-	if (check_index(dindex1, dim1) != 0)
+	if (check_table_index(vindex1, dindex1, dim1, dindex2, dim2) != 0) {
 		return;
-
-	if (check_index(dindex2, dim2) != 0)
-		return;
+	}
 
 	index1 = (int) dindex1;
 	index2 = (int) dindex2;
-	s_stack[s_sp++].d = s_ram[rampos + index1 * dim2 + index2].d;
+	rampos = s_array_descs[vindex1].rampos + index1 * dim2 + index2;
+	if (s_debug_mode) {
+		check_table_rampos_inited(rampos, index1, index2);
+	}
+	s_stack[s_sp++].d = s_ram[rampos].d;
 }
 
 static void add_op(void)
@@ -747,7 +828,7 @@ static void mul_op(void)
 		(infinite_sign(d1) == 0 || infinite_sign(d2) == 0))
 	{
 		wprintln(E_OP_OVERFLOW, s_cur_line_num);
-		enl();
+		fputs("(*)\n", stderr);
 	}
 	s_stack[s_sp++].d = d;
 }
@@ -776,8 +857,8 @@ static void pow_op(void)
 	if (d1 == 0.0 && d2 < 0.0) {
 		err = 1;
 		wprintln(E_ZERO_POW_NEG, s_cur_line_num);
-		fprintf(stderr, "(0 ^");
-		print_num(stderr, d2);
+		fputs("(0 ^ ", stderr);
+		print_num_trim(stderr, d2);
 		putc(')', stderr);
 		enl();
 	}
@@ -785,9 +866,9 @@ static void pow_op(void)
 		err = 1;
 		eprintln(E_NEG_POW_REAL, s_cur_line_num);
 		putc('(', stderr);
-		print_num(stderr, d1);
-		putc('^', stderr);
-		print_num(stderr, d2);
+		print_num_trim(stderr, d1);
+		fputs(" ^ ", stderr);
+		print_num_trim(stderr, d2);
 		putc(')', stderr);
 		enl();
 		s_fatal = 1;
@@ -802,7 +883,7 @@ static void pow_op(void)
 
 static void neg_op(void)
 {
-	s_stack[s_sp-1].d = -s_stack[s_sp-1].d;
+	s_stack[s_sp - 1].d = -s_stack[s_sp - 1].d;
 }
 
 static void gosub_op(void)
@@ -991,13 +1072,15 @@ static void ifun1_op(void)
 	s_stack[s_sp - 1].d = call_ifun1(ifun, d);
 	if (errno == EDOM) {
 		eprintln(E_DOM, s_cur_line_num);
-		fprintf(stderr, "( %s(", get_ifun_name(ifun));
-		print_num(stderr, d);
-		fprintf(stderr, ") )\n");
+		fprintf(stderr, "%s(", get_ifun_name(ifun));
+		print_num_trim(stderr, d);
+		fprintf(stderr, ")\n");
 		s_fatal = 1;
 	} else if (errno == ERANGE) {
 		wprintln(E_OP_OVERFLOW, s_cur_line_num);
-		fprintf(stderr, "(%s)\n", get_ifun_name(ifun));
+		fprintf(stderr, "%s(", get_ifun_name(ifun));
+		print_num_trim(stderr, d);
+		fprintf(stderr, ")\n");
 	}
 }
 
@@ -1011,6 +1094,11 @@ static void for_op(void)
 		rampos = code[s_pc++].id;
 		val = s_stack[--s_sp].d;
 		s_ram[rampos].d = val;
+	}
+
+	/* rampos is the ram position of the FOR variable */
+	if (s_debug_mode) {
+		set_rampos_inited(rampos);
 	}
 }
 
@@ -1036,8 +1124,9 @@ static void for_cmp_op(void)
 
 	step = s_ram[step_pos].d;
 	limit = s_ram[limit_pos].d;
-	if ((s_ram[var_pos].d - limit) * sign(step) > 0.0)
+	if ((s_ram[var_pos].d - limit) * sign(step) > 0.0) {
 		s_pc = endpc;
+	}
 }
 
 static void next_op(void)
@@ -1285,6 +1374,7 @@ static struct vm_op vm_ops[] = {
 	{ let_table_op, 0, -3 },
 	{ let_strvar_op, 0, -1 },
 	{ get_var_op, 1, 0 },
+	{ get_fn_var_op, 1, 0 },
 	{ get_strvar_op, 1, 0 },
 	{ get_list_op, 0, 0 },
 	{ get_table_op, 0, -1 },
@@ -1325,8 +1415,6 @@ static struct vm_op vm_ops[] = {
 	{ input_end_op, 0, 0 },
 	{ input_list_op, 0, -2 },
 	{ input_table_op, 0, -3 },
-	{ check_init_var_op, 0, 0 },
-	{ set_init_var_op, 0, 0 },
 	{ end_op, 0, 0 },
 };
 
@@ -1368,7 +1456,6 @@ void run(int ramsize, int array_base_index, int stack_size)
 	assert(stack_size >= 0);
 
 	reset_strings();
-	reset_inited_vars();
 	restore_data();
 
 #if 0
@@ -1401,6 +1488,14 @@ void run(int ramsize, int array_base_index, int stack_size)
 		}
 	}
 
+	if (s_debug_mode) {
+		if (alloc_inited_ram(ramsize) != 0) {
+			eprint(E_NO_MEM);
+			enl();
+			goto inited_ram_fail;
+		}
+	}
+
 #if 0
 	fprintf(stderr, "Running program.\n");
 #endif
@@ -1428,6 +1523,8 @@ void run(int ramsize, int array_base_index, int stack_size)
 	if (s_break)
 		printf("* break at %d *\n", s_cur_line_num);
 
+	free_inited_ram();
+inited_ram_fail:
 	free_ram();
 ram_fail:
 	free_stack();

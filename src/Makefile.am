@@ -14,4 +14,6 @@ bas55_SOURCES =	ecma55.c ecma55.h \
 		datalex.c edit.c err.c \
 		grammar.y ifun.c lex.c line.c list.h \
 		ngetopt.c ngetopt.h \
-		get_line.c parse.c str.c util.c vm.c 
+		arraydsc.c arraydsc.h \
+		dbg.c dbg.h \
+		getlin.c parse.c str.c util.c vm.c 

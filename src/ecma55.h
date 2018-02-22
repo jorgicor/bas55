@@ -25,6 +25,9 @@
 /* Different variable names */
 enum { N_VARNAMES = 'Z' - 'A' + 1 };
 
+/* Vars 0-9 + without digit + strvar */
+enum { N_SUBVARS = 12 };
+
 /* Number of elements in an array. */
 #define NELEMS(v)			(sizeof(v) / sizeof(v[0]))
 
@@ -62,7 +65,7 @@ double round(double d);
 int round_to_int(double d);
 void print_chars(FILE *f, const char *s, size_t len);
 
-/* get_line.c */
+/* getlin.c */
 
 void get_line_init(void);
 void get_line_set_question_mode(int set);
@@ -154,6 +157,7 @@ enum error_code {
 	E_INVAL_LINE_ORDER,
 	E_BIGNUM,
 	E_INIT_VAR,
+	E_INIT_ARRAY,
 	E_READ_OFLOW,
 	E_READ_STR,
 	E_KEYW_SPC
@@ -172,6 +176,8 @@ struct cmd_arg {
 	const char *str;
 	size_t len;
 };
+
+extern int s_debug_mode;
 
 void parse_n_run_cmd(const char *str);
 int load(const char *fname, int max_errors, int batch_mode);
@@ -242,6 +248,7 @@ enum vm_opcode {
 	LET_TABLE_OP,
 	LET_STRVAR_OP,
 	GET_VAR_OP,
+	GET_FN_VAR_OP,
 	GET_STRVAR_OP,
 	GET_LIST_OP,
 	GET_TABLE_OP,
@@ -282,12 +289,14 @@ enum vm_opcode {
 	INPUT_END_OP,
 	INPUT_LIST_OP,
 	INPUT_TABLE_OP,
-	CHECK_INIT_VAR_OP,
-	SET_INIT_VAR_OP,
 	END_OP,
 	VM_NOPS
 };
 
+void reset_ram_var_map(void);
+void set_ram_var_pos(int rampos, int coded_var);
+void reset_array_descriptors(void);
+void set_array_descriptor(int vindex, int rampos, int dim1, int dim2);
 int is_ram_too_big(int ramsize);
 void set_gosub_stack_capacity(int capacity);
 int get_opcode_stack_inc(int opcode);
@@ -331,8 +340,6 @@ enum var_type {
 	VARTYPE_STR
 };
 
-extern int s_debug_mode;
-
 int init_parser(void);
 void compile_line(int num, const char *str);
 void end_parsing(void);
@@ -353,9 +360,6 @@ void add_num_instr(double num);
 
 int get_rampos(int coded_var);
 int get_dim(int coded_var, int ndim);
-
-void add_check_init_var_code(int coded_var);
-void add_set_init_var_code(int coded_var);
 
 void data_num_decl(double d);
 void data_str_decl(int i, enum data_datum_type type);

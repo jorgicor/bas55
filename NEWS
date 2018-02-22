@@ -1,3 +1,12 @@
+1.14	2018-02-22
+
+	* Checking for uninitialized array elements now is possible in debug
+	  mode.
+
+	* More helpful error diagnostics: now we can show the name of the
+	  variable involving an error (if any), as well as the array indexes
+	  if for example we get an out of range error.
+
 1.13	2018-02-14
 
 	* Added support for the NetBSD libedit library to add enhanced editing

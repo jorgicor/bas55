@@ -551,6 +551,7 @@ will print:
  0
 @end example
 
+Note that this behavior ir not required by the standard, and other implementations may not initialize all variables to zero.
 You can enable the debug mode if you want the interpreter to warn you about variables that are used before any value has been assigned to them.
 
 Arrays always have a size of 11 elements by default, from 0 to 10.
@@ -1331,7 +1332,7 @@ Contrary to the standard, in @command{bas55} zero divided by zero gives an undef
 @item Layer 0: Base modules
 @itemize @minus
 @item
-@file{get_line.c}: get a line from a file or console. Line editing support.
+@file{getlin.c}: get a line from a file or console. Line editing support.
 @item
 @file{list.h}: single linked list macros.
 @item
@@ -1357,13 +1358,17 @@ Contrary to the standard, in @command{bas55} zero divided by zero gives an undef
 @item
 @file{code.c}: compiled bytecode representing the BASIC program.
 @item
+@file{araydsc.c}: stores for each array its dimensions and position in the virtual machine's RAM.
+@item
+@file{dbg.c}: debug support for testing variables not initialized when running the BASIC program.
+@item
 @file{line.c}: BASIC source stored as lines.
 @end itemize
 
 @item Layer 2: The virtual machine
 @itemize @minus
 @item
-@file{vm.c}: virtual machine that can execute the byte compiled BASIC program stored in modules @file{code.c}, @file{str.c} and @file{data.c}.
+@file{vm.c}: virtual machine that can execute the byte compiled BASIC program stored in modules @file{code.c}, @file{str.c}, @file{data.c} and @file{arraydsc.c}.
 @end itemize
 
 @item Layer 3: Compiler
@@ -1392,13 +1397,17 @@ Contrary to the standard, in @command{bas55} zero divided by zero gives an undef
 @section Operation
 
 A BASIC source code is stored as separated lines in @file{line.c}.
-The compiler translates those lines into opcodes (in @file{code.c}), string constants as they appear in the code (in @file{str.c}) and DATA statements (in @file{data.c}).
+The compiler translates those lines into opcodes (in @file{code.c}), string constants as they appear in the code (in @file{str.c}), DATA statements (in @file{data.c}), array descriptors (with info about arrays like their dimensions, in @file{arraydsc.c}) and some debug info (in @file{dbg.c}).
 If there are not compilation errors, then the program can be run by @file{vm.c}, which takes the generated program and starts interpreting the opcodes.
 During the program execution, probably new strings will be generated in @file{str.c} and others will be discarded (but not the ones defined in the program).
 
 In both compilation and execution phases, memory is allocated at start and deallocated when the operation ends.
 
-The compiler can calculate the amount of stack required by all the program, as we can know the stack needed by each statement, and BASIC does not allow a user defined function to call itself or call another function defined after it.
+After compiling without errors, we know the amount of RAM for the virtual machine that the BASIC program will need for executing.
+This RAM is an an array of numbers, or indexes that point to strings in @file{str.c}.
+Every variable and array declared in the program will have one or more positions used in this array.
+
+Moreover, the compiler can calculate the amount of stack required by all the program, as we can know the stack needed by each statement, and BASIC does not allow a user defined function to call itself or call another function defined after it.
 But it can't calculate the amount of stack needed for GOSUB calls.
 If your program does more than 256 consecutive GOSUB calls without using any RETURN statement, you will need to raise the number of allowed calls by a command line option or by using @command{SETGOSUB} in editor mode.
 
@@ -1470,19 +1479,22 @@ is translated to:
 	0:  PUSH_NUM_OP
 	1:  1.0
 	2:  GET_LIST_OP
-	3:  address of B
-	4:  dimension of B
-	5:  PUSH_NUM_OP
-	6:  2.0
-	7:  PUSH_NUM_OP
-	8:  3.0
-	9:  GET_TABLE_OP
-	10: address of C
-	11: dimension 1 of C
-	12: dimension 2 of C
-	13: LET_VAR_OP
-	14: address of A  
+	3:  B
+	4:  PUSH_NUM_OP
+	5:  2.0
+	6:  PUSH_NUM_OP
+	7:  3.0
+	8:  GET_TABLE_OP
+	10: C
+	11: LET_VAR_OP
+	12: address of A in RAM 
 @end example
+
+For each variable A to Z that is an array, we maintain a descriptor that knows the position of the first element of the array in the virtual machine's RAM.
+The descriptor also stores the dimensions of the array, so we can check for out of range accesses.
+When we find a @code{GET_LIST_OP B} we go to the descriptor of B to get this information.
+
+On the other hand, code like @code{LET_VAR_OP} expects only the raw position in vm's RAM that was allocated for the variable.
 
 And
 
@@ -1500,10 +1512,9 @@ is translated to:
 	4:  PUSH_NUM_OP
 	5:  3.0
 	6:  LET_TABLE_OP
-	7:  address of A
-	8:  dimension 1 of A
-	9:  dimension 2 of A
+	7:  A
 @end example
+
 
 @node ON GOTO
 @subsection ON GOTO
@@ -1629,17 +1640,16 @@ is translated to:
 	3:  LET_VAR_OP
 	4:  address of A
 	5:  INPUT_NUM_OP
-	6:  12 (index to the end of INPUT B(1))
+	6:  11 (index to the end of INPUT B(1))
 	7:  PUSH_NUM_OP
 	8:  1.0
 	9:  INPUT_LIST_OP
-	10: address of B
-	11: dimension of B
-	12: INPUT_STR_OP
-	13: 16 (index to the end of INPUT S$)
-	14: LET_STRVAR_OP
-	15: address of S$
-	16: INPUT_END_OP
+	10: B
+	11: INPUT_STR_OP
+	12: 15 (index to the end of INPUT S$)
+	13: LET_STRVAR_OP
+	14: address of S$
+	15: INPUT_END_OP
 @end example
 
 @node PRINT
@@ -1666,25 +1676,15 @@ is translated to:
 @node DEBUG
 @subsection DEBUG
 
-When in debug mode, we add some instructions to the code so we can print
-more information to the user.
+@command{bas55} always guarantees that every variable and every array is filled with zeroes when the BASIC program is run, but this is not required by the standard.
+If you want to make your program fully portable you have to assume that possibly variables are not initialized to zero in other implementations.
 
-Right now, in debug mode we check if a variable has been assigned a value before it is used.
-If a variable is used before a value has been assigned to it, we issue a warning.
-To allow this, we have two opcodes: @code{CHECK_INIT_VAR_OP} and @code{SET_INIT_VAR_OP}.
+To assist you, when in debug mode, @command{bas55} checks if any variable or array element has been assigned a value before being involved in any expression.
+We issue a warning if the test fails.
 
-Before we assign a value to a variable (with @code{LET_VAR_OP}, for instance) we issue a @code{SET_INIT_VAR_OP} opcode followed by the encoded variable name.
-It will mark that we have assigned a value to the variable.
-
-@code{CHECK_INIT_VAR_OP} is inserted before we get the value of a variable with @code{GET_VAR_OP}, @code{GET_LIST_OP}, etc.
-The opcode is followed by the encoded variable name.
-The operation will check if we have assigned a value to the variable before
-or not.
-
-The variable name is encoded as an integer.
-The least significant byte is the ASCII code for the suffix: @samp{0} to @samp{9} for a variable with a digit suffix, @samp{$} for a string variable or the character code 0 for a variable without suffix.
-Then next byte contains the character code of the variable name: @samp{A},
-@samp{B}, etc.
+Of course, this slows down the execution of the BASIC program.
+By default, @command{bas55} runs in debug mode only when started in editor mode.
+You can set the debug mode on or off in the editor with the command @command{DEBUG ON} or @command{DEBUG OFF}, or you can start @command{bas55} with the option @option{-d} (or @option{--debug}).
 
 @node Copyright
 @chapter Copyright

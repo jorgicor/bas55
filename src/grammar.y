@@ -190,7 +190,6 @@ str_expr:
 	| STRVAR
 		{
 			strvar_decl($1);
-			add_check_init_var_code($1);
 			add_op_instr(GET_STRVAR_OP);
 			add_id_instr(get_rampos($1));
 		}
@@ -272,22 +271,16 @@ var_loc:
 		{
 			if ($3 == VARTYPE_NUM) {
 				numvar_declared($1, VARTYPE_NUM);
-				add_set_init_var_code($1);
 				add_op_instr(LET_VAR_OP);
 				add_id_instr(get_rampos($1));
 			} else if ($3 == VARTYPE_LIST) {
 				numvar_declared($1, VARTYPE_LIST);
-				add_set_init_var_code($1);
 				add_op_instr(INPUT_LIST_OP);
-				add_id_instr(get_rampos($1));
-				add_id_instr(get_dim($1, 0));
+				add_id_instr(var_index1($1));
 			} else {
 				numvar_declared($1, VARTYPE_TABLE);
-				add_set_init_var_code($1);
 				add_op_instr(INPUT_TABLE_OP);
-				add_id_instr(get_rampos($1));
-				add_id_instr(get_dim($1, 0));
-				add_id_instr(get_dim($1, 1));
+				add_id_instr(var_index1($1));
 			}
 			set_id_instr(s_save_pc, get_code_size());
 		}
@@ -297,7 +290,6 @@ var_loc:
 			s_save_pc = get_code_size();
 			add_id_instr(0);
 			strvar_decl($1);
-			add_set_init_var_code($1);
 			add_op_instr(LET_STRVAR_OP);
 			add_id_instr(get_rampos($1));
 			set_id_instr(s_save_pc, get_code_size());
@@ -323,33 +315,26 @@ read_var_loc:
 	STRVAR
 		{
 			strvar_decl($1);
-			add_set_init_var_code($1);
 			add_op_instr(READ_STRVAR_OP);
 			add_id_instr(get_rampos($1));
 		}
 	| NUMVAR
 		{
 			numvar_declared($1, VARTYPE_NUM);
-			add_set_init_var_code($1);
 			add_op_instr(READ_VAR_OP);
 			add_id_instr(get_rampos($1));
 		}
 	| NUMVAR '(' expr ')'
 		{
 			numvar_declared($1, VARTYPE_LIST);
-			add_set_init_var_code($1);
 			add_op_instr(READ_LIST_OP);
-			add_id_instr(get_rampos($1));
-			add_id_instr(get_dim($1, 0));
+			add_id_instr(var_index1($1));
 		}
 	| NUMVAR '(' expr ',' expr ')'
 		{
 			numvar_declared($1, VARTYPE_TABLE);
-			add_set_init_var_code($1);
 			add_op_instr(READ_TABLE_OP);
-			add_id_instr(get_rampos($1));
-			add_id_instr(get_dim($1, 0));
-			add_id_instr(get_dim($1, 1));
+			add_id_instr(var_index1($1));
 		}
 	;
 	
@@ -392,12 +377,10 @@ dim_decl:
 	NUMVAR '(' INT ')'		
 		{
 			numvar_dimensioned($1, VARTYPE_LIST, $3.i, 0);
-			add_set_init_var_code($1);
 		}
 	| NUMVAR '(' INT ',' INT ')'
 		{
 			numvar_dimensioned($1, VARTYPE_TABLE, $3.i, $5.i);
-			add_set_init_var_code($1);
 		}
 	;
 	
@@ -454,33 +437,26 @@ let_stmnt:
 	LET STRVAR '=' str_expr
 		{
 			strvar_decl($2);
-			add_set_init_var_code($2);
 			add_op_instr(LET_STRVAR_OP);
 			add_id_instr(get_rampos($2));
 		}
 	| LET NUMVAR '=' expr
 		{
 			numvar_declared($2, VARTYPE_NUM);
-			add_set_init_var_code($2);
 			add_op_instr(LET_VAR_OP);
 			add_id_instr(get_rampos($2));
 		}
 	| LET NUMVAR '(' expr ')' '=' expr
 		{
 			numvar_declared($2, VARTYPE_LIST);
-			add_set_init_var_code($2);
 			add_op_instr(LET_LIST_OP);
-			add_id_instr(get_rampos($2));
-			add_id_instr(get_dim($2, 0));
+			add_id_instr(var_index1($2));
 		}
 	| LET NUMVAR '(' expr ',' expr ')' '=' expr
 		{
 			numvar_declared($2, VARTYPE_TABLE);
-			add_set_init_var_code($2);
 			add_op_instr(LET_TABLE_OP);
-			add_id_instr(get_rampos($2));
-			add_id_instr(get_dim($2, 0));
-			add_id_instr(get_dim($2, 1));
+			add_id_instr(var_index1($2));
 		}
 	;
 	

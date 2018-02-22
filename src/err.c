@@ -62,6 +62,7 @@ static const char *s_errors[] = {
 	"invalid line order",
 	"number too big",
 	"variable used before value assigned",
+	"array position read before value assigned",
 	"insufficient data for READ",
 	"reading string into numeric variable",
 	"no space after keyword"
