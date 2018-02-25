@@ -482,10 +482,10 @@ expr:
 		{
 			table_expr($1.column, $1.u.i);
 		}
-	| USRFN			{ usrfun_call($1.u.i, 0); }
-	| USRFN '(' expr ')'	{ usrfun_call($1.u.i, 1); }
-	| IFUN			{ ifun_call($1.u.i, 0); }
-	| IFUN '(' expr ')'	{ ifun_call($1.u.i, 1); }
+	| USRFN			{ usrfun_call($1.column, $1.u.i, 0); }
+	| USRFN '(' expr ')'	{ usrfun_call($1.column, $1.u.i, 1); }
+	| IFUN			{ ifun_call($1.column, $1.u.i, 0); }
+	| IFUN '(' expr ')'	{ ifun_call($1.column, $1.u.i, 1); }
 	| expr '+' expr		{ add_op_instr(ADD_OP);	}
 	| expr '-' expr		{ add_op_instr(SUB_OP);	}
 	| expr '*' expr		{ add_op_instr(MUL_OP);	}

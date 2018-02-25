@@ -1,1 +1,3 @@
-290: error: undefined function (FND)
+290: error: undefined function FND
+ LET A=FND(5)
+       ^

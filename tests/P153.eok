@@ -1,1 +1,3 @@
-250: error: wrong number of parameters (FNP)
+250: error: invalid number of arguments for function FNP
+ LET A=FNP(0)
+       ^

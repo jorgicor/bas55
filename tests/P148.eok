@@ -1,1 +1,3 @@
-250: error: wrong number of parameters (TAN)
+250: error: invalid number of arguments for function TAN
+ LET A=TAN
+       ^

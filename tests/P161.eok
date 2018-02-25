@@ -1,1 +1,3 @@
-250: error: undefined function (FNA)
+250: error: undefined function FNA
+ DEF FNA(X)=X/FNA(X-1)
+              ^

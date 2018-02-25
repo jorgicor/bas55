@@ -408,8 +408,8 @@ void fun_decl(int column, int name, int nparams, int param, int pc);
 void numvar_expr(int column, int coded_var);
 void list_expr(int column, int coded_var);
 void table_expr(int column, int coded_var);
-void usrfun_call(int name, int nparams);
-void ifun_call(int ifun, int nparams);
+void usrfun_call(int column, int name, int nparams);
+void ifun_call(int column, int ifun, int nparams);
 void end_decl(void);
 
 /* datalex.c */

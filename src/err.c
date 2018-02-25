@@ -35,7 +35,7 @@ static const char *s_errors[] = {
 	"function redeclared",
 	"function argument as array",
 	"undefined function",
-	"wrong number of parameters",
+	"invalid number of arguments for function",
 	"insuficient input data",
 	"too much input data",
 	"error on input stream",

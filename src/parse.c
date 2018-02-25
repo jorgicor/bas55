@@ -696,6 +696,7 @@ void list_expr(int column, int coded_var)
 		coded_var == s_cur_fun->param)
 	{
 		cerror(E_FUNARG_AS_ARRAY, 1);
+		print_lex_context(column);
 	} else {
 		numvar_declared(column, coded_var, VARTYPE_LIST);
 		add_op_instr(GET_LIST_OP);
@@ -709,6 +710,7 @@ void table_expr(int column, int coded_var)
 		coded_var == s_cur_fun->param)
 	{
 		cerror(E_FUNARG_AS_ARRAY, 1);
+		print_lex_context(column);
 	} else {
 		numvar_declared(column, coded_var, VARTYPE_TABLE);
 		add_op_instr(GET_TABLE_OP);
@@ -716,22 +718,22 @@ void table_expr(int column, int coded_var)
 	}
 }
 
-void usrfun_call(int name, int nparams)
+void usrfun_call(int column, int name, int nparams)
 {
 	struct usrfun *p;
 
 	p = find_usrfun(name);
 	if (p == NULL || p == s_cur_fun) {
 		cerror(E_UNDEF_FUN, 0);
-		fprintf(stderr, "(FN%c)", (char) name);
-		enl();
+		fprintf(stderr, "FN%c\n", (char) name);
+		print_lex_context(column);
 		return;
 	}
 
 	if (p->nparams != nparams) {
 		cerror(E_BAD_NPARAMS, 0);
-		fprintf(stderr, "(FN%c)", (char) name);
-		enl();
+		fprintf(stderr, "FN%c\n", (char) name);
+		print_lex_context(column);
 		return;
 	}
 
@@ -747,19 +749,20 @@ void usrfun_call(int name, int nparams)
 	add_to_stack_size(p->stack_dec);
 }
 
-void ifun_call(int ifun, int nparams)
+void ifun_call(int column, int ifun, int nparams)
 {
 	if (get_ifun_nparams(ifun) != nparams) {
 		cerror(E_BAD_NPARAMS, 0);
-		fprintf(stderr, "(%s)", get_ifun_name(ifun));
-		enl();
+		fprintf(stderr, "%s\n", get_ifun_name(ifun));
+		print_lex_context(column);
 		return;
 	}
 
-	if (nparams == 0)
+	if (nparams == 0) {
 		add_op_instr(IFUN0_OP);
-	else
+	} else {
 		add_op_instr(IFUN1_OP);
+	}
 
 	add_id_instr(ifun);
 }
