@@ -1,1 +1,3 @@
 280: error: invalid DIM subscript 
+ DIM A(0)
+       ^

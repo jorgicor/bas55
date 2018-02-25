@@ -369,12 +369,13 @@ dim_list:
 dim_decl:
 	NUMVAR '(' INT ')'		
 		{
-			numvar_dimensioned($1.u.i, VARTYPE_LIST,
-					   $3.u.num.i, 0);
+			numvar_dimensioned($1.column, $3.column, 0, $1.u.i,
+					   VARTYPE_LIST, $3.u.num.i, 0);
 		}
 	| NUMVAR '(' INT ',' INT ')'
 		{
-			numvar_dimensioned($1.u.i, VARTYPE_TABLE, $3.u.num.i,
+			numvar_dimensioned($1.column, $3.column, $5.column,
+					   $1.u.i, VARTYPE_TABLE, $3.u.num.i,
 					   $5.u.num.i);
 		}
 	;

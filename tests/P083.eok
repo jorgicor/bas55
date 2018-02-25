@@ -1,1 +1,3 @@
-490: error: redimensioned variable 
+490: error: redimensioned variable A
+ DIM A(5)
+     ^

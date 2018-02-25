@@ -358,6 +358,39 @@ static void print_var_type(int var_type)
 	}
 }
 
+static void type_mismatch(int column, int coded_var, int old_type, int now_type)
+{
+	cerror(E_TYPE_MISMATCH, 0);
+	print_var(stderr, coded_var);
+	enl();
+	fputs(" info: it was previously used ", stderr);
+	switch (old_type) {
+	case VARTYPE_LIST: 
+		fputs("or DIM as ", stderr);
+		print_var_type(VARTYPE_LIST);
+		enl();
+		break;
+	case VARTYPE_TABLE: 
+		fputs("or DIM as ", stderr);
+		print_var_type(VARTYPE_TABLE);
+		enl();
+		break;
+	case VARTYPE_NUM: 
+		fputs("as ", stderr);
+		print_var_type(VARTYPE_NUM);
+		enl();
+		break;
+	default: 
+		assert(0);
+	}
+	/*
+	fputs(" info: here it is used as ", stderr);
+	print_var_type(var_type);
+	enl();
+	*/
+	print_lex_context(column);
+}
+
 void numvar_declared(int column, int coded_var, int var_type)
 {
 	int vindex1, vindex2;
@@ -397,54 +430,37 @@ void numvar_declared(int column, int coded_var, int var_type)
 	}
 
 	if (s_vartype[vindex1][vindex2] != var_type) {
-		cerror(E_TYPE_MISMATCH, 0);
-		print_var(stderr, coded_var);
-		enl();
-		fputs(" info: it was previously used ", stderr);
-		switch (s_vartype[vindex1][vindex2]) {
-		case VARTYPE_LIST: 
-			fputs("or DIM as ", stderr);
-			print_var_type(VARTYPE_LIST);
-			enl();
-			break;
-		case VARTYPE_TABLE: 
-			fputs("or DIM as ", stderr);
-			print_var_type(VARTYPE_TABLE);
-			enl();
-			break;
-		case VARTYPE_NUM: 
-			fputs("as ", stderr);
-			print_var_type(VARTYPE_NUM);
-			enl();
-			break;
-		default: 
-			assert(0);
-		}
-		/*
-		fputs(" info: here it is used as ", stderr);
-		print_var_type(var_type);
-		enl();
-		*/
-		print_lex_context(column);
+		type_mismatch(column, coded_var, s_vartype[vindex1][vindex2],
+			      var_type);
 	}
 }
 
 /* Returns 0 if something failed. */
-void numvar_dimensioned(int coded_var, int var_type, int max_idx1,
+void numvar_dimensioned(int column, int idx1_col, int idx2_col,
+		        int coded_var, int var_type, int max_idx1,
 			int max_idx2)
 {
 	int vindex1, vindex2, rampos;
 	
 	rampos = s_ramsize;
 	if (is_numvar_wdigit(coded_var) && var_type != VARTYPE_NUM) {
-		cerror(E_NUMVAR_ARRAY, 1);
+		cerror(E_NUMVAR_ARRAY, 0);
+		print_var(stderr, coded_var);
+		enl();
+		print_lex_context(column);
 		return;
 	}
 
-	if (max_idx1 < s_base_index ||
-	    (var_type == VARTYPE_TABLE && max_idx2 < s_base_index)) {
+	if (max_idx1 < s_base_index) {
 		cerror(E_INVAL_DIM, 1);
-		max_idx1 = max_idx2 = s_base_index;
+		print_lex_context(idx1_col);
+		max_idx1 = s_base_index;
+	}
+
+	if (var_type == VARTYPE_TABLE && max_idx2 < s_base_index) {
+		cerror(E_INVAL_DIM, 1);
+		print_lex_context(idx2_col);
+		max_idx2 = s_base_index;
 	}
 
 	vindex1 = var_index1(coded_var);
@@ -472,12 +488,16 @@ void numvar_dimensioned(int coded_var, int var_type, int max_idx1,
 	}
 
 	if (s_vartype[vindex1][vindex2] != var_type) {
-		cerror(E_TYPE_MISMATCH, 1);
+		type_mismatch(column, coded_var, s_vartype[vindex1][vindex2],
+			      var_type);
 		return;
 	}
 
 	if (s_dimensioned[vindex1]) {
-		cerror(E_DUP_DIM, 1);
+		cerror(E_DUP_DIM, 0);
+		print_var(stderr, coded_var);
+		enl();
+		print_lex_context(column);
 	}
 }
 
