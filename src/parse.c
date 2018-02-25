@@ -198,8 +198,9 @@ void yyerror(char const *s)
 
 static void add_instr(union instruction instr)
 {
-	if (add_code_instr(instr) != 0)
+	if (add_code_instr(instr) != 0) {
 		cerrorln(E_NO_MEM, -1, 1);
+	}
 }
 
 static void add_to_stack_size(int delta)
@@ -302,8 +303,9 @@ static int adjust_dimension(int max_idx)
 		goto error;
 	}
 	size = max_idx - s_base_index + 1;
-	if (is_ram_too_big(size))
+	if (is_ram_too_big(size)) {
 		goto error;
+	}
 	return size;
 
 error:	cerror(E_BIG_ARRAY, 1);
@@ -501,24 +503,29 @@ void numvar_dimensioned(int column, int idx1_col, int idx2_col,
 	}
 }
 
-void option_decl(int n)
+void option_decl(int column, int op_col, int n)
 {
 	if (s_option_declared) {
 		cerror(E_DUP_OPTION, 1);
+		print_lex_context(column);
 		return;
 	}
 
 	s_option_declared = 1;
 
-	if (s_array_access)
+	if (s_array_access) {
 		cerror(E_LATE_OPTION, 1);
+		print_lex_context(column);
+	}
 
-	if (n == 0)
+	if (n == 0) {
 		s_base_index = 0;
-	else if (n == 1)
+	} else if (n == 1) {
 		s_base_index = 1;
-	else
+	} else {
 		cerror(E_SYNTAX, 1);
+		print_lex_context(op_col);
+	}
 }
 
 int get_parsed_base(void)
@@ -618,8 +625,9 @@ static void free_line_pc(void)
 
 void data_str_decl(int i, enum data_datum_type type)
 {
-	if (add_data_str(i, type) != 0)
+	if (add_data_str(i, type) != 0) {
 		cerror(E_NO_MEM, 1);
+	}
 }
 
 static struct usrfun *find_usrfun(int name)
@@ -633,7 +641,7 @@ static struct usrfun *find_usrfun(int name)
 	return NULL;
 }
 
-void fun_decl(int name, int nparams, int param, int pc)
+void fun_decl(int column, int name, int nparams, int param, int pc)
 {
 	struct usrfun *p;
 
@@ -642,6 +650,7 @@ void fun_decl(int name, int nparams, int param, int pc)
 	p = find_usrfun(name);
 	if (p != NULL) {
 		cerror(E_FUN_REDECLARED, 1);
+		print_lex_context(column);
 		s_cur_fun = p;
 		return;
 	}

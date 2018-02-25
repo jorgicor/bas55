@@ -1,1 +1,3 @@
 340: error: function redeclared 
+ DEF FND(R)=R+100
+     ^

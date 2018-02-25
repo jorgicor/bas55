@@ -214,7 +214,7 @@ def_stmnt:
 			add_op_instr(GOTO_OP);
 			s_save_pc = get_code_size();
 			add_id_instr(0);
-			fun_decl($2.u.i, $3.u.fun_param.nparams,
+			fun_decl($2.column, $2.u.i, $3.u.fun_param.nparams,
 				 $3.u.fun_param.param, get_code_size());
 		}
 		expr
@@ -381,7 +381,10 @@ dim_decl:
 	;
 	
 option_stmnt:
-	OPTION BASE INT		{ option_decl($3.u.num.i); }
+	OPTION BASE INT
+		{
+			 option_decl($1.column, $3.column, $3.u.num.i);
+		}
 	;
 	
 randomize_stmnt:

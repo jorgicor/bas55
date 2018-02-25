@@ -1,1 +1,3 @@
-250: error: invalid OPTION after arrays 
+250: error: OPTION used after arrays used or DIM 
+ OPTION BASE 1
+ ^
