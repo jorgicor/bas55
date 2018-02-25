@@ -1,3 +1,9 @@
-240: error: numeric variable as array  (A)
-380: error: numeric variable as array  (A)
-390: error: numeric variable as array  (A)
+240: error: numeric variable used as array A9
+ LET A9(I)=111*I+5000
+     ^
+380: error: numeric variable used as array A9
+ PRINT "A9(";I;") = ";A9(I)
+                      ^
+390: error: numeric variable used as array A9
+ IF A9(I)=111*I+5000 THEN 410
+    ^

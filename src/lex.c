@@ -24,8 +24,7 @@ struct keyword {
 };
 
 /* 
- * TAB is not a keyword in the standard, but we keep it here.
- * Carefult with that.
+ * Warning: TAB is not a keyword in the standard, but we keep it here.
  */
 static struct keyword s_keywords[] =
 {
@@ -63,6 +62,9 @@ static struct keyword s_keywords[] =
  */
 static const char *s_input_p;
 
+/* Base string pointer. s_input_p points inside this string. */
+static const char *s_base_str;
+
 /* If we are in a DATA statement. */
 static int s_in_data;
 
@@ -87,14 +89,22 @@ static int spc_must_follow_keyw(int keyw)
 
 void set_lex_input(const char *str)
 {
+	s_base_str = str;
 	s_input_p = str;
 	s_in_data = 0;
 }
 
+void print_lex_context(int column)
+{
+	fprintf(stderr, " %s\n", s_base_str);
+	fprintf(stderr, " %*c\n", column + 1, '^');
+}
+
 static void skip_rest(void)
 {
-	while (*s_input_p != '\0')
+	while (*s_input_p != '\0') {
 		s_input_p++;
+	}
 }
 
 /* Parses a element in a DATA statement: number or unquoted string.
@@ -115,8 +125,8 @@ static int lex_parse_data_elem(void)
 	} else if (t == DATA_ELEM_COMMA) {
 		return ',';
 	} else if (t == DATA_ELEM_QUOTED_STR) {
-		yylval.str.start = delem.str.start;
-		yylval.str.len = delem.str.len;
+		yylval.u.str.start = delem.str.start;
+		yylval.u.str.len = delem.str.len;
 		if (delem.str.start[delem.str.len] != '\"')
 			cerror(E_STR_NOEND, 1);
 		return QUOTED_STR;
@@ -125,8 +135,8 @@ static int lex_parse_data_elem(void)
 		fprintf(stderr, "(%c)\n", s_input_p[-1]);
 		return INVAL_CHAR;
 	} else {	/* (t == DATA_ELEM_UNQUOTED_STR) */
-		yylval.str.start = delem.str.start;
-		yylval.str.len = delem.str.len;
+		yylval.u.str.start = delem.str.start;
+		yylval.u.str.len = delem.str.len;
 		return STR;
 	}
 }
@@ -146,14 +156,14 @@ static int lex_parse_num(void)
 		return *s_input_p++; 
 	} else {
 		if (t == NUM_TYPE_INT) {
-			yylval.num.i = parse_int(s_input_p, &len);
+			yylval.u.num.i = parse_int(s_input_p, &len);
 			if (errno == ERANGE) {
-				yylval.num.d = parse_double(s_input_p, NULL);
+				yylval.u.num.d = parse_double(s_input_p, NULL);
 			} else {
-				yylval.num.d = (double) yylval.num.i;
+				yylval.u.num.d = (double) yylval.u.num.i;
 			}
 		} else {
-			yylval.num.d = parse_double(s_input_p, &len);
+			yylval.u.num.d = parse_double(s_input_p, &len);
 		}
 		s_input_p += len;
 		if (errno == ERANGE) {
@@ -179,14 +189,14 @@ static int lex_parse_id(void)
 	name[i] = '\0';
 
 	if (name[1] == '\0' || (isdigit(name[1]) && name[2] == '\0')) {
-		yylval.i = encode_var(name);
+		yylval.u.i = encode_var(name);
 		return NUMVAR;
 	} else if (name[1] == '$' && name[2] == '\0') {
-		yylval.i = encode_var(name);
+		yylval.u.i = encode_var(name);
 		return STRVAR;
 	} else if (name[0] == 'F' && name[1] == 'N' && isalpha(name[2]) &&
 	    name[3] == '\0') {
-		yylval.i = name[2];
+		yylval.u.i = name[2];
 		return USRFN;
 	}
 	
@@ -204,7 +214,7 @@ static int lex_parse_id(void)
 		return i;
 	}
 
-	if ((yylval.i = get_internal_fun(name)) != -1)
+	if ((yylval.u.i = get_internal_fun(name)) != -1)
 		return IFUN;
 
 	return BAD_ID;
@@ -217,8 +227,8 @@ static int lex_parse_quoted_str(void)
 	s_input_p++;
 	parse_quoted_str(s_input_p, &len);
 
-	yylval.str.start = s_input_p;
-	yylval.str.len = len;
+	yylval.u.str.start = s_input_p;
+	yylval.u.str.len = len;
 
 	s_input_p += len;
 	if (*s_input_p == '\0') {
@@ -258,8 +268,9 @@ int chk_basic_chars(const char *s, size_t len, int ignore_case, size_t *index)
 
 	for (i = 0; i < len; i++) {
 		if (!is_basic_char(s[i], ignore_case)) {
-			if (index != NULL)
+			if (index != NULL) {
 				*index = i;
+			}
 			return E_INVAL_CHARS;
 		}
 	}
@@ -274,9 +285,11 @@ int yylex(void)
 
 again:
 	c = *s_input_p;
-	while (isspace(c))
+	while (isspace(c)) {
 		c = *++s_input_p;
+	}
 
+	yylval.column = s_input_p - s_base_str;
 	if (c == '\0') {
 		return 0;
 	} else if (c == '\"') {

@@ -1,2 +1,8 @@
-250: error: type mismatch  (A)
-320: error: type mismatch  (A)
+250: error: type mismatch for variable A
+ info: it was previously used or DIM as a two-dimension array
+ LET A(I)=111*I+5000
+     ^
+320: error: type mismatch for variable A
+ info: it was previously used or DIM as a two-dimension array
+ PRINT "A(";I;") = ";A(I)
+                     ^

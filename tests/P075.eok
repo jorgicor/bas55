@@ -1,2 +1,8 @@
-240: error: type mismatch  (A)
-400: error: type mismatch  (A)
+240: error: type mismatch for variable A
+ info: it was previously used or DIM as a one-dimension array
+ LET A=777
+     ^
+400: error: type mismatch for variable A
+ info: it was previously used or DIM as a one-dimension array
+ PRINT "VARIABLE A = ";A
+                       ^

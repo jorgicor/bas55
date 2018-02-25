@@ -24,33 +24,14 @@ static int s_save_pc;
 %token LESS_EQ GREATER_EQ NOT_EQ
 %token BAD_ID INVAL_CHAR
 
-%union {
-	int i;
-	struct {
-		double d;
-		int i;
-	} num;
-	struct {
-		int param;
-		int nparams;
-	} fun_param;
-	struct {
-		const char *start;
-		size_t len;
-	} str;
-}
-
-%token <num> NUM
-%token <num> INT
-%token <i> NUMVAR
-%token <i> STRVAR
-%token <str> STR
-%token <str> QUOTED_STR
-%token <i> USRFN
-%token <i> IFUN
-%type <i> rel eq_rel
-%type <fun_param> fnparam
-%type <i> var_loc_rest
+%token NUM
+%token INT
+%token NUMVAR
+%token STRVAR
+%token STR
+%token QUOTED_STR
+%token USRFN
+%token IFUN
 
 %left '-' '+'
 %left '*' '/'
@@ -94,7 +75,7 @@ goto_stmnt:
 	goto INT
 		{
 			add_op_instr(GOTO_OP);
-			add_line_ref($2.i);
+			add_line_ref($2.u.num.i);
 		}
 	;
 	
@@ -107,7 +88,7 @@ gosub_stmnt:
 	gosub INT
 		{
 			add_op_instr(GOSUB_OP);
-			add_line_ref($2.i);
+			add_line_ref($2.u.num.i);
 		}
 	;
 	
@@ -147,14 +128,14 @@ num_list_int:
 	INT
 		{ 
 			s_on_goto_nelems++;
-			add_line_ref($1.i);
+			add_line_ref($1.u.num.i);
 		}
 	;
 	
 if_stmnt:
 	IF expr rel expr THEN INT
 		{
-			switch ($3) {
+			switch ($3.u.i) {
 			case '<': add_op_instr(LESS_OP); break;
 			case '>': add_op_instr(GREATER_OP); break;
 			case '=': add_op_instr(EQ_OP); break;
@@ -163,16 +144,16 @@ if_stmnt:
 			case NOT_EQ: add_op_instr(NOT_EQ_OP); break;
 			}
 			add_op_instr(GOTO_IF_TRUE_OP);
-			add_line_ref($6.i);
+			add_line_ref($6.u.num.i);
 		}
 	| IF str_expr eq_rel str_expr THEN INT
 		{
-			switch ($3) {
+			switch ($3.u.i) {
 			case '=': add_op_instr(EQ_STR_OP); break;
 			case NOT_EQ: add_op_instr(NOT_EQ_STR_OP); break;
 			}
 			add_op_instr(GOTO_IF_TRUE_OP);
-			add_line_ref($6.i);
+			add_line_ref($6.u.num.i);
 		}
 	;
 	
@@ -180,36 +161,39 @@ str_expr:
 	STR
 		{
 			add_op_instr(PUSH_STR_OP);
-			add_id_instr(str_decl($1.start, $1.len));	
+			add_id_instr(str_decl($1.u.str.start, $1.u.str.len));	
 		}
 	| QUOTED_STR
 		{
 			add_op_instr(PUSH_STR_OP);
-			add_id_instr(str_decl($1.start, $1.len));	
+			add_id_instr(str_decl($1.u.str.start, $1.u.str.len));	
 		}
 	| STRVAR
 		{
-			strvar_decl($1);
+			strvar_decl($1.u.i);
 			add_op_instr(GET_STRVAR_OP);
-			add_id_instr(get_rampos($1));
+			add_id_instr(get_rampos($1.u.i));
 		}
 	;
 
 rel:
-	eq_rel		{ $$ = $1; }
-	| '<'		{ $$ = '<'; }
-	| '>'		{ $$ = '>'; }
-	| LESS_EQ	{ $$ = LESS_EQ; }
-	| GREATER_EQ	{ $$ = GREATER_EQ; }
+	eq_rel		{ $$.u.i = $1.u.i; }
+	| '<'		{ $$.u.i = '<'; }
+	| '>'		{ $$.u.i = '>'; }
+	| LESS_EQ	{ $$.u.i = LESS_EQ; }
+	| GREATER_EQ	{ $$.u.i = GREATER_EQ; }
 	;
 	 	
 eq_rel:
-	'='		{ $$ = '='; }
-	| NOT_EQ	{ $$ = NOT_EQ; }
+	'='		{ $$.u.i = '='; }
+	| NOT_EQ	{ $$.u.i = NOT_EQ; }
 	;
 	
 for_stmnt:
-	FOR NUMVAR '=' expr TO expr step	{ for_decl($2); }
+	FOR NUMVAR '=' expr TO expr step	
+		{
+			for_decl($2.column, $2.u.i);
+		}
 	;
 	
 step:
@@ -221,7 +205,7 @@ step:
 	;
 	
 next_stmnt:
-	NEXT NUMVAR		{ next_decl($2); }
+	NEXT NUMVAR		{ next_decl($2.column, $2.u.i); }
 	;
 	
 def_stmnt:
@@ -230,7 +214,8 @@ def_stmnt:
 			add_op_instr(GOTO_OP);
 			s_save_pc = get_code_size();
 			add_id_instr(0);
-			fun_decl($2, $3.nparams, $3.param, get_code_size());
+			fun_decl($2.u.i, $3.u.fun_param.nparams,
+				 $3.u.fun_param.param, get_code_size());
 		}
 		expr
 		{
@@ -240,8 +225,14 @@ def_stmnt:
 	;
 	
 fnparam:
-	/* empty */		{ $$.nparams = 0; $$.param = '$'; }
-	| '(' NUMVAR ')'	{ $$.nparams = 1; $$.param = $2; }
+	/* empty */		{
+					$$.u.fun_param.nparams = 0;
+					$$.u.fun_param.param = '$';
+				}
+	| '(' NUMVAR ')'	{
+					$$.u.fun_param.nparams = 1;
+					$$.u.fun_param.param = $2.u.i;
+				}
 	;
 	
 input_stmnt:
@@ -269,18 +260,20 @@ var_loc:
 		}
 	var_loc_rest
 		{
-			if ($3 == VARTYPE_NUM) {
-				numvar_declared($1, VARTYPE_NUM);
+			if ($3.u.i == VARTYPE_NUM) {
+				numvar_declared($1.column, $1.u.i, VARTYPE_NUM);
 				add_op_instr(LET_VAR_OP);
-				add_id_instr(get_rampos($1));
-			} else if ($3 == VARTYPE_LIST) {
-				numvar_declared($1, VARTYPE_LIST);
+				add_id_instr(get_rampos($1.u.i));
+			} else if ($3.u.i == VARTYPE_LIST) {
+				numvar_declared($1.column, $1.u.i,
+						VARTYPE_LIST);
 				add_op_instr(INPUT_LIST_OP);
-				add_id_instr(var_index1($1));
+				add_id_instr(var_index1($1.u.i));
 			} else {
-				numvar_declared($1, VARTYPE_TABLE);
+				numvar_declared($1.column, $1.u.i,
+						VARTYPE_TABLE);
 				add_op_instr(INPUT_TABLE_OP);
-				add_id_instr(var_index1($1));
+				add_id_instr(var_index1($1.u.i));
 			}
 			set_id_instr(s_save_pc, get_code_size());
 		}
@@ -289,17 +282,17 @@ var_loc:
 			add_op_instr(INPUT_STR_OP);
 			s_save_pc = get_code_size();
 			add_id_instr(0);
-			strvar_decl($1);
+			strvar_decl($1.u.i);
 			add_op_instr(LET_STRVAR_OP);
-			add_id_instr(get_rampos($1));
+			add_id_instr(get_rampos($1.u.i));
 			set_id_instr(s_save_pc, get_code_size());
 		}
 	;
 	
 var_loc_rest:
-	/* empty */			{ $$ = VARTYPE_NUM; }
-	| '(' expr ')'			{ $$ = VARTYPE_LIST; }
-	| '(' expr ',' expr ')'		{ $$ = VARTYPE_TABLE; }
+	/* empty */			{ $$.u.i = VARTYPE_NUM; }
+	| '(' expr ')'			{ $$.u.i = VARTYPE_LIST; }
+	| '(' expr ',' expr ')'		{ $$.u.i = VARTYPE_TABLE; }
 	;
 	
 read_stmnt:
@@ -314,27 +307,27 @@ read_var_list:
 read_var_loc:
 	STRVAR
 		{
-			strvar_decl($1);
+			strvar_decl($1.u.i);
 			add_op_instr(READ_STRVAR_OP);
-			add_id_instr(get_rampos($1));
+			add_id_instr(get_rampos($1.u.i));
 		}
 	| NUMVAR
 		{
-			numvar_declared($1, VARTYPE_NUM);
+			numvar_declared($1.column, $1.u.i, VARTYPE_NUM);
 			add_op_instr(READ_VAR_OP);
-			add_id_instr(get_rampos($1));
+			add_id_instr(get_rampos($1.u.i));
 		}
 	| NUMVAR '(' expr ')'
 		{
-			numvar_declared($1, VARTYPE_LIST);
+			numvar_declared($1.column, $1.u.i, VARTYPE_LIST);
 			add_op_instr(READ_LIST_OP);
-			add_id_instr(var_index1($1));
+			add_id_instr(var_index1($1.u.i));
 		}
 	| NUMVAR '(' expr ',' expr ')'
 		{
-			numvar_declared($1, VARTYPE_TABLE);
+			numvar_declared($1.column, $1.u.i, VARTYPE_TABLE);
 			add_op_instr(READ_TABLE_OP);
-			add_id_instr(var_index1($1));
+			add_id_instr(var_index1($1.u.i));
 		}
 	;
 	
@@ -354,12 +347,12 @@ dat_list:
 datum:
 	STR
 		{
-			data_str_decl(str_decl($1.start, $1.len),
+			data_str_decl(str_decl($1.u.str.start, $1.u.str.len),
 				DATA_DATUM_UNQUOTED_STR);
 		}
 	| QUOTED_STR
 		{
-			data_str_decl(str_decl($1.start, $1.len),
+			data_str_decl(str_decl($1.u.str.start, $1.u.str.len),
 				DATA_DATUM_QUOTED_STR);
 		}
 	;
@@ -376,16 +369,18 @@ dim_list:
 dim_decl:
 	NUMVAR '(' INT ')'		
 		{
-			numvar_dimensioned($1, VARTYPE_LIST, $3.i, 0);
+			numvar_dimensioned($1.u.i, VARTYPE_LIST,
+					   $3.u.num.i, 0);
 		}
 	| NUMVAR '(' INT ',' INT ')'
 		{
-			numvar_dimensioned($1, VARTYPE_TABLE, $3.i, $5.i);
+			numvar_dimensioned($1.u.i, VARTYPE_TABLE, $3.u.num.i,
+					   $5.u.num.i);
 		}
 	;
 	
 option_stmnt:
-	OPTION BASE INT		{ option_decl($3.i); }
+	OPTION BASE INT		{ option_decl($3.u.num.i); }
 	;
 	
 randomize_stmnt:
@@ -436,27 +431,27 @@ print_item:
 let_stmnt:
 	LET STRVAR '=' str_expr
 		{
-			strvar_decl($2);
+			strvar_decl($2.u.i);
 			add_op_instr(LET_STRVAR_OP);
-			add_id_instr(get_rampos($2));
+			add_id_instr(get_rampos($2.u.i));
 		}
 	| LET NUMVAR '=' expr
 		{
-			numvar_declared($2, VARTYPE_NUM);
+			numvar_declared($2.column, $2.u.i, VARTYPE_NUM);
 			add_op_instr(LET_VAR_OP);
-			add_id_instr(get_rampos($2));
+			add_id_instr(get_rampos($2.u.i));
 		}
 	| LET NUMVAR '(' expr ')' '=' expr
 		{
-			numvar_declared($2, VARTYPE_LIST);
+			numvar_declared($2.column, $2.u.i, VARTYPE_LIST);
 			add_op_instr(LET_LIST_OP);
-			add_id_instr(var_index1($2));
+			add_id_instr(var_index1($2.u.i));
 		}
 	| LET NUMVAR '(' expr ',' expr ')' '=' expr
 		{
-			numvar_declared($2, VARTYPE_TABLE);
+			numvar_declared($2.column, $2.u.i, VARTYPE_TABLE);
 			add_op_instr(LET_TABLE_OP);
-			add_id_instr(var_index1($2));
+			add_id_instr(var_index1($2.u.i));
 		}
 	;
 	
@@ -464,29 +459,29 @@ expr:
 	INT						
 		{
 			add_op_instr(PUSH_NUM_OP);
-			add_num_instr($1.d);
+			add_num_instr($1.u.num.d);
 		}
 	| NUM
 		{
 			add_op_instr(PUSH_NUM_OP);
-			add_num_instr($1.d);
+			add_num_instr($1.u.num.d);
 		}
 	| NUMVAR
 		{
-			numvar_expr($1);
+			numvar_expr($1.column, $1.u.i);
 		}
 	| NUMVAR '(' expr ')'
 		{
-			list_expr($1);
+			list_expr($1.column, $1.u.i);
 		}
 	| NUMVAR '(' expr ',' expr ')'
 		{
-			table_expr($1);
+			table_expr($1.column, $1.u.i);
 		}
-	| USRFN			{ usrfun_call($1, 0); }
-	| USRFN '(' expr ')'	{ usrfun_call($1, 1); }
-	| IFUN			{ ifun_call($1, 0); }
-	| IFUN '(' expr ')'	{ ifun_call($1, 1); }
+	| USRFN			{ usrfun_call($1.u.i, 0); }
+	| USRFN '(' expr ')'	{ usrfun_call($1.u.i, 1); }
+	| IFUN			{ ifun_call($1.u.i, 0); }
+	| IFUN '(' expr ')'	{ ifun_call($1.u.i, 1); }
 	| expr '+' expr		{ add_op_instr(ADD_OP);	}
 	| expr '-' expr		{ add_op_instr(SUB_OP);	}
 	| expr '*' expr		{ add_op_instr(MUL_OP);	}

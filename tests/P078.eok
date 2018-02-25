@@ -1,3 +1,12 @@
-270: error: type mismatch  (A)
-440: error: type mismatch  (A)
-450: error: type mismatch  (A)
+270: error: type mismatch for variable A
+ info: it was previously used or DIM as a one-dimension array
+ LET A(I,J)=10000+(100*I)+J
+     ^
+440: error: type mismatch for variable A
+ info: it was previously used or DIM as a one-dimension array
+ PRINT A(I,J);
+       ^
+450: error: type mismatch for variable A
+ info: it was previously used or DIM as a one-dimension array
+ IF A(I,J)=10000+(100*I)+J THEN 470
+    ^

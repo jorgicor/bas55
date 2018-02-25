@@ -222,6 +222,7 @@ extern const char *s_lex_str_start;
 extern const char *s_lex_str_end;
 
 void set_lex_input(const char *str);
+void print_lex_context(int column);
 int chk_basic_chars(const char *s, size_t len, int ignore_case, size_t *index);
 int yylex(void);
 
@@ -332,6 +333,37 @@ void print_var(FILE *f, int coded_var);
 
 /* parse.c */
 
+/*
+enum {
+	PSTACK_TOK,
+	PSTACK_I,
+	PSTACK_NUM,
+	PSTACK_FUN_PARAM,
+	PSTACK_STR
+};
+*/
+
+struct pstack_value {
+	int column;
+	union {
+		int i;
+		struct {
+			double d;
+			int i;
+		} num;
+		struct {
+			int param;
+			int nparams;
+		} fun_param;
+		struct {
+			const char *start;
+			size_t len;
+		} str;
+	} u;
+};
+
+#define YYSTYPE struct pstack_value
+
 enum var_type {
 	VARTYPE_UNDEF,
 	VARTYPE_NUM,
@@ -363,19 +395,19 @@ int get_dim(int coded_var, int ndim);
 
 void data_num_decl(double d);
 void data_str_decl(int i, enum data_datum_type type);
-void numvar_declared(int coded_var, int var_type);
+void numvar_declared(int column, int coded_var, int var_type);
 void numvar_dimensioned(int coded_var, int var_type, int max_idx1,
     int max_idx2);
 void option_decl(int base);
 void add_line_ref(int line_num);
-void for_decl(int coded_var);
-void next_decl(int coded_var);
+void for_decl(int var_column, int coded_var);
+void next_decl(int var_column, int coded_var);
 void strvar_decl(int coded_var);
 int str_decl(const char *start, size_t len);
 void fun_decl(int name, int nparams, int param, int pc);
-void numvar_expr(int coded_var);
-void list_expr(int coded_var);
-void table_expr(int coded_var);
+void numvar_expr(int column, int coded_var);
+void list_expr(int column, int coded_var);
+void table_expr(int column, int coded_var);
 void usrfun_call(int name, int nparams);
 void ifun_call(int ifun, int nparams);
 void end_decl(void);

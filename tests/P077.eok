@@ -1,3 +1,12 @@
-240: error: type mismatch  (A)
-380: error: type mismatch  (A)
-390: error: type mismatch  (A)
+240: error: type mismatch for variable A
+ info: it was previously used as a numeric variable
+ LET A(I)=111*I+5000
+     ^
+380: error: type mismatch for variable A
+ info: it was previously used as a numeric variable
+ PRINT "A(";I;") = ";A(I)
+                     ^
+390: error: type mismatch for variable A
+ info: it was previously used as a numeric variable
+ IF A(I)=111*I+5000 THEN 410
+    ^

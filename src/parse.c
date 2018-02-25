@@ -192,6 +192,7 @@ void cwarn(int ecode)
 void yyerror(char const *s)
 {
 	cerror(E_SYNTAX, 1);
+	// fprintf(stderr, "... in token %s\n", yytext);
 	/* fprintf(stderr, "%s\n", s); */
 }
 
@@ -340,13 +341,32 @@ static void add_table_size_to_ram(int len1, int len2)
 	}
 }
 
-void numvar_declared(int coded_var, int var_type)
+static void print_var_type(int var_type)
+{
+	switch (var_type) {
+	case VARTYPE_LIST:
+		fputs("a one-dimension array", stderr);
+		break;
+	case VARTYPE_TABLE:
+		fputs("a two-dimension array", stderr);
+		break;
+	case VARTYPE_NUM:
+		fputs("a numeric variable", stderr);
+		break;
+	default:
+		fputs("?", stderr);
+	}
+}
+
+void numvar_declared(int column, int coded_var, int var_type)
 {
 	int vindex1, vindex2;
 	
 	if (is_numvar_wdigit(coded_var) && var_type != VARTYPE_NUM) {
 		cerror(E_NUMVAR_ARRAY, 0);
-		fprintf(stderr, " (%c)\n", (char) get_var_letter(coded_var));
+		print_var(stderr, coded_var);
+		enl();
+		print_lex_context(column);
 		return;
 	}
 
@@ -378,7 +398,34 @@ void numvar_declared(int coded_var, int var_type)
 
 	if (s_vartype[vindex1][vindex2] != var_type) {
 		cerror(E_TYPE_MISMATCH, 0);
-		fprintf(stderr, " (%c)\n", (char) get_var_letter(coded_var));
+		print_var(stderr, coded_var);
+		enl();
+		fputs(" info: it was previously used ", stderr);
+		switch (s_vartype[vindex1][vindex2]) {
+		case VARTYPE_LIST: 
+			fputs("or DIM as ", stderr);
+			print_var_type(VARTYPE_LIST);
+			enl();
+			break;
+		case VARTYPE_TABLE: 
+			fputs("or DIM as ", stderr);
+			print_var_type(VARTYPE_TABLE);
+			enl();
+			break;
+		case VARTYPE_NUM: 
+			fputs("as ", stderr);
+			print_var_type(VARTYPE_NUM);
+			enl();
+			break;
+		default: 
+			assert(0);
+		}
+		/*
+		fputs(" info: here it is used as ", stderr);
+		print_var_type(var_type);
+		enl();
+		*/
+		print_lex_context(column);
 	}
 }
 
@@ -429,8 +476,9 @@ void numvar_dimensioned(int coded_var, int var_type, int max_idx1,
 		return;
 	}
 
-	if (s_dimensioned[vindex1])
+	if (s_dimensioned[vindex1]) {
 		cerror(E_DUP_DIM, 1);
+	}
 }
 
 void option_decl(int n)
@@ -600,40 +648,40 @@ void fun_decl(int name, int nparams, int param, int pc)
 	*/
 }
 
-void numvar_expr(int coded_var)
+void numvar_expr(int column, int coded_var)
 {
 	if (s_in_fun_def && s_cur_fun != NULL && s_cur_fun->nparams > 0 &&
 	    coded_var == s_cur_fun->param) {
 		add_op_instr(GET_FN_VAR_OP);
 		add_id_instr(usrfun_list->vrampos);
 	} else {
-		numvar_declared(coded_var, VARTYPE_NUM);
+		numvar_declared(column, coded_var, VARTYPE_NUM);
 		add_op_instr(GET_VAR_OP);
 		add_id_instr(get_rampos(coded_var));
 	}
 }
 
-void list_expr(int coded_var)
+void list_expr(int column, int coded_var)
 {
 	if (s_in_fun_def && s_cur_fun != NULL && s_cur_fun->nparams > 0 &&
 		coded_var == s_cur_fun->param)
 	{
 		cerror(E_FUNARG_AS_ARRAY, 1);
 	} else {
-		numvar_declared(coded_var, VARTYPE_LIST);
+		numvar_declared(column, coded_var, VARTYPE_LIST);
 		add_op_instr(GET_LIST_OP);
 		add_id_instr(var_index1(coded_var));
 	}
 }
 
-void table_expr(int coded_var)
+void table_expr(int column, int coded_var)
 {
 	if (s_in_fun_def &&s_cur_fun != NULL && s_cur_fun->nparams > 0 &&
 		coded_var == s_cur_fun->param)
 	{
 		cerror(E_FUNARG_AS_ARRAY, 1);
 	} else {
-		numvar_declared(coded_var, VARTYPE_TABLE);
+		numvar_declared(column, coded_var, VARTYPE_TABLE);
 		add_op_instr(GET_TABLE_OP);
 		add_id_instr(var_index1(coded_var));
 	}
@@ -816,7 +864,7 @@ static void check_same_outer_for(int coded_var)
 	}
 }
 
-void for_decl(int coded_var)
+void for_decl(int var_column, int coded_var)
 {
 	int pc;
 	
@@ -828,7 +876,7 @@ void for_decl(int coded_var)
 		return;
 	}
 	
-	numvar_declared(coded_var, VARTYPE_NUM);
+	numvar_declared(var_column, coded_var, VARTYPE_NUM);
 	add_op_instr(FOR_OP);
 
 	/* own2, step */
@@ -850,7 +898,7 @@ void for_decl(int coded_var)
 	s_cur_block->cmp_pc = pc;
 }
 
-void next_decl(int coded_var)
+void next_decl(int var_column, int coded_var)
 {
 	struct for_block *p;
 
@@ -860,7 +908,7 @@ void next_decl(int coded_var)
 		return;
 	}
 
-	numvar_declared(coded_var, VARTYPE_NUM);
+	numvar_declared(var_column, coded_var, VARTYPE_NUM);
 	add_op_instr(NEXT_OP);
 	add_id_instr(p->cmp_pc);
 	set_id_instr(p->cmp_pc + 1, get_code_size());
