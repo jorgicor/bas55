@@ -1,1 +1,3 @@
-230: error: line not in program (285)
+230: error: non-existing line number 
+ GOSUB 285
+       ^

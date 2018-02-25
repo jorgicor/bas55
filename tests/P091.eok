@@ -1,1 +1,3 @@
-250: error: line not in program (295)
+250: error: non-existing line number 
+ ON X GOTO 295
+           ^

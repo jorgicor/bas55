@@ -868,29 +868,33 @@ static void check_jump(struct jump_inf *p)
 	fb = find_line_in_blocks(p->from_line);
 	tb = find_line_in_blocks(p->to_line);
 
-	while (fb != tb && fb != NULL)
+	while (fb != tb && fb != NULL) {
 		fb = fb->parent;
+	}
 
-	if (fb == NULL)
+	if (fb == NULL) {
 		cerrorln(E_JUMP_INTO_FOR, p->from_line, 1);
+	}
 }
 
 static void check_jumps(void)
 {
 	struct jump_inf *p;
 
-	for (p = s_jumps; p != NULL; p = p->next)
+	for (p = s_jumps; p != NULL; p = p->next) {
 		check_jump(p);
+	}
 }
 
-static void check_same_outer_for(int coded_var)
+static void check_same_outer_for(int var_column, int coded_var)
 {
 	struct for_block *b;
 
 	for (b = s_cur_block; b != s_main_block; b = b->parent) {
 		if (b->coded_var == coded_var) {
 			cerrorln(E_NESTED_FOR, s_cur_line_num, 0);
-			fprintf(stderr, "(at line %d)\n", b->start_line_num);
+			fprintf(stderr, "%d\n", b->start_line_num);
+			print_lex_context(var_column);
 			break;
 		}
 	}
@@ -901,7 +905,7 @@ void for_decl(int var_column, int coded_var)
 	int pc;
 	
 	/* Check if there is a parent FOR with the same var */
-	check_same_outer_for(coded_var);
+	check_same_outer_for(var_column, coded_var);
 
 	if (add_for_block(s_cur_line_num) != 0) {
 		cerrorln(E_NO_MEM, -1, 1);
@@ -947,7 +951,7 @@ void next_decl(int var_column, int coded_var)
 	end_for_block(s_cur_line_num);
 }
 
-void add_line_ref(int line_num)
+void add_line_ref(int column, int line_num)
 {
 	struct line_pc *lpc;
 	struct line_ref *lrp;
@@ -955,11 +959,14 @@ void add_line_ref(int line_num)
 	add_jump(s_cur_line_num, line_num);
 
 	if ((lpc = find_line(line_num)) == NULL) {
-		cerror(E_NO_LINE, 0);
+		cerror(E_NO_LINE, 1);
+		print_lex_context(column);
+/*
 		putc('(', stderr);
 		fprintf(stderr, "%d", line_num);
 		putc(')', stderr);
 		enl();
+		*/
 		return;
 	}
 
@@ -998,17 +1005,21 @@ int get_parsed_stack_size(void)
 void end_parsing(void)
 {
 	s_main_block->end_line_num = s_cur_line_num;
-	if (s_end_seen == 0)
+	if (s_end_seen == 0) {
 		cerror(E_END_UNSEEN, 1);
+	}
 	
-	if (s_nerrors == 0)
+	if (s_nerrors == 0) {
 		check_fors_without_next();
+	}
 
-	if (s_nerrors == 0)
+	if (s_nerrors == 0) {
 		patch_line_references();
+	}
 
-	if (s_nerrors == 0)
+	if (s_nerrors == 0) {
 		check_jumps();
+	}
 }
 
 /* Inits the parser, to call before yyparse().

@@ -399,7 +399,7 @@ void numvar_declared(int column, int coded_var, int var_type);
 void numvar_dimensioned(int column, int idx1_col, int idx2_col, int coded_var,
 			int var_type, int max_idx1, int max_idx2);
 void option_decl(int column, int op_col, int base);
-void add_line_ref(int line_num);
+void add_line_ref(int column, int line_num);
 void for_decl(int var_column, int coded_var);
 void next_decl(int var_column, int coded_var);
 void strvar_decl(int coded_var);

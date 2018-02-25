@@ -75,7 +75,7 @@ goto_stmnt:
 	goto INT
 		{
 			add_op_instr(GOTO_OP);
-			add_line_ref($2.u.num.i);
+			add_line_ref($2.column, $2.u.num.i);
 		}
 	;
 	
@@ -88,7 +88,7 @@ gosub_stmnt:
 	gosub INT
 		{
 			add_op_instr(GOSUB_OP);
-			add_line_ref($2.u.num.i);
+			add_line_ref($2.column, $2.u.num.i);
 		}
 	;
 	
@@ -128,7 +128,7 @@ num_list_int:
 	INT
 		{ 
 			s_on_goto_nelems++;
-			add_line_ref($1.u.num.i);
+			add_line_ref($1.column, $1.u.num.i);
 		}
 	;
 	
@@ -144,7 +144,7 @@ if_stmnt:
 			case NOT_EQ: add_op_instr(NOT_EQ_OP); break;
 			}
 			add_op_instr(GOTO_IF_TRUE_OP);
-			add_line_ref($6.u.num.i);
+			add_line_ref($6.column, $6.u.num.i);
 		}
 	| IF str_expr eq_rel str_expr THEN INT
 		{
@@ -153,7 +153,7 @@ if_stmnt:
 			case NOT_EQ: add_op_instr(NOT_EQ_STR_OP); break;
 			}
 			add_op_instr(GOTO_IF_TRUE_OP);
-			add_line_ref($6.u.num.i);
+			add_line_ref($6.column, $6.u.num.i);
 		}
 	;
 	
