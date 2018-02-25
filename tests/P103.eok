@@ -1,3 +1,4 @@
-315: error: invalid characters (?)
-315: error: string not terminated 
+315: error: invalid characters found 
+ DATA "*"?"
+         ^
 315: error: syntax error 

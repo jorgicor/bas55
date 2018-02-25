@@ -1,1 +1,3 @@
-20: error: no space after keyword (PRINT)
+20: error: no space after keyword PRINT
+ PRINT"THIS MUST FAIL"
+      ^

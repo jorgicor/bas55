@@ -127,12 +127,14 @@ static int lex_parse_data_elem(void)
 	} else if (t == DATA_ELEM_QUOTED_STR) {
 		yylval.u.str.start = delem.str.start;
 		yylval.u.str.len = delem.str.len;
-		if (delem.str.start[delem.str.len] != '\"')
+		if (delem.str.start[delem.str.len] != '\"') {
 			cerror(E_STR_NOEND, 1);
+		}
 		return QUOTED_STR;
 	} else if (t == DATA_ELEM_INVAL_CHAR) {
-		cerror(E_INVAL_CHARS, 0);
-		fprintf(stderr, "(%c)\n", s_input_p[-1]);
+		cerror(E_INVAL_CHARS, 1);
+		// fprintf(stderr, "(%c)\n", s_input_p[-1]);
+		print_lex_context(s_input_p - s_base_str - 1);
 		return INVAL_CHAR;
 	} else {	/* (t == DATA_ELEM_UNQUOTED_STR) */
 		yylval.u.str.start = delem.str.start;
@@ -177,16 +179,16 @@ static int lex_parse_num(void)
 /* Parses an identifier. *s_input_p must point to a letter. */
 static int lex_parse_id(void)
 {
-	int i;
+	int namlen, i;
 	char name[MAX_NAME_LEN + 1];
 
-	i = 0;
+	namlen = 0;
 	while (isalnum(*s_input_p) || *s_input_p == '$') {
-		if (i < MAX_NAME_LEN)
-			name[i++] = *s_input_p;
+		if (namlen < MAX_NAME_LEN)
+			name[namlen++] = *s_input_p;
 		s_input_p++;
 	}
-	name[i] = '\0';
+	name[namlen] = '\0';
 
 	if (name[1] == '\0' || (isdigit(name[1]) && name[2] == '\0')) {
 		yylval.u.i = encode_var(name);
@@ -205,7 +207,8 @@ static int lex_parse_id(void)
 			!isspace(*s_input_p))
 	       	{
 			cerror(E_KEYW_SPC, 0);
-			fprintf(stderr, "(%s)\n", name);
+			fprintf(stderr, "%s\n", name);
+			print_lex_context(yylval.column + namlen);
 		}
 		if (i == REM)
 			skip_rest();
@@ -214,8 +217,9 @@ static int lex_parse_id(void)
 		return i;
 	}
 
-	if ((yylval.u.i = get_internal_fun(name)) != -1)
+	if ((yylval.u.i = get_internal_fun(name)) != -1) {
 		return IFUN;
+	}
 
 	return BAD_ID;
 }
@@ -234,6 +238,7 @@ static int lex_parse_quoted_str(void)
 	if (*s_input_p == '\0') {
 		/* TODO: cur line num */
 		cerror(E_STR_NOEND, 1);
+		// print_lex_context(s_input_p - s_base_str + 1);
 	} else {
 		/* skip ending quote */
 		s_input_p++;
@@ -283,7 +288,7 @@ int yylex(void)
 	int c;
 	int t;
 
-again:
+//again:
 	c = *s_input_p;
 	while (isspace(c)) {
 		c = *++s_input_p;
@@ -295,8 +300,12 @@ again:
 	} else if (c == '\"') {
 		return lex_parse_quoted_str();
 	} else if (s_in_data) {
-		if ((t = lex_parse_data_elem()) == INVAL_CHAR)
+		t = lex_parse_data_elem();
+		/*
+		if ((t = lex_parse_data_elem()) == INVAL_CHAR) {
 			goto again;
+		}
+		*/
 		return t;
 	} else if (c == '.' || isdigit(c)) {
 		return lex_parse_num();

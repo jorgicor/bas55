@@ -72,10 +72,12 @@ void parse_quoted_str(const char *start, size_t *len)
 	const char *q;
 	
 	c = *(q = start);
-	while (c != '\0' && c != '\"')
+	while (c != '\0' && c != '\"') {
 		c = *++q;
-	if (len != NULL)
+	}
+	if (len != NULL) {
 		*len = (size_t) (q - start);
+	}
 }
 
 enum num_type check_if_number_suffix(const char *p, enum num_type t)

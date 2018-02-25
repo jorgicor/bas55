@@ -1,1 +1,3 @@
-P205.BAS:26: error: invalid characters (a)
+P205.BAS:26: error: invalid characters found 
+ 240 LET A$="abcdefghijklmnopqr"
+             ^

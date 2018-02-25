@@ -92,8 +92,9 @@ enum error_code add_line(int line_num, const char *start, const char *end)
 	}
 
 	/* Add at the end */
-add:	if (s_line_list_size == INT_MAX)
+add:	if (s_line_list_size == INT_MAX) {
 		goto nomem;
+	}
 
 	s_program_ok = 0;
 	s_source_changed = 1;

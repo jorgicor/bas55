@@ -234,8 +234,9 @@ static void list_cmd(struct cmd_arg *args, int nargs)
 	}
 
 	for (p = s_line_list; p != NULL && p->number <= b; p = p->next) {
-		if (p->number >= a)
+		if (p->number >= a) {
 			printf("%d %s\n", p->number, p->str);
+		}
 	}
 }
 
@@ -323,10 +324,11 @@ print_and_continue:	fprintf(stderr, "%s:", fname);
 			eprintln(ecode, linecnt);
 			enl();
 new_error:		nerrors++;
-			if (nerrors == max_errors)
+			if (nerrors == max_errors) {
 				break;
-			else
+			} else {
 				continue;
+			}
 		}
 
 		switch (check_if_number(line)) {
@@ -364,14 +366,17 @@ new_error:		nerrors++;
 
 		/* Find the end */
 		len2 = len;
-		while (line[len2] != '\0')
+		while (line[len2] != '\0') {
 			len2++;
+		}
 
 		/* Ignore trailing space */
-		if (len2 > len && line[len2] == '\0')
+		if (len2 > len && line[len2] == '\0') {
 			len2--;
-		while (len2 > len && isspace(line[len2]))
+		}
+		while (len2 > len && isspace(line[len2])) {
 			len2--;
+		}
 		if (len == len2) {
 			ecode = E_EMPTY_LINE;
 			goto print_and_continue;
@@ -379,20 +384,22 @@ new_error:		nerrors++;
 		len2++;
 		assert(len2 > len);
 
-		if (chk_basic_chars(&line[len], len2 - len, 0, &chari) != 0)
-		{
+		if (chk_basic_chars(&line[len], len2 - len, 0, &chari) != 0) {
 			fprintf(stderr, "%s:", fname);
 			eprintln(E_INVAL_CHARS, linecnt);
-			fprintf(stderr, "(%c)", line[len + chari]);
 			enl();
+			fprintf(stderr, " %s\n", line);
+			fprintf(stderr, " %*c\n", (int)(len + chari + 1), '^');
+			//fprintf(stderr, "(%c)", line[len + chari]);
 			goto new_error;
 		}
 
 		add_line(lineno, &line[len], &line[len2]);
 	}
 
-	if (nerrors > 0)
+	if (nerrors > 0) {
 		del_lines();
+	}
 
 	fclose(fp);
 	return nerrors;

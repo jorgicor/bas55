@@ -961,12 +961,6 @@ void add_line_ref(int column, int line_num)
 	if ((lpc = find_line(line_num)) == NULL) {
 		cerror(E_NO_LINE, 1);
 		print_lex_context(column);
-/*
-		putc('(', stderr);
-		fprintf(stderr, "%d", line_num);
-		putc(')', stderr);
-		enl();
-		*/
 		return;
 	}
 
@@ -993,8 +987,9 @@ static void check_fors_without_next(void)
 {
 	struct for_block *b;
 
-	for (b = s_cur_block; b != s_main_block; b = b->parent)
+	for (b = s_cur_block; b != s_main_block; b = b->parent) {
 		cerrorln(E_FOR_WITHOUT_NEXT, b->start_line_num, 1);
+	}
 }
 
 int get_parsed_stack_size(void)

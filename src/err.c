@@ -57,7 +57,7 @@ static const char *s_errors[] = {
 	"FOR without NEXT",
 	"FOR uses the same variable as outer FOR at line",
 	"function domain error",
-	"invalid characters",
+	"invalid characters found",
 	"duplicated line number",
 	"invalid line order",
 	"number too big",
