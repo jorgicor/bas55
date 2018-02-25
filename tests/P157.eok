@@ -1,2 +1,6 @@
 260: error: syntax error 
+ DEF FNA(X,Y)=X+Y
+          ^
 330: error: syntax error 
+ LET A=FNA(100,1000)
+              ^

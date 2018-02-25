@@ -1,1 +1,3 @@
 300: error: syntax error 
+ IF A$=X THEN 330
+       ^

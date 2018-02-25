@@ -1,2 +1,6 @@
 250: error: syntax error 
+ DEF FND(R$)=R+3
+         ^
 340: error: syntax error 
+ LET A=FND(R$)
+           ^

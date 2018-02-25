@@ -1,1 +1,3 @@
 270: error: syntax error 
+ READ A$,,C$
+         ^

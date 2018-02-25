@@ -1,1 +1,3 @@
 260: error: syntax error 
+ LET A$="*""?"
+           ^

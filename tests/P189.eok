@@ -1,3 +1,9 @@
 240: error: syntax error 
+ L E T X=10
+ ^
 250: error: syntax error 
+ I F X=10 THEN 370
+ ^
 270: error: syntax error 
+ I F X=0 THEN 340
+ ^

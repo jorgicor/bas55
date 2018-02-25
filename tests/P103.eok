@@ -2,3 +2,5 @@
  DATA "*"?"
          ^
 315: error: syntax error 
+ DATA "*"?"
+         ^

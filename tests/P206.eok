@@ -1,7 +1,21 @@
 440: error: syntax error 
+ IF W$ < Z$ THEN 470
+       ^
 540: error: syntax error 
+ IF W$ > Z$ THEN 660
+       ^
 620: error: syntax error 
+ IF W$<Z$ THEN 650
+      ^
 750: error: syntax error 
+ IF W$ > Z$ THEN 770
+       ^
 960: error: syntax error 
+ IF A$<B$ THEN 1000
+      ^
 980: error: syntax error 
+ IF A$>B$ THEN 1000
+      ^
 2100: error: syntax error 
+ IF X$ < Y$ THEN 2180
+       ^

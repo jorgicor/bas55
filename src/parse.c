@@ -192,8 +192,8 @@ void cwarn(int ecode)
 void yyerror(char const *s)
 {
 	cerror(E_SYNTAX, 1);
-	// fprintf(stderr, "... in token %s\n", yytext);
-	/* fprintf(stderr, "%s\n", s); */
+	print_lex_last_context();
+	// fprintf(stderr, "%s\n", s);
 }
 
 static void add_instr(union instruction instr)

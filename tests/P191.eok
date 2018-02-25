@@ -1,3 +1,9 @@
 250: error: syntax error 
+ LETX=10
+ ^
 260: error: syntax error 
+ IFX=10 THEN 390
+ ^
 280: error: syntax error 
+ IFX=0 THEN 360
+ ^

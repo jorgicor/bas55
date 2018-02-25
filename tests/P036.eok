@@ -1,1 +1,3 @@
 250: error: syntax error 
+ LET A= 8+(7-(9-88)/3+(7-9)-3
+                             ^

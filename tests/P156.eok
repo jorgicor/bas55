@@ -1,1 +1,3 @@
 290: error: syntax error 
+ LET A=FNA(5,6)
+            ^

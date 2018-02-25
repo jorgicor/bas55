@@ -1,1 +1,3 @@
 250: error: syntax error 
+ LET A=RND(1,1)
+            ^

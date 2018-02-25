@@ -8,6 +8,7 @@
 #include <config.h>
 #include "ecma55.h"
 #include "grammar.h"
+#include <assert.h>
 #include <ctype.h>
 #include <errno.h>
 #include <stdlib.h>
@@ -65,6 +66,9 @@ static const char *s_input_p;
 /* Base string pointer. s_input_p points inside this string. */
 static const char *s_base_str;
 
+/* Last column parsed or -1. */
+static int s_last_column;
+
 /* If we are in a DATA statement. */
 static int s_in_data;
 
@@ -89,6 +93,7 @@ static int spc_must_follow_keyw(int keyw)
 
 void set_lex_input(const char *str)
 {
+	s_last_column = -1;
 	s_base_str = str;
 	s_input_p = str;
 	s_in_data = 0;
@@ -98,6 +103,13 @@ void print_lex_context(int column)
 {
 	fprintf(stderr, " %s\n", s_base_str);
 	fprintf(stderr, " %*c\n", column + 1, '^');
+}
+
+void print_lex_last_context(void)
+{
+	assert(s_last_column >= 0);
+	fprintf(stderr, " %s\n", s_base_str);
+	fprintf(stderr, " %*c\n", s_last_column + 1, '^');
 }
 
 static void skip_rest(void)
@@ -171,6 +183,7 @@ static int lex_parse_num(void)
 		if (errno == ERANGE) {
 			cwarn(E_CONST_OVERFLOW);
 			enl();
+			// print_lex_last_context();
 		}
 		return (t == NUM_TYPE_INT) ? INT : NUM;
 	}
@@ -295,6 +308,7 @@ int yylex(void)
 	}
 
 	yylval.column = s_input_p - s_base_str;
+	s_last_column = s_input_p - s_base_str;
 	if (c == '\0') {
 		return 0;
 	} else if (c == '\"') {

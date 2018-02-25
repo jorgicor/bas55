@@ -223,6 +223,7 @@ extern const char *s_lex_str_end;
 
 void set_lex_input(const char *str);
 void print_lex_context(int column);
+void print_lex_last_context(void);
 int chk_basic_chars(const char *s, size_t len, int ignore_case, size_t *index);
 int yylex(void);
 

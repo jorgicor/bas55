@@ -1,1 +1,3 @@
 290: error: syntax error 
+ DATA ABC,,GHI,JKL
+          ^
