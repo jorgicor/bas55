@@ -160,7 +160,11 @@ enum error_code {
 	E_INIT_ARRAY,
 	E_READ_OFLOW,
 	E_READ_STR,
-	E_KEYW_SPC
+	E_KEYW_SPC,
+	E_NUM_EXPECT,
+	E_STR_EXPECT,
+	E_STR_REL_EQ,
+	E_NUMVAR_EXPECT,
 };
 
 void eprint(enum error_code ecode);
@@ -334,18 +338,14 @@ void print_var(FILE *f, int coded_var);
 
 /* parse.c */
 
-/*
-enum {
-	PSTACK_TOK,
-	PSTACK_I,
+enum pstack_type {
 	PSTACK_NUM,
-	PSTACK_FUN_PARAM,
-	PSTACK_STR
+	PSTACK_STR,
 };
-*/
 
 struct pstack_value {
 	int column;
+	enum pstack_type type;
 	union {
 		int i;
 		struct {
@@ -409,6 +409,9 @@ void fun_decl(int column, int name, int nparams, int param, int pc);
 void numvar_expr(int column, int coded_var);
 void list_expr(int column, int coded_var);
 void table_expr(int column, int coded_var);
+void check_type(YYSTYPE a, enum pstack_type t);
+int binary_expr(YYSTYPE a, YYSTYPE b, int op);
+void boolean_expr(YYSTYPE a, YYSTYPE relop, YYSTYPE b);
 void usrfun_call(int column, int name, int nparams);
 void ifun_call(int column, int ifun, int nparams);
 void end_decl(void);

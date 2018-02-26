@@ -108,6 +108,7 @@ stop_stmnt:
 on_stmnt:
 	ON expr goto
 		{ 			
+			check_type($2, PSTACK_NUM);
 			add_op_instr(ON_GOTO_OP);
 			s_on_goto_nelems = 0;
 			s_on_goto_pc = get_code_size();
@@ -135,23 +136,7 @@ num_list_int:
 if_stmnt:
 	IF expr rel expr THEN INT
 		{
-			switch ($3.u.i) {
-			case '<': add_op_instr(LESS_OP); break;
-			case '>': add_op_instr(GREATER_OP); break;
-			case '=': add_op_instr(EQ_OP); break;
-			case LESS_EQ: add_op_instr(LESS_EQ_OP); break;
-			case GREATER_EQ: add_op_instr(GREATER_EQ_OP); break;
-			case NOT_EQ: add_op_instr(NOT_EQ_OP); break;
-			}
-			add_op_instr(GOTO_IF_TRUE_OP);
-			add_line_ref($6.column, $6.u.num.i);
-		}
-	| IF str_expr eq_rel str_expr THEN INT
-		{
-			switch ($3.u.i) {
-			case '=': add_op_instr(EQ_STR_OP); break;
-			case NOT_EQ: add_op_instr(NOT_EQ_STR_OP); break;
-			}
+			boolean_expr($2, $3, $4);
 			add_op_instr(GOTO_IF_TRUE_OP);
 			add_line_ref($6.column, $6.u.num.i);
 		}
@@ -162,17 +147,20 @@ str_expr:
 		{
 			add_op_instr(PUSH_STR_OP);
 			add_id_instr(str_decl($1.u.str.start, $1.u.str.len));	
+			$$.type = PSTACK_STR;
 		}
 	| QUOTED_STR
 		{
 			add_op_instr(PUSH_STR_OP);
 			add_id_instr(str_decl($1.u.str.start, $1.u.str.len));	
+			$$.type = PSTACK_STR;
 		}
 	| STRVAR
 		{
 			strvar_decl($1.u.i);
 			add_op_instr(GET_STRVAR_OP);
 			add_id_instr(get_rampos($1.u.i));
+			$$.type = PSTACK_STR;
 		}
 	;
 
@@ -192,24 +180,31 @@ eq_rel:
 for_stmnt:
 	FOR NUMVAR '=' expr TO expr step	
 		{
+			check_type($4, PSTACK_NUM);
+			check_type($6, PSTACK_NUM);
 			for_decl($2.column, $2.u.i);
 		}
 	;
 	
 step:
-	/* empty */		{
-					add_op_instr(PUSH_NUM_OP);
-					add_num_instr(1.0);
-				}
+	/* empty */		
+		{
+			add_op_instr(PUSH_NUM_OP);
+			add_num_instr(1.0);
+		}
 	| STEP expr
+		{
+			check_type($2, PSTACK_NUM);
+		}
+					
 	;
 	
 next_stmnt:
 	NEXT NUMVAR		{ next_decl($2.column, $2.u.i); }
 	;
-	
-def_stmnt:
-	DEF USRFN fnparam '=' 
+
+def_stmnt_head:
+	DEF USRFN fnparam
 		{
 			add_op_instr(GOTO_OP);
 			s_save_pc = get_code_size();
@@ -217,22 +212,35 @@ def_stmnt:
 			fun_decl($2.column, $2.u.i, $3.u.fun_param.nparams,
 				 $3.u.fun_param.param, get_code_size());
 		}
-		expr
+	;
+	
+def_stmnt:
+	def_stmnt_head '=' expr
 		{
+			check_type($3, PSTACK_NUM);
 			add_op_instr(RETURN_OP);
 			set_id_instr(s_save_pc, get_code_size());
 		}
 	;
 	
 fnparam:
-	/* empty */		{
-					$$.u.fun_param.nparams = 0;
-					$$.u.fun_param.param = '$';
-				}
-	| '(' NUMVAR ')'	{
-					$$.u.fun_param.nparams = 1;
-					$$.u.fun_param.param = $2.u.i;
-				}
+	/* empty */
+		{
+			$$.u.fun_param.nparams = 0;
+			$$.u.fun_param.param = '$';
+		}
+	| '(' NUMVAR ')'
+		{
+			$$.u.fun_param.nparams = 1;
+			$$.u.fun_param.param = $2.u.i;
+		}
+	| '(' STRVAR ')'
+		{
+			$$.u.fun_param.nparams = 1;
+			$$.u.fun_param.param = (var_index1($2.u.i) << 8);
+			cerror(E_NUMVAR_EXPECT, 1);
+			print_lex_context($2.column);	
+		}
 	;
 	
 input_stmnt:
@@ -291,8 +299,17 @@ var_loc:
 	
 var_loc_rest:
 	/* empty */			{ $$.u.i = VARTYPE_NUM; }
-	| '(' expr ')'			{ $$.u.i = VARTYPE_LIST; }
-	| '(' expr ',' expr ')'		{ $$.u.i = VARTYPE_TABLE; }
+	| '(' expr ')'
+		{
+			check_type($2, PSTACK_NUM);
+			$$.u.i = VARTYPE_LIST;
+		}
+	| '(' expr ',' expr ')'
+		{
+			check_type($2, PSTACK_NUM);
+			check_type($4, PSTACK_NUM);
+			$$.u.i = VARTYPE_TABLE;
+		}
 	;
 	
 read_stmnt:
@@ -319,12 +336,15 @@ read_var_loc:
 		}
 	| NUMVAR '(' expr ')'
 		{
+			check_type($3, PSTACK_NUM);	
 			numvar_declared($1.column, $1.u.i, VARTYPE_LIST);
 			add_op_instr(READ_LIST_OP);
 			add_id_instr(var_index1($1.u.i));
 		}
 	| NUMVAR '(' expr ',' expr ')'
 		{
+			check_type($3, PSTACK_NUM);	
+			check_type($5, PSTACK_NUM);	
 			numvar_declared($1.column, $1.u.i, VARTYPE_TABLE);
 			add_op_instr(READ_TABLE_OP);
 			add_id_instr(var_index1($1.u.i));
@@ -420,39 +440,47 @@ print_sep:
 print_item:
 	expr
 		{
-			add_op_instr(PRINT_NUM_OP);
-		}
-	| str_expr
-		{
-			add_op_instr(PRINT_STR_OP);
+			if ($1.type == PSTACK_NUM) {
+				add_op_instr(PRINT_NUM_OP);
+			} else {
+				add_op_instr(PRINT_STR_OP);
+			}
 		}
 	| TAB '(' expr ')'
 		{
+			check_type($3, PSTACK_NUM);
 			add_op_instr(PRINT_TAB_OP);
 		}
 	;
 	
 let_stmnt:
-	LET STRVAR '=' str_expr
+	LET STRVAR '=' expr
 		{
+			check_type($4, PSTACK_STR);
 			strvar_decl($2.u.i);
 			add_op_instr(LET_STRVAR_OP);
 			add_id_instr(get_rampos($2.u.i));
 		}
 	| LET NUMVAR '=' expr
 		{
+			check_type($4, PSTACK_NUM);
 			numvar_declared($2.column, $2.u.i, VARTYPE_NUM);
 			add_op_instr(LET_VAR_OP);
 			add_id_instr(get_rampos($2.u.i));
 		}
 	| LET NUMVAR '(' expr ')' '=' expr
 		{
+			check_type($4, PSTACK_NUM);
+			check_type($7, PSTACK_NUM);
 			numvar_declared($2.column, $2.u.i, VARTYPE_LIST);
 			add_op_instr(LET_LIST_OP);
 			add_id_instr(var_index1($2.u.i));
 		}
 	| LET NUMVAR '(' expr ',' expr ')' '=' expr
 		{
+			check_type($4, PSTACK_NUM);
+			check_type($6, PSTACK_NUM);
+			check_type($9, PSTACK_NUM);
 			numvar_declared($2.column, $2.u.i, VARTYPE_TABLE);
 			add_op_instr(LET_TABLE_OP);
 			add_id_instr(var_index1($2.u.i));
@@ -460,40 +488,75 @@ let_stmnt:
 	;
 	
 expr:
-	INT						
+	str_expr
+		{
+			$$.type = $1.type;
+		}
+	| INT						
 		{
 			add_op_instr(PUSH_NUM_OP);
 			add_num_instr($1.u.num.d);
+			$$.type = PSTACK_NUM;
 		}
 	| NUM
 		{
 			add_op_instr(PUSH_NUM_OP);
 			add_num_instr($1.u.num.d);
+			$$.type = PSTACK_NUM;
 		}
 	| NUMVAR
 		{
 			numvar_expr($1.column, $1.u.i);
+			$$.type = PSTACK_NUM;
 		}
 	| NUMVAR '(' expr ')'
 		{
+			check_type($3, PSTACK_NUM);
 			list_expr($1.column, $1.u.i);
+			$$.type = PSTACK_NUM;
 		}
 	| NUMVAR '(' expr ',' expr ')'
 		{
+			check_type($3, PSTACK_NUM);
+			check_type($5, PSTACK_NUM);
 			table_expr($1.column, $1.u.i);
+			$$.type = PSTACK_NUM;
 		}
-	| USRFN			{ usrfun_call($1.column, $1.u.i, 0); }
-	| USRFN '(' expr ')'	{ usrfun_call($1.column, $1.u.i, 1); }
-	| IFUN			{ ifun_call($1.column, $1.u.i, 0); }
-	| IFUN '(' expr ')'	{ ifun_call($1.column, $1.u.i, 1); }
-	| expr '+' expr		{ add_op_instr(ADD_OP);	}
-	| expr '-' expr		{ add_op_instr(SUB_OP);	}
-	| expr '*' expr		{ add_op_instr(MUL_OP);	}
-	| expr '/' expr		{ add_op_instr(DIV_OP);	}
-	| '-' expr %prec NEG	{ add_op_instr(NEG_OP);	}
-	| '+' expr %prec NEG
-	| expr '^' expr		{ add_op_instr(POW_OP);	}
-	| '(' expr ')'
+	| USRFN
+		{
+			usrfun_call($1.column, $1.u.i, 0);
+			$$.type = PSTACK_NUM;
+		}
+	| USRFN '(' expr ')'
+		{
+			check_type($3, PSTACK_NUM);
+			usrfun_call($1.column, $1.u.i, 1);
+			$$.type = PSTACK_NUM;
+		}
+	| IFUN
+		{
+			ifun_call($1.column, $1.u.i, 0);
+			$$.type = PSTACK_NUM;
+		}
+	| IFUN '(' expr ')'
+		{
+			check_type($3, PSTACK_NUM);
+			ifun_call($1.column, $1.u.i, 1);
+			$$.type = PSTACK_NUM;
+		}
+	| expr '+' expr		{ $$.type = binary_expr($1, $3, ADD_OP); }
+	| expr '-' expr		{ $$.type = binary_expr($1, $3, SUB_OP); }
+	| expr '*' expr		{ $$.type = binary_expr($1, $3, MUL_OP); }
+	| expr '/' expr		{ $$.type = binary_expr($1, $3, DIV_OP); }
+	| '-' expr %prec NEG
+		{
+			check_type($2, PSTACK_NUM);
+			add_op_instr(NEG_OP);
+			$$.type = PSTACK_NUM;
+		}
+	| '+' expr %prec NEG	{ $$.type = $2.type; }
+	| expr '^' expr		{ $$.type = binary_expr($1, $3, POW_OP); }
+	| '(' expr ')'		{ $$.type = $2.type; }
 	;
 
 %%

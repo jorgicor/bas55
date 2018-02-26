@@ -718,6 +718,51 @@ void table_expr(int column, int coded_var)
 	}
 }
 
+void check_type(YYSTYPE a, enum pstack_type t)
+{
+	if (a.type != t) {
+		if (t == PSTACK_NUM) {
+			cerror(E_NUM_EXPECT, 1);
+			print_lex_context(a.column);
+		} else {
+			cerror(E_STR_EXPECT, 1);
+			print_lex_context(a.column);
+		}
+	}
+}
+
+int binary_expr(YYSTYPE a, YYSTYPE b, int op)
+{
+	check_type(a, PSTACK_NUM);
+	check_type(b, PSTACK_NUM);		
+	add_op_instr(op);
+	return PSTACK_NUM;
+}
+
+void boolean_expr(YYSTYPE a, YYSTYPE relop, YYSTYPE b)
+{
+	if (a.type == PSTACK_NUM) {
+		check_type(b, PSTACK_NUM);
+		switch (relop.u.i) {
+		case '<': add_op_instr(LESS_OP); break;
+		case '>': add_op_instr(GREATER_OP); break;
+		case '=': add_op_instr(EQ_OP); break;
+		case LESS_EQ: add_op_instr(LESS_EQ_OP); break;
+		case GREATER_EQ: add_op_instr(GREATER_EQ_OP); break;
+		case NOT_EQ: add_op_instr(NOT_EQ_OP); break;
+		}
+	} else {
+		check_type(b, PSTACK_STR);
+		switch (relop.u.i) {
+		case '=': add_op_instr(EQ_STR_OP); break;
+		case NOT_EQ: add_op_instr(NOT_EQ_STR_OP); break;
+		default:
+			cerror(E_STR_REL_EQ, 1);
+			print_lex_context(relop.column);
+		}
+	}
+}
+
 void usrfun_call(int column, int name, int nparams)
 {
 	struct usrfun *p;

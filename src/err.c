@@ -65,7 +65,11 @@ static const char *s_errors[] = {
 	"array position read before value assigned",
 	"insufficient data for READ",
 	"reading string into numeric variable",
-	"no space after keyword"
+	"no space after keyword",
+	"numeric expression expected",
+	"string expression expected",
+	"string expressions can only be tested for equality",
+	"numeric variable name expected",
 };
 
 /* Prints the error code on stderr. */
