@@ -1,0 +1,35 @@
+Tests
+
+numvar_dimensioned()
+	E_NUMVAR_ARRAY
+	E_INVAL_DIM for table
+	E_TYPE_MISMATCH
+
+option_decl()
+	E_SYNTAX	
+
+list_expr()
+	E_FUNARG_AS_ARRAY
+
+table_expr()
+	E_FUNARG_AS_ARRAY
+
+check_jump()
+	Add context?
+
+lex_parse_quoted_str()
+	E_STR_NOEND
+
+lex_parse_data_elem()
+	E_STR_NOEND
+
+* Change syntax errors to semantic errors for string - numeric expressions
+combinations, internal functions with invalid number of arguments of wrong
+type of arguments, etc. Check 20, 36, 37, 102, 103, 104, 105, 106, 113, 143,
+144, 145, 147, 149, 150, 155, 156, 157, 158, 159, 185, 189, 191, 192, 193,
+194, 195, 206, 207, 208.
+
+* Add debug opcode for column positions.
+
+* Check at compile time indexes for arrays that are constants.
+
