@@ -165,8 +165,9 @@ static void cerrorln(int ecode, int lineno, int nl)
 {	
 	if (ecode == E_NO_MEM || ecode == E_BIG_RAM) {
 		/* print only once the 'no memory' error */
-		if (s_no_mem)
+		if (s_no_mem) {
 			return;
+		}
 		s_no_mem = 1;
 	}
 	new_error();

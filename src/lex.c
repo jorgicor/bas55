@@ -183,7 +183,7 @@ static int lex_parse_num(void)
 		if (errno == ERANGE) {
 			cwarn(E_CONST_OVERFLOW);
 			enl();
-			// print_lex_last_context();
+			print_lex_last_context();
 		}
 		return (t == NUM_TYPE_INT) ? INT : NUM;
 	}

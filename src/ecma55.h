@@ -326,6 +326,7 @@ void set_id_instr(int i, int id);
 
 /* codedvar.c */
 
+int encode_var2(char letter, char suffix);
 int encode_var(const char *var_name);
 int is_strvar(int coded_var);
 int is_numvar(int coded_var);

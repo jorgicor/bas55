@@ -1,2 +1,6 @@
 360: warning: numeric constant overflow 
+ LET A=3E99999
+       ^
 770: warning: numeric constant overflow 
+ LET A=-3E99999
+        ^

@@ -16,15 +16,21 @@
  * The next byte holds the variable ASCII name: 'A', 'B', etc.
  */
 
+/* letter is 'A' to 'Z', suffix is '\0', '$' or '0'-'9'. */
+int encode_var2(char letter, char suffix)
+{
+	int code;
+
+	code = ((int) letter << 8) | suffix;
+	return code;
+}
+
 /* var_name must be [A-Z] | [A-Z]$ | [A-Z][0-9] .
  * Returns an integer that represents the var name and type.
  */
 int encode_var(const char *var_name)
 {
-	int code;
-
-	code = ((int) var_name[0] << 8) | var_name[1];
-	return code;
+	return encode_var2(var_name[0], var_name[1]);
 }
 
 /* If coded_var is of string type. */

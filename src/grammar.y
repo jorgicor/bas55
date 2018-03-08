@@ -237,7 +237,8 @@ fnparam:
 	| '(' STRVAR ')'
 		{
 			$$.u.fun_param.nparams = 1;
-			$$.u.fun_param.param = (var_index1($2.u.i) << 8);
+			$$.u.fun_param.param = encode_var2(
+				get_var_letter($2.u.i), '\0');
 			cerror(E_NUMVAR_EXPECT, 1);
 			print_lex_context($2.column);	
 		}
@@ -298,7 +299,10 @@ var_loc:
 	;
 	
 var_loc_rest:
-	/* empty */			{ $$.u.i = VARTYPE_NUM; }
+	/* empty */
+		{ 
+			$$.u.i = VARTYPE_NUM;
+		}
 	| '(' expr ')'
 		{
 			check_type($2, PSTACK_NUM);

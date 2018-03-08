@@ -1,3 +1,21 @@
+1.15	2018-??-??
+
+	* Most parsing errors are now much more detailed, printing the line and
+	  the point of the error. For example: 
+
+		250: error: syntax error 
+		 LET A=5**2
+			 ^
+
+	* Previously, using a number where a string was expected or viceversa
+	  was reported as a cryptic "Syntax error". Now, these errors are
+	  semantic, and we give more detailed information about what is wrong.
+	  For example:
+
+		270: error: string expression expected 
+		 LET A$=X
+			^
+
 1.14	2018-02-22
 
 	* Checking for uninitialized array elements now is possible in debug
