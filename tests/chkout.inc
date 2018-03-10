@@ -11,7 +11,8 @@ $bas55 $bas 2>$etp | tr -d '\r' >$out
 
 # Remove \r from $etp and remove leading path in error strings.
 
-tr -d '\r' <$etp | sed 's|'$srcdir'/||' >$err
+s_esc="$(echo "$srcdir"/ | sed 's/[]\\.$*{}|+?()[^-]/\\&/g')"
+tr -d '\r' <$etp | sed 's|^'$s_esc'||' >$err
 rm -f $etp
 
 diff $out $ok && diff $err $eok && rm -f $out $err
