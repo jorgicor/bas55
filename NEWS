@@ -1,3 +1,10 @@
+1.16	2018-06-02
+
+	* Fixed tests/chkout.inc which caused tests 36 and 161 to fail. We were
+	  removing the path from error files and when the path was . , we were
+	  using the regular expression ./ , so we were removing any character
+	  followed by a / .
+
 1.15	2018-03-08
 
 	* Most parsing errors are now much more detailed, printing the line and
