@@ -7,7 +7,7 @@ editor with line renumbering capabilities.
 
 bas55 is free software. See the file `COPYING` for copying conditions.
 
-Home page: http://jorgicor.sdfeu.org/bas55  
+Home page: https://jorgicor.niobe.org/bas55  
 Send bug reports to: jorge.giner@hotmail.com
 
 [1]: http://www.ecma-international.org/publications/standards/Standardwithdrawn.htm

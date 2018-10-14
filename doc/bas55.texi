@@ -82,7 +82,7 @@ standard}.
 
 @command{bas55} is free software.
 
-The latest version of the program, source code and documentation can be found at @uref{http://jorgicor.sdfeu.org/bas55}.
+The latest version of the program, source code and documentation can be found at @uref{https://jorgicor.niobe.org/bas55}.
 
 @node Tutorial
 @chapter Tutorial

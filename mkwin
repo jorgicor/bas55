@@ -33,7 +33,7 @@ show_menu () {
 download_src () {
 	if [ ! -f $bas55_targz ]
 	then
-		wget -c http://jorgicor.sdfeu.org/bas55/$bas55_targz
+		wget -c https://jorgicor.niobe.org/bas55/$bas55_targz
 		if [ $? -ne 0 ]
 		then
 			echo "Error downloading $bas55_targz"

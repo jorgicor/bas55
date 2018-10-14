@@ -7,7 +7,7 @@ editor with line renumbering capabilities.
 
 bas55 is free software. See the file `COPYING` for copying conditions.
 
-Home page: http://jorgicor.sdfeu.org/bas55  
+Home page: https://jorgicor.niobe.org/bas55  
 GitHub: https://github.com/jorgicor/bas55
 Send bug reports to: jorge.giner@hotmail.com
 
@@ -17,7 +17,7 @@ Windows precompiled binaries
 ============================
 
 A precompiled distribution for *Microsoft Windows* is provided in a ZIP file.
-It can be found at http://jorgicor.sdfeu.org/bas55 . After decompressing it,
+It can be found at https://jorgicor.niobe.org/bas55 . After decompressing it,
 you will have these files:
 
 ~~~
@@ -55,7 +55,7 @@ Compiling from the source distribution
 If you have the official source package, and you are building on a Unix-like
 environment (this includes *Cygwin* on *Windows*), you can find generic
 instructions in the file `INSTALL`. The complete source distribution can
-always be found at http://jorgicor.sdfeu.org/bas55 .  
+always be found at https://jorgicor.niobe.org/bas55 .  
 
 After installing, you can type `man bas55` to see a brief explanation on how to
 use the `bas55` program.  More detailed documentation, including a tutorial on

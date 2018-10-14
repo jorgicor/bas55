@@ -1,3 +1,14 @@
+1.17	2018-10-14
+
+	* Updated project website to https://jorgicor.niobe.org/bas55 .
+
+	Source changes
+	--------------
+
+	* src/Makefile.am using AM_CFLAGS and AM_CPPFLAGS instead of
+	  bas55_CFLAGS and bas55_CPPFLAGS, which avoids generating object files
+	  with prefixes as we don't need the feature.
+
 1.16	2018-06-02
 
 	* Fixed tests/chkout.inc which caused tests 36 and 161 to fail. We were

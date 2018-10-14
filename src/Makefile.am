@@ -4,9 +4,15 @@
 
 BUILT_SOURCES = grammar.h
 AM_YFLAGS = -d
+
+# When using per object flags (bas55_CFLAGS, bas55_CPPFLAGS, etc), automake
+# generates the object files with bas55_ prefixed, just in case we build the
+# same program with different flags. But we don't need it for this project;
+# AM_CFLAGS is enough.
+AM_CPPFLAGS = $(LIBEDIT_CFLAGS)
+AM_CFLAGS = $(WARN_CFLAGS)
+
 bin_PROGRAMS = bas55
-bas55_CPPFLAGS = $(LIBEDIT_CFLAGS)
-bas55_CFLAGS = $(WARN_CFLAGS)
 bas55_LDADD = $(LIBEDIT_LIBS)
 bas55_SOURCES =	ecma55.c ecma55.h \
 		cmd.c code.c \

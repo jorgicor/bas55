@@ -6,10 +6,10 @@
 # ===========================================================================
 
 AC_INIT([bas55],
-	[1.16],
+	[1.17],
 	[jorge.giner@hotmail.com],
 	bas55,
-	[http://jorgicor.sdfeu.org/bas55])
+	[https://jorgicor.niobe.org/bas55])
 
 AC_CONFIG_MACRO_DIR([m4])
 
