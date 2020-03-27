@@ -15,26 +15,26 @@ AND PROPERTIES OF THE READ AND DATA STATEMENTS, AS LISTED:
                 BEGIN TEST
 
 
-SHOULD BE:     1            A              2            B
-ACTUAL:        1            A              2            B
+SHOULD BE:       1              A                2              B
+ACTUAL:          1              A                2              B
 READ OK
 
-SHOULD BE:     3             4             5            C
-ACTUAL:        3             4             5            C
+SHOULD BE:       3               4               5              C
+ACTUAL:          3               4               5              C
 READ OK
 
-SHOULD BE:    D             E             F             6
-7              8 
-ACTUAL:       D             E             F             6
-7              8 
+SHOULD BE:      D               E               F               6
+7                8 
+ACTUAL:         D               E               F               6
+7                8 
 READ OK
 
-SHOULD BE:    9
-ACTUAL:       9
+SHOULD BE:      9
+ACTUAL:         9
 READ OK
 
-SHOULD BE:     10            11 
-ACTUAL:        10            11 
+SHOULD BE:       10              11 
+ACTUAL:          10              11 
 READ OK
 
 *** TEST PASSED ***
@@ -54,24 +54,24 @@ VARIABLE-TYPE.
 
 EXECUTE FIRST RESTORE
 
-SHOULD BE:    1             A             2             B
-3             4             5
-ACTUAL:       1             A             2             B
-3             4             5
+SHOULD BE:      1               A               2               B
+3               4               5
+ACTUAL:         1               A               2               B
+3               4               5
 READ OK
 
-SHOULD BE:    C             D             E             F
- 6             7            8
-ACTUAL:       C             D             E             F
- 6             7            8
+SHOULD BE:      C               D               E               F
+ 6               7              8
+ACTUAL:         C               D               E               F
+ 6               7              8
 READ OK
 
 EXECUTE SECOND RESTORE
 
 
-SHOULD BE:     1            A             2             B
+SHOULD BE:       1              A               2               B
  3 
-ACTUAL:        1            A             2             B
+ACTUAL:          1              A               2               B
  3 
 READ OK
 

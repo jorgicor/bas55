@@ -10,14 +10,14 @@ CAN BE USED AS PRIMARIES IN NUMERIC EXPRESSIONS.
 
                   BEGIN TEST
 
-CASE #        SHOULD BE     ACTUAL        OUTCOME
+CASE #          SHOULD BE       ACTUAL          OUTCOME
 
- 1             26            26           TEST PASSES
- 2             96.9331       96.9331      TEST PASSES
- 3            -9            -9            TEST PASSES
- 4             15.963        15.963       TEST PASSES
- 5            -43.5         -43.5         TEST PASSES
- 6            -2            -2            TEST PASSES
+ 1               26              26             TEST PASSES
+ 2               96.933077       96.933077      TEST PASSES
+ 3              -9              -9              TEST PASSES
+ 4               15.962963       15.962963      TEST PASSES
+ 5              -43.5           -43.5           TEST PASSES
+ 6              -2              -2              TEST PASSES
 
 *** TEST PASSED ***
 

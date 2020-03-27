@@ -9,30 +9,30 @@ RND FUNCTION.
 
              BEGIN TEST
 
-POSITION      VALUE
- 1             .840188 
- 2             .394383 
- 3             .783099 
- 4             .79844 
- 5             .911647 
- 6             .197551 
- 7             .335223 
- 8             .76823 
- 9             .277775 
- 10            .55397 
- 11            .477397 
- 12            .628871 
- 13            .364784 
- 14            .513401 
- 15            .95223 
- 16            .916195 
- 17            .635712 
- 18            .717297 
- 19            .141603 
- 20            .606969 
+POSITION        VALUE
+ 1               7.8259036E-6 
+ 2               .13153779 
+ 3               .75560532 
+ 4               .45865013 
+ 5               .53276724 
+ 6               .21895919 
+ 7               4.7044616E-2 
+ 8               .67886472 
+ 9               .67929641 
+ 10              .9346929 
+ 11              .38350208 
+ 12              .51941637 
+ 13              .83096535 
+ 14              .03457211 
+ 15              5.3461635E-2 
+ 16              .52970019 
+ 17              .67114938 
+ 18              7.6981857E-3 
+ 19              .38341565 
+ 20              6.6842237E-2 
 
 TO DETERMINE WHETHER THIS TEST PASSES OR FAILS, THE USER
-MUST RUN THE TEST THREE TIMES, NOTHING THE SEQUENCE OF
+MUST RUN THE TEST THREE TIMES, NOTING THE SEQUENCE OF
 NUMBERS PRODUCED EACH TIME. IF ALL THREE ARE IDENTICAL, 
 ***  TEST PASSED  ***
 

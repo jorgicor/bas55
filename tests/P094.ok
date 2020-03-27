@@ -10,37 +10,37 @@ INTO PREVIOUS VARIABLES.
                   BEGIN TEST
 
 VALUES FOR A(I)
-I             A(I)          A(I)
-              SHOULD BE     ACTUAL
- 1             1             1             
- 2             299           299           
- 3             199           199           
- 4             4             4             
- 5             5             5             
+I               A(I)            A(I)
+                SHOULD BE       ACTUAL
+ 1               1               1               
+ 2               299             299             
+ 3               199             199             
+ 4               4               4               
+ 5               5               5               
 
 *** TEST FOR ONE-DIMENSIONAL ARRAY PASSED. ***
 
 VALUES FOR C(I,J)
-I=                          J=1           J=2           J=3
- 1            SHOULD BE:     1001          1002          1003 
-              ACTUAL:        1001          1002          1003 
-                                                           
+I=                              J=1             J=2             J=3
+ 1              SHOULD BE:       1001            1002            1003 
+                ACTUAL:          1001            1002            1003 
+                                                                   
 
- 2            SHOULD BE:     499           2002          2003 
-              ACTUAL:        499           2002          2003 
-                                                           
+ 2              SHOULD BE:       499             2002            2003 
+                ACTUAL:          499             2002            2003 
+                                                                   
 
- 3            SHOULD BE:     3001          3002          3003 
-              ACTUAL:        3001          3002          3003 
-                                                           
+ 3              SHOULD BE:       3001            3002            3003 
+                ACTUAL:          3001            3002            3003 
+                                                                   
 
- 4            SHOULD BE:     4001          399           4003 
-              ACTUAL:        4001          399           4003 
-                                                           
+ 4              SHOULD BE:       4001            399             4003 
+                ACTUAL:          4001            399             4003 
+                                                                   
 
- 5            SHOULD BE:     5001          5002          5003 
-              ACTUAL:        5001          5002          5003 
-                                                           
+ 5              SHOULD BE:       5001            5002            5003 
+                ACTUAL:          5001            5002            5003 
+                                                                   
 
 
 *** TEST FOR TWO-DIMENSIONAL ARRAY PASSED. ***

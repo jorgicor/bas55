@@ -20,12 +20,12 @@ TO PASS THIS TEST:
 ABOUT TO ATTEMPT EXECUTION OF:
    FOR I = ATN((-9) / 0) TO 0
 
-ITERATION     CONTROL-VARIABLES VALUES
-COUNT         ACTUAL        SHOULD BE
- 1            -1.5708       -1.5708 
- 2            -.570796      -.5708 
+ITERATION       CONTROL-VARIABLES VALUES
+COUNT           ACTUAL          SHOULD BE
+ 1              -1.5707963      -1.5707963 
+ 2              -.57079633      -.5707963 
 EXITING LOOP.
-               .429204       .429304 
+                 .42920367       .4292037 
 
 IF ZERO-DIVIDE  REPORTED, THEN
 *** TEST PASSED ***

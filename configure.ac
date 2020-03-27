@@ -6,7 +6,7 @@
 # ===========================================================================
 
 AC_INIT([bas55],
-	[1.17],
+	[1.18],
 	[jorge.giner@hotmail.com],
 	bas55,
 	[https://jorgicor.niobe.org/bas55])
@@ -18,8 +18,8 @@ AM_INIT_AUTOMAKE(-Wall -Werror -Wportability subdir-objects
 		 color-tests parallel-tests)
 AC_CONFIG_HEADERS([config.h])
 
-AC_DEFINE([COPYRIGHT_YEARS], ["2018"], [Years of copyright])
-AC_SUBST(COPYRIGHT_YEARS, [2018])
+AC_DEFINE([COPYRIGHT_YEARS], ["2020"], [Years of copyright])
+AC_SUBST(COPYRIGHT_YEARS, [2020])
 
 AC_ARG_WITH([termcap],
   [AS_HELP_STRING([--with-termcap],
@@ -63,6 +63,11 @@ AX_CHECK_COMPILE_FLAG([-Wdeclaration-after-statement],
 	      [WARN_CFLAGS="$WARN_CFLAGS -Wdeclaration-after-statement"],
 	      [], [])
 AC_SUBST(WARN_CFLAGS)
+
+# Endianess.
+# AC_C_BIGENDIAN
+# AC_C_BIGENDIAN([],[FDLIBM_CFLAGS="-D__LITTLE_ENDIAN"])
+# AC_SUBST(FDLIBM_CFLAGS)
 
 # Checks for libraries.
 AC_SEARCH_LIBS([pow], [m])

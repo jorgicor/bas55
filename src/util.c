@@ -10,7 +10,6 @@
 #include <assert.h>
 #include <ctype.h>
 #include <limits.h>
-#include <math.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -100,105 +99,14 @@ void toupper_str(char *str)
 	}
 }
 
-
-/* Returns 1 if this machine is little endian. */
-int is_little_endian(void)
+double m_round(double d)
 {
-	union {
-		float f;
-		unsigned char bytes[4];
-	} mix;
-
-	/* 1.0 is represented as 3f80 0000 */
-	mix.f = 1.0f;
-	return mix.bytes[0] != 0x3f;
-}
-
-/**
- * Returns:
- * 1 if +inf
- * -1 if -inf
- * 0 if not infinite
- */
-int infinite_sign(double d)
-{
-	int i;
-	union {
-		unsigned char bytes[8];
-		double d;
-	} mix;
-
-	mix.d = d;
-	if (is_little_endian()) {
-		if (mix.bytes[6] != 0xf0)
-			return 0;
-		for (i = 0; i < 6; i++)
-			if (mix.bytes[i] != 0)
-				return 0;
-		if (mix.bytes[7] == 0x7f)
-			return 1;
-		else if (mix.bytes[7] == 0xff)
-			return -1;
-		else
-			return 0;
-	} else if (mix.bytes[1] == 0xf0) {
-		for (i = 2; i < 8; i++)
-			if (mix.bytes[i] != 0)
-				return 0;
-		if (mix.bytes[0] == 0x7f)
-			return 1;
-		else if (mix.bytes[1] == 0xff)
-			return -1;
-		else return 0;
-	} else {
-		return 0;
-	}
-}
-
-int is_nan(double d)
-{
-	int i;
-	union {
-		unsigned char bytes[8];
-		double d;
-	} mix;
-
-	mix.d = d;
-	if (is_little_endian()) {
-		if (mix.bytes[7] != 0x7f && mix.bytes[7] != 0xff)
-			return 0;
-		if ((mix.bytes[6] & 0xf0) != 0xf0)
-			return 0;
-		for (i = 0; i < 6; i++) {
-			if (mix.bytes[i] != 0)
-				return 1;
-		}
-		if ((mix.bytes[6] & 0x0f) != 0)
-			return 1;
-		return 0;
-	} else {
-		if (mix.bytes[0] != 0x7f && mix.bytes[0] != 0xff)
-			return 0;
-		if ((mix.bytes[1] & 0xf0) != 0xf0)
-			return 0;
-		for (i = 2; i < 8; i++) {
-			if (mix.bytes[i] != 0)
-				return 1;
-		}
-		if ((mix.bytes[1] & 0x0f) != 0)
-			return 1;
-		return 0;
-	}
-}
-
-double round(double d)
-{
-	return floor(d + 0.5);
+	return m_floor(d + 0.5);
 }
 
 int round_to_int(double d)
 {
-	return (int) round(d);
+	return (int) m_round(d);
 }
 
 void print_chars(FILE *f, const char *s, size_t len)

@@ -48,7 +48,8 @@ dist_check_SCRIPTS = p001.test p002.test p003.test p004.test p005.test \
 		     p196.test p197.test p198.test p199.test p200.test \
 		     p201.test p202.test p204.test p205.test \
 		     p206.test p207.test p208.test \
-		     printab.test printspc.test table.test truend.test
+		     printab.test printspc.test table.test truend.test \
+		     pow.test
 
 TESTS = $(dist_check_SCRIPTS)
 
@@ -183,5 +184,6 @@ EXTRA_DIST = README.md \
 	     printab.BAS printab.ok printab.eok \
 	     printspc.BAS printspc.ok printspc.eok \
 	     table.BAS table.ok table.eok \
-	     truend.BAS truend.ok truend.eok
+	     truend.BAS truend.ok truend.eok \
+	     pow.BAS pow.ok pow.eok
 

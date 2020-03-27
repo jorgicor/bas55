@@ -12,14 +12,14 @@ WELL AS UNDER THE DIRECT CONTROL OF THE FOR-STATEMENT.
                BEGIN TEST.
 
 CONTROL VARIABLE:
-SHOULD BE     ACTUAL        RESULT
- 3             3              OK  
- 6             6              OK  
- 9             9              OK  
+SHOULD BE       ACTUAL          RESULT
+ 3               3                OK  
+ 6               6                OK  
+ 9               9                OK  
 CONTROL VARIABLE ALTERED.
- 20            20             OK  
+ 20              20               OK  
 LOOP EXITED
- 23            23             OK  
+ 23              23               OK  
 
 NO. TIMES THROUGH LOOP:
 SHOULD BE:  4      ACTUAL:  4    RESULT:   OK  

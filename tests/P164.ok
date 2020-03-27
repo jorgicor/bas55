@@ -18,12 +18,12 @@ NUMERIC EXPRESSIONS.
 
                  BEGIN TEST.
 
-CASE #        SHOULD BE     ACTUAL        OUTCOME
+CASE #          SHOULD BE       ACTUAL          OUTCOME
 
- 1             1             1             OK 
- 2             1             1             OK 
- 3             7             7.00001       OK 
- 4             3             3             OK 
+ 1               1               1               OK 
+ 2               1               .99999998       OK 
+ 3               7               7.0000001       OK 
+ 4               3               3.0000001       OK 
 
 *** TEST PASSED ***
 
@@ -38,11 +38,11 @@ USER-DEFINED FUNCTIONS AND ALSO AS SUBSCRIPTS.
 
                  BEGIN TEST.
 
-CASE #        SHOULD BE     ACTUAL        OUTCOME
+CASE #          SHOULD BE       ACTUAL          OUTCOME
 
- 1             1             1             OK 
- 2             1.2           1.2           OK 
- 3             .783099       .783099       OK 
+ 1               1               1               OK 
+ 2               1.2             1.2             OK 
+ 3               .75560532       .75560532       OK 
 
 *** TEST PASSED ***
 
@@ -56,13 +56,13 @@ SUBSCRIPTS, THEY ARE ROUNDED TO THE NEAREST INTEGER.
 
                  BEGIN TEST.
 
-CASE #        SHOULD BE     ACTUAL        OUTCOME
+CASE #          SHOULD BE       ACTUAL          OUTCOME
 
- 1             27            27            OK 
- 2             1             1             OK 
- 3             11            11            OK 
- 4             1             1             OK 
- 5             71            71            OK 
+ 1               27              27              OK 
+ 2               1               1               OK 
+ 3               11              11              OK 
+ 4               1               1               OK 
+ 5               71              71              OK 
 
 *** TEST PASSED ***
 

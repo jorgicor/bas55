@@ -24,11 +24,11 @@ BEING COMPARED                   DECIMAL         COMPARISONS
                                  ACCURACY          >   =
 
 9.876543212E-7 : 9.876533E-7        6              T   F    
-9.876543212E-7 : 9.8765422E-7       7              F   T    
-9.876543212E-7 : 9.87654311E-7      8              F   T    
-9.876543212E-7 : 9.876543201E-7     9              F   T    
+9.876543212E-7 : 9.8765422E-7       7              T   F    
+9.876543212E-7 : 9.87654311E-7      8              T   F    
+9.876543212E-7 : 9.876543201E-7     9              T   F    
 
-*** TEST INDICATES DECIMAL ACCURACY OF AT MOST  6 DIGITS. ***
+*** TEST INDICATES DECIMAL ACCURACY OF AT LEAST  9 DIGITS. ***
 IF DOCUMENTATION FOR THE IMPLEMENTATION-DEFINED ACCURACY
    FOR NUMERIC VALUES IS COMPATIBLE WITH THIS RESULT, THEN
 *** TEST PASSED ***
@@ -50,11 +50,11 @@ BEING COMPARED                   DECIMAL         COMPARISONS
                                  ACCURACY          >   =
 
 -9.999988888E36 : -9.999999E36      6              T   F    
--9.999988888E36 : -9.9999899E36     7              F   T    
--9.999988888E36 : -9.99998899E36    8              F   T    
--9.999988888E36 : -9.999988899E36   9              F   T    
+-9.999988888E36 : -9.9999899E36     7              T   F    
+-9.999988888E36 : -9.99998899E36    8              T   F    
+-9.999988888E36 : -9.999988899E36   9              T   F    
 
-*** TEST INDICATES DECIMAL ACCURACY OF AT MOST  6 DIGITS. ***
+*** TEST INDICATES DECIMAL ACCURACY OF AT LEAST  9 DIGITS. ***
 IF DOCUMENTATION FOR THE IMPLEMENTATION-DEFINED ACCURACY
    FOR NUMERIC VALUES IS COMPATIBLE WITH THIS RESULT, THEN
 *** TEST PASSED ***
@@ -75,11 +75,11 @@ BEING COMPARED                   DECIMAL         COMPARISONS
                                  ACCURACY          <   =
 
 9.40395E-37 : 9.40396E-37           6              T   F    
-9.40395E-37 : 9.403951E-37          7              F   T    
-9.40395E-37 : 9.4039501E-37         8              F   T    
-9.40395E-37 : 9.40395001E-37        9              F   T    
+9.40395E-37 : 9.403951E-37          7              T   F    
+9.40395E-37 : 9.4039501E-37         8              T   F    
+9.40395E-37 : 9.40395001E-37        9              T   F    
 
-*** TEST INDICATES DECIMAL ACCURACY OF AT MOST  6 DIGITS. ***
+*** TEST INDICATES DECIMAL ACCURACY OF AT LEAST  9 DIGITS. ***
 IF DOCUMENTATION FOR THE IMPLEMENTATION-DEFINED ACCURACY
    FOR NUMERIC VALUES IS COMPATIBLE WITH THIS RESULT, THEN
 *** TEST PASSED ***

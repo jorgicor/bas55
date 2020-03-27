@@ -11,13 +11,13 @@ FROM WITHIN A FOR-BLOCK.
                BEGIN TEST.
 
 CONTROL VARIABLE:
-SHOULD BE     ACTUAL        RESULT
- 8             8              OK  
- 4             4              OK  
- 0             0              OK  
--4            -4              OK  
+SHOULD BE       ACTUAL          RESULT
+ 8               8                OK  
+ 4               4                OK  
+ 0               0                OK  
+-4              -4                OK  
 LOOP EXITED
--8            -8              OK  
+-8              -8                OK  
 
 NO. TIMES THROUGH LOOP:
 SHOULD BE:  4      ACTUAL:  4     RESULT:   OK  
@@ -37,16 +37,16 @@ CONTROL-VARIABLE, THE ORIGINAL VALUE IS LOST.
                BEGIN TEST.
 
 CONTROL VARIABLE:
-SHOULD BE     ACTUAL        RESULT
+SHOULD BE       ACTUAL          RESULT
 ENTERING OUTER LOOP
- 8             8              OK  
+ 8               8                OK  
 ENTERING INNER LOOP
--10           -10             OK  
--8            -8              OK  
+-10             -10               OK  
+-8              -8                OK  
 INNER LOOP EXITED
--6            -6              OK  
+-6              -6                OK  
 OUTER LOOP EXITED
--9            -9              OK  
+-9              -9                OK  
 
 NO. TIMES THROUGH INNER LOOP:
 SHOULD BE:  2      ACTUAL:  2    RESULT:   OK  
@@ -71,17 +71,17 @@ THIS HAPPENS.
 LOOP IS: FOR I1= 33  TO  66  STEP  4 
 
 CONTROL VARIABLE:
-SHOULD BE     ACTUAL        RESULT
- 33            33             OK  
- 37            37             OK  
- 41            41             OK  
- 45            45             OK  
- 49            49             OK  
- 53            53             OK  
- 57            57             OK  
- 61            61             OK  
+SHOULD BE       ACTUAL          RESULT
+ 33              33               OK  
+ 37              37               OK  
+ 41              41               OK  
+ 45              45               OK  
+ 49              49               OK  
+ 53              53               OK  
+ 57              57               OK  
+ 61              61               OK  
 JUMPED OUT OF LOOP
- 61            61             OK  
+ 61              61               OK  
 
 NO. TIMES THROUGH LOOP:
 SHOULD BE:  8      ACTUAL:  8      RESULT:   OK  
@@ -91,14 +91,14 @@ SHOULD BE:  8      ACTUAL:  8      RESULT:   OK
 LOOP IS: FOR I1= 7  TO  7  STEP  0 
 
 CONTROL VARIABLE:
-SHOULD BE     ACTUAL        RESULT
- 7             7              OK  
- 7             7              OK  
- 7             7              OK  
- 7             7              OK  
- 7             7              OK  
+SHOULD BE       ACTUAL          RESULT
+ 7               7                OK  
+ 7               7                OK  
+ 7               7                OK  
+ 7               7                OK  
+ 7               7                OK  
 JUMPED OUT OF LOOP
- 7             7              OK  
+ 7               7                OK  
 
 NO. TIMES THROUGH LOOP:
 SHOULD BE:  5      ACTUAL:  5     RESULT:   OK  

@@ -17,26 +17,26 @@ WILL RUN  259  TRIALS, SO THAT EACH POSSIBILITY HAS
 EXPECTED VALUE >= 10.
 
 
-GAP SIZE      ACTUAL COUNT  EXPECTED COUNT
+GAP SIZE        ACTUAL COUNT    EXPECTED COUNT
 
- 0             37            25.9 
- 1             19            23.31 
- 2             20            20.979 
- 3             24            18.8811 
- 4             12            16.993 
- 5             17            15.2937 
- 6             10            13.7643 
- 7             10            12.3879 
- 8             14            11.1491 
- 9             11            10.0342 
->= 10          85            90.3077 
+ 0               25              25.9 
+ 1               29              23.31 
+ 2               16              20.979 
+ 3               22              18.8811 
+ 4               17              16.99299 
+ 5               14              15.293691 
+ 6               15              13.764322 
+ 7               12              12.38789 
+ 8               9               11.149101 
+ 9               9               10.034191 
+>= 10            91              90.307716 
 
 FOR 10 D.F., SHOULD HAVE 3.9403 <= CHI-SQ <= 18.307
 (5% TAIL AT EACH END.)
 
-ACTUAL CHI-SQ =  11.2687 
+ACTUAL CHI-SQ =  3.8757604 
 
-*** INFORMATIVE TEST PASSED ***
+*** INFORMATIVE TEST FAILED ***
 
                  END TEST
 

@@ -10,9 +10,9 @@ SECTION 47.1: INCREMENT IN THE STEP CLAUSE OF THE
 LOOP IS: FOR I1= 8  TO  5 
 
 CONTROL VARIABLE:
-SHOULD BE     ACTUAL        RESULT
+SHOULD BE       ACTUAL          RESULT
 LOOP EXITED
- 8             8              OK  
+ 8               8                OK  
 
 NO. TIMES THROUGH LOOP:
 SHOULD BE:  0      ACTUAL:  0    RESULT:   OK  
@@ -23,13 +23,13 @@ SHOULD BE:  0      ACTUAL:  0    RESULT:   OK
 LOOP IS: FOR I1= 5  TO  8 
 
 CONTROL VARIABLE:
-SHOULD BE     ACTUAL        RESULT
- 5             5              OK  
- 6             6              OK  
- 7             7              OK  
- 8             8              OK  
+SHOULD BE       ACTUAL          RESULT
+ 5               5                OK  
+ 6               6                OK  
+ 7               7                OK  
+ 8               8                OK  
 LOOP EXITED
- 9             9              OK  
+ 9               9                OK  
 
 NO. TIMES THROUGH LOOP:
 SHOULD BE:  4      ACTUAL:  4    RESULT:   OK  
@@ -40,10 +40,10 @@ SHOULD BE:  4      ACTUAL:  4    RESULT:   OK
 LOOP IS: FOR I1= 88  TO  88 
 
 CONTROL VARIABLE:
-SHOULD BE     ACTUAL        RESULT
- 88            88             OK  
+SHOULD BE       ACTUAL          RESULT
+ 88              88               OK  
 LOOP EXITED
- 89            89             OK  
+ 89              89               OK  
 
 NO. TIMES THROUGH LOOP:
 SHOULD BE:  1      ACTUAL:  1    RESULT:   OK  

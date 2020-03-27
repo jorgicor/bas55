@@ -7,6 +7,9 @@
 #define ECMA55_H
 
 #ifndef STDIO_H
+// This define is for Windows, for printf, etc to round like it should
+// and accept ISO C flags and not only the ones accepted by Microsoft.
+#define __USE_MINGW_ANSI_STDIO 1
 #include <stdio.h>
 #endif
 
@@ -19,8 +22,8 @@
 /* Maximum number of errors allowed */
 #define MAX_ERRORS	20
 
-/* Significant digits that we read / print */
-#define PRECISION_DIGITS	6
+/* Significant digits that we read */
+#define READ_PRECISION_DIGITS	17
 
 /* Different variable names */
 enum { N_VARNAMES = 'Z' - 'A' + 1 };
@@ -58,10 +61,7 @@ enum error_code grow_array(void *p, int elem_size, int cur_len, int grow_k,
 size_t min_size(size_t a, size_t b);
 void toupper_str(char *str);
 void copy_to_str(char *dst, const char *src, size_t len);
-int is_little_endian(void);
-int infinite_sign(double d);
-int is_nan(double d);
-double round(double d);
+double m_round(double d);
 int round_to_int(double d);
 void print_chars(FILE *f, const char *s, size_t len);
 
@@ -238,6 +238,7 @@ int get_ifun_nparams(int i);
 const char *get_ifun_name(int i);
 double call_ifun0(int i);
 double call_ifun1(int i, double d);
+void bas55_srand(unsigned int seed);
 
 /* vm.c */
 
@@ -453,5 +454,35 @@ int parse_int(const char *start, size_t *len);
 double parse_double(const char *start, size_t *len);
 enum data_elem_type parse_data_elem(union data_elem *delem,
     const char *start, size_t *len, enum data_elem_as parse_as);
+
+/* bmath.c */
+
+int bm_isnan(double x);
+int bm_isinf(double x);
+double bm_fabs(double x);
+double bm_floor(double x);
+double bm_ldexp(double x, int n);
+double bm_sin(double x);
+double bm_cos(double x);
+double bm_tan(double x);
+double bm_atan(double x);
+double bm_log(double x);
+double bm_pow(double x, double y);
+double bm_exp(double x);
+double bm_sqrt(double x);
+
+#define m_isnan bm_isnan
+#define m_isinf bm_isinf
+#define m_fabs bm_fabs
+#define m_floor bm_floor
+#define m_ldexp bm_ldexp
+#define m_sin bm_sin
+#define m_cos bm_cos
+#define m_tan bm_tan
+#define m_atan bm_atan
+#define m_log bm_log
+#define m_pow bm_pow
+#define m_exp bm_exp
+#define m_sqrt bm_sqrt
 
 #endif

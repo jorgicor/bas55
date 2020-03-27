@@ -13,8 +13,8 @@
 #include <errno.h>
 #include <float.h>
 #include <limits.h>
-#include <math.h>
 #include <stdlib.h>
+#include <inttypes.h>
 
 /**
  * Valid character set for an unquoted string.
@@ -141,6 +141,8 @@ enum num_type check_if_number(const char *p)
  */
 int parse_int(const char *start, size_t *len)
 {
+	// long is 32 bits on Windows, 64 on Linux, but in this case
+	// it will work ok.
 	long longn;
 	int i;
 	const char *end;
@@ -171,7 +173,7 @@ int parse_int(const char *start, size_t *len)
 
 static double powten[DBL_MAX_10_EXP + 1] = { 0.0 };
 
-static double mulexpo(double num, long e)
+static double mulexpo(double num, int e)
 {
 	while (e > 0) {
 		if (e > DBL_MAX_10_EXP) {
@@ -185,7 +187,7 @@ static double mulexpo(double num, long e)
 	return num;
 }
 
-static double divexpo(double num, long e)
+static double divexpo(double num, int e)
 {
 	while (e > 0) {
 		if (e > -DBL_MIN_10_EXP) {
@@ -199,7 +201,7 @@ static double divexpo(double num, long e)
 	return num;
 }
 
-static double expo(double num, long e)
+static double expo(double num, int e)
 {
 	int i;
 
@@ -231,24 +233,26 @@ static double expo(double num, long e)
 static double strtod55(const char *s, int sdigits, size_t *len)
 {
 	const char *p, *q;
-	long num;
+	int64_t num;
 	int sign;	/* number sign */
 	int bp, ap;	/* before point, after point */
 	int d;		/* significant digits count */
 	int ed;		/* exponent for digits before E */
-	long e;		/* exponent */
+	int e;		/* exponent */
 	int esign;	/* exponent sign */
 	double dnum;
 
 	assert(sdigits > 0);
 
 	errno = 0;
-	if (len != NULL)
+	if (len != NULL) {
 		*len = 0;
+	}
 
 	p = s;
-	while (isspace(*p))
+	while (isspace(*p)) {
 		p++;
+	}
 
 	sign = 1;
 	if (*p == '+') {
@@ -258,18 +262,21 @@ static double strtod55(const char *s, int sdigits, size_t *len)
 		p++;
 	}
 
-	if (!isdigit(*p) && *p != '.')
+	if (!isdigit(*p) && *p != '.') {
 		return 0.0;
+	}
 
 	bp = 0;
 	num = 0;
 	d = 0;
 	ap = 0;
 	ed = 0;
-	if (isdigit(*p))
+	if (isdigit(*p)) {
 		bp = 1;
-	while (*p == '0')
+	}
+	while (*p == '0') {
 		p++;
+	}
 	while (isdigit(*p)) {
 		if (d < sdigits) {
 			num = num * 10 + (*p - '0');
@@ -285,8 +292,9 @@ static double strtod55(const char *s, int sdigits, size_t *len)
 	}
 	if (*p == '.') {
 		p++;
-		if (isdigit(*p))
+		if (isdigit(*p)) {
 			ap = 1;
+		}
 		if (num == 0) {
 			while (*p == '0') {
 				ed--;
@@ -306,8 +314,9 @@ static double strtod55(const char *s, int sdigits, size_t *len)
 		}
 	}
 
-	if (bp == 0 && ap == 0)
+	if (bp == 0 && ap == 0) {
 		return 0.0;
+	}
 
 	/* take exponent */
 	q = p;
@@ -324,19 +333,25 @@ static double strtod55(const char *s, int sdigits, size_t *len)
 		if (!isdigit(*p)) {
 			p = q;
 		} else while (isdigit(*p)) {
-			/* A double exponent is in [-307,308] max. */
-			if (e <= DBL_MAX_10_EXP)
+			// A double exponent is in [-307,308] max.
+			// e is not going to overflow an 'int'
+			if (e <= DBL_MAX_10_EXP) {
 				e = e * 10 + (*p - '0');
+			}
 			p++;
 		}
 	}
 		
-	if (len != NULL)
+	if (len != NULL) {
 		*len = p - s;
+	}
 
+	// since lines are of limited length (~80),
+	// ed + e * sign fits in an 'int'
 	dnum = sign * expo(num, ed + (e * esign));
-	if (infinite_sign(dnum) != 0)
+	if (m_isinf(dnum)) {
 		errno = ERANGE;
+	}
 	return dnum;
 }
 
@@ -346,7 +361,7 @@ static double strtod55(const char *s, int sdigits, size_t *len)
  */
 double parse_double(const char *start, size_t *len)
 {
-	return strtod55(start, PRECISION_DIGITS, len);
+	return strtod55(start, READ_PRECISION_DIGITS, len);
 }
 
 /* Parses an element of a basic DATA, that is, an element from a comma

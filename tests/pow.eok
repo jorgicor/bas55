@@ -1,0 +1,9 @@
+10: warning: division by zero 
+20: warning: division by zero 
+30: warning: division by zero 
+160: warning: zero raised to negative value (0 ^ -1)
+170: warning: zero raised to negative value (0 ^ -1)
+180: warning: zero raised to negative value (0 ^ -2)
+190: warning: zero raised to negative value (0 ^ -2.5)
+210: warning: zero raised to negative value (0 ^ -INF)
+910: error: negative value raised to non-integral value (-1 ^ -1.5)

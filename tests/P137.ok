@@ -18,17 +18,17 @@ RANDOM NUMBERS.
 RUNNING  12005  TRIALS, SO THAT EACH POSSIBILITY HAS
 EXPECTED VALUE >= 5, AS NEEDED FOR CHI-SQUARE TEST.
 
-#TYPES        ACTUAL COUNT  EXPECTED COUNT
- 1             7             5 
- 2             443           450 
- 3             3745          3750 
- 4             5965          6000 
- 5             1845          1800 
+#TYPES          ACTUAL COUNT    EXPECTED COUNT
+ 1               5               5 
+ 2               421             450 
+ 3               3733            3750 
+ 4               6030            6000 
+ 5               1816            1800 
 
 FOR FOUR D.F., SHOULD HAVE .710721 <= CHI-SQ <= 9.48773
 (5% TAIL AT EACH END.)
 
-ACTUAL CHI-SQ =  2.24472 
+ACTUAL CHI-SQ =  2.2381778 
 
 *** INFORMATIVE TEST PASSED ***
 

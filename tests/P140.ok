@@ -15,18 +15,18 @@ INT ONE CATEGORY.
 
                   BEGIN TEST
 
-RUN LENGTH    ACTUAL COUNT  EXPECTED COUNT
- 1             835           833.335 
- 2             1030          1041.66 
- 3             461           458.334 
- 4             130           131.945 
- 5             29            28.7698 
->= 6           9             5.9524 
+RUN LENGTH      ACTUAL COUNT    EXPECTED COUNT
+ 1               856             833.335 
+ 2               1013            1041.665 
+ 3               433             458.3335 
+ 4               150             131.9445 
+ 5               33              28.76985 
+>= 6             9               5.9524 
 
 FOR 6 D.F., SHOULD HAVE 1.63539 <= CHI-SQ <= 12.5916
 (5% TAIL ON EACH END.)
 
-ACTUAL CHI-SQ =  3.76589 
+ACTUAL CHI-SQ =  9.3886586 
 
 *** INFORMATIVE TEST PASSED ***
 

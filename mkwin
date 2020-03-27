@@ -48,7 +48,10 @@ download_src () {
 compile_src () {
 	tar -xvzf $bas55_targz
 	cd $bas55_xname
-	./configure --host=i686-w64-mingw32
+	# float-store is needed to get the same results on windows
+	# for floating point calculations; or at least it is one
+	# of the things that helps.
+	./configure CFLAGS="-ffloat-store" --host=i686-w64-mingw32
 	make
 	make html
 	cd ..

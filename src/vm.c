@@ -13,7 +13,6 @@
 #include <assert.h>
 #include <errno.h>
 #include <limits.h>
-#include <math.h>
 #include <stdlib.h>
 #include <string.h>
 #include <signal.h>
@@ -24,11 +23,12 @@
 #endif
 
 enum {
-	PRINT_COLUMN_INC = 14, 		/* This is -d.dddddE-123s */
+	PRINT_COLUMN_INC = 16, 		/* This is -d.dddddE-123s */
 	NPRINT_COLUMNS = 5,
 	PRINT_MARGIN = 80,
-	NUM_CHARS_UNSCALED = 9,		/* -d.dddddd */
-	NUM_CHARS_SCALED = 13		/* -1.23456E+123 */
+	NDIGS = 8,			/* significant digits */
+	NUM_CHARS_UNSCALED = 3 + NDIGS,	/* -d.dddddd */
+	NUM_CHARS_SCALED = NDIGS + 7	/* -1.23456E+123 */
 };
 
 /* Program RAM */
@@ -180,13 +180,15 @@ static int sprint_unscaled(char *rnum, double d, int after, int exponent)
 	char num[NUM_CHARS_UNSCALED + 8];	/* \0 + safe space */
 
 	after -= exponent;
-	if (after < 0)
+	if (after < 0) {
 		after = 0;
+	}
 	fmt[3] = '0' + after;
 	nchars = sprintf(num, fmt, d);
 	assert(nchars <= NUM_CHARS_UNSCALED);
-	if (num[1] == '0')
+	if (num[1] == '0') {
 		remove_leading_zero(nchars, num);
+	}
 	return sprintf(rnum, "%s ", num);
 }
 
@@ -205,18 +207,21 @@ static void explore_number(char *num, int *zero, int *nafter, int *exponent)
 
 	num++;
 	*zero = *num == '0';
-	while (*num != 'E')
+	while (*num != 'E') {
 		num++;
+	}
 	num--;
 	*nafter = 0;
-	while (*num == '0')
+	while (*num == '0') {
 		num--;
+	}
 	while (*num != '.') {
 		(*nafter)++;
 		num--;
 	}
-	while (*num != 'E')
+	while (*num != 'E') {
 		num++;
+	}
 	num++;
 	esign = (*num == '+') ? 1 : -1;
 	num++;
@@ -225,8 +230,9 @@ static void explore_number(char *num, int *zero, int *nafter, int *exponent)
 		*exponent = (*exponent * 10) + (*num - '0');
 		num++;
 	}
-	if (esign < 0)
+	if (esign < 0) {
 		*exponent = -*exponent;
+	}
 }
 
 /**
@@ -261,36 +267,40 @@ static void remove_zeros_from_scaled_number(int len, char *num)
 		n++;
 		num++;
 	}
-	if (n > 0)
+	if (n > 0) {
 		memmove(num - n, num, len + 1);
+	}
 }
 
 static int sprint_num(char *rnum, double d)
 {
-	int nchars, zero, after, exponent, infsign;
+	int nchars, zero, after, exponent;
 	char num[NUM_CHARS_SCALED + 8]; /* \0 + safe space */
 
-	infsign = infinite_sign(d);
-	if (infsign == 1)
-		return sprintf(rnum, " INF ");
-	
-	if (infsign == -1)
-		return sprintf(rnum, "-INF ");
+	if (m_isinf(d)) {
+		if (d > 0) {
+			return sprintf(rnum, " INF ");
+		} else {
+			return sprintf(rnum, "-INF ");
+		}
+	}
 
 	/* It is not infinite */
-	if (is_nan(d))
+	if (m_isnan(d)) {
 		return sprintf(rnum, " NAN ");
+	}
 
 	/* It is not INF and not NAN */
-	nchars = sprintf(num, "% .5E", d);
+	/* printf("% .12E", d); */
+	nchars = sprintf(num, "% .*E", NDIGS - 1, d);
 	assert(nchars <= NUM_CHARS_SCALED); /* -1.23456E+308 */
 	explore_number(num, &zero, &after, &exponent);
 	assert(!zero || (zero && after == 0));
 	if (zero) {
 		return sprintf(rnum, " 0 ");
-	} else if (exponent < 0 && after - exponent <= 6) {
+	} else if (exponent < 0 && after - exponent <= NDIGS) {
 		return sprint_unscaled(rnum, d, after, exponent);
-	} else if (exponent >= 0 && 1 + exponent <= 6) {
+	} else if (exponent >= 0 && 1 + exponent <= NDIGS) {
 		return sprint_unscaled(rnum, d, after, exponent);
 	} else {
 		remove_zeros_from_scaled_number(nchars, num);
@@ -504,7 +514,7 @@ static void let_list_op(void)
 	vindex1 = code[s_pc++].id;
 	dim = s_array_descs[vindex1].dim1;
 	value = s_stack[--s_sp].d;
-	dindex = round(s_stack[--s_sp].d) - s_base_ix;
+	dindex = m_round(s_stack[--s_sp].d) - s_base_ix;
 	if (check_list_index(vindex1, dindex, dim) != 0) {
 		return;
 	}
@@ -527,8 +537,8 @@ static void let_table_op(void)
 	dim1 = s_array_descs[vindex1].dim1;
 	dim2 = s_array_descs[vindex1].dim2;
 	value = s_stack[--s_sp].d;
-	dindex2 = round(s_stack[--s_sp].d) - s_base_ix;
-	dindex1 = round(s_stack[--s_sp].d) - s_base_ix;
+	dindex2 = m_round(s_stack[--s_sp].d) - s_base_ix;
+	dindex1 = m_round(s_stack[--s_sp].d) - s_base_ix;
 
 	if (check_table_index(vindex1, dindex1, dim1, dindex2, dim2) != 0) {
 		return;
@@ -550,7 +560,7 @@ static void input_list_op(void)
 
 	vindex1 = code[s_pc++].id;
 	dim = s_array_descs[vindex1].dim1;
-	dindex = round(s_stack[--s_sp].d) - s_base_ix;
+	dindex = m_round(s_stack[--s_sp].d) - s_base_ix;
 	value = s_stack[--s_sp].d;
 
 	if (check_list_index(vindex1, dindex, dim) != 0) {
@@ -573,8 +583,8 @@ static void input_table_op(void)
 	vindex1 = code[s_pc++].id;
 	dim1 = s_array_descs[vindex1].dim1;
 	dim2 = s_array_descs[vindex1].dim2;
-	dindex2 = round(s_stack[--s_sp].d) - s_base_ix;
-	dindex1 = round(s_stack[--s_sp].d) - s_base_ix;
+	dindex2 = m_round(s_stack[--s_sp].d) - s_base_ix;
+	dindex1 = m_round(s_stack[--s_sp].d) - s_base_ix;
 	value = s_stack[--s_sp].d;
 
 	if (check_table_index(vindex1, dindex1, dim1, dindex2, dim2) != 0) {
@@ -662,7 +672,7 @@ static void read_list_op(void)
 
 	vindex1 = code[s_pc++].id;
 	dim = s_array_descs[vindex1].dim1;	
-	dindex = round(s_stack[--s_sp].d) - s_base_ix;
+	dindex = m_round(s_stack[--s_sp].d) - s_base_ix;
 
 	if (check_list_index(vindex1, dindex, dim) != 0) {
 		return;
@@ -684,8 +694,8 @@ static void read_table_op(void)
 	vindex1 = code[s_pc++].id;
 	dim1 = s_array_descs[vindex1].dim1;
 	dim2 = s_array_descs[vindex1].dim2;
-	dindex2 = round(s_stack[--s_sp].d) - s_base_ix;
-	dindex1 = round(s_stack[--s_sp].d) - s_base_ix;
+	dindex2 = m_round(s_stack[--s_sp].d) - s_base_ix;
+	dindex1 = m_round(s_stack[--s_sp].d) - s_base_ix;
 
 	if (check_table_index(vindex1, dindex1, dim1, dindex2, dim2) != 0) {
 		return;
@@ -761,7 +771,7 @@ static void get_list_op(void)
 
 	vindex1 = code[s_pc++].id;
 	dim = s_array_descs[vindex1].dim1;
-	dindex = round(s_stack[--s_sp].d) - s_base_ix;
+	dindex = m_round(s_stack[--s_sp].d) - s_base_ix;
 
 	if (check_list_index(vindex1, dindex, dim) != 0) {
 		return;
@@ -783,8 +793,8 @@ static void get_table_op(void)
 	vindex1 = code[s_pc++].id;
 	dim1 = s_array_descs[vindex1].dim1;
 	dim2 = s_array_descs[vindex1].dim2;
-	dindex2 = round(s_stack[--s_sp].d) - s_base_ix;
-	dindex1 = round(s_stack[--s_sp].d) - s_base_ix;
+	dindex2 = m_round(s_stack[--s_sp].d) - s_base_ix;
+	dindex1 = m_round(s_stack[--s_sp].d) - s_base_ix;
 
 	if (check_table_index(vindex1, dindex1, dim1, dindex2, dim2) != 0) {
 		return;
@@ -824,9 +834,7 @@ static void mul_op(void)
 	d2 = s_stack[--s_sp].d;
 	d1 = s_stack[--s_sp].d;
 	d = d1 * d2;
-	if (infinite_sign(d) != 0 &&
-		(infinite_sign(d1) == 0 || infinite_sign(d2) == 0))
-	{
+	if (m_isinf(d) && (!m_isinf(d1) || !m_isinf(d2))) {
 		wprintln(E_OP_OVERFLOW, s_cur_line_num);
 		fputs("(*)\n", stderr);
 	}
@@ -862,7 +870,7 @@ static void pow_op(void)
 		putc(')', stderr);
 		enl();
 	}
-	if (d1 < 0 && d2 != floor(d2)) {
+	if (d1 < 0 && d2 != m_floor(d2)) {
 		err = 1;
 		eprintln(E_NEG_POW_REAL, s_cur_line_num);
 		putc('(', stderr);
@@ -874,7 +882,7 @@ static void pow_op(void)
 		s_fatal = 1;
 	}
 	errno = 0;
-	s_stack[s_sp++].d = pow(d1, d2);
+	s_stack[s_sp++].d = m_pow(d1, d2);
 	if (!err && errno == ERANGE) {
 		wprintln(E_OP_OVERFLOW, s_cur_line_num);
 		enl();
@@ -1048,10 +1056,16 @@ static void randomize_op(void)
 		t = tv.tv_sec*1e6 + tv.tv_usec;
 	#endif
 	
-	/* mix to avoid increasing sequence */
+	/* mix to avoid increasing sequence in program:
+	 * 10 FOR I=1 TO 10
+	 * 20 RANDOMIZE
+	 * 30 PRINT RND
+	 * 40 NEXT I
+	 * 50 END
+	 */
 	t = mix(t);
 
- 	srand(t);
+	bas55_srand(t);
 }
 
 static void ifun0_op(void)
@@ -1506,7 +1520,7 @@ void run(int ramsize, int array_base_index, int stack_size)
 	s_gosub_sp = 0;
 	s_sp = 0;
 	s_print_column = 0;
-	srand(0);
+	bas55_srand(1);
 	s_break = 0;
 	signal(SIGINT, sigint_handler);
 	while (!s_break && !s_fatal && code[s_pc].opcode != END_OP) {

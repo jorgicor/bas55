@@ -14,7 +14,7 @@ AM_CFLAGS = $(WARN_CFLAGS)
 
 bin_PROGRAMS = bas55
 bas55_LDADD = $(LIBEDIT_LIBS)
-bas55_SOURCES =	ecma55.c ecma55.h \
+bas55_SOURCES =	ecma55.c ecma55.h bmath.c \
 		cmd.c code.c \
 		codedvar.c data.c \
 		datalex.c edit.c err.c \
