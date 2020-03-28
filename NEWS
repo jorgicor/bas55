@@ -1,3 +1,48 @@
+1.18	2020-03-28
+
+	* bas55 now uses its own implementation of the functions SIN, COS, TAN,
+	  ATN, EXP, LOG and SQR. This will make (hopefully) the results from
+	  this functions to be the same on every platform.
+
+	* bas55 now uses its own random number generator for the function RND
+	  to get the same result on every platform.
+
+	* Numbers are read up to 17 significant digits (previous versions were
+	  limited to only 6 significant digits).
+
+	* All these changes have been made in order to make bas55 behave the
+	  same (give the same results) on every platform. Probably there are
+	  still things to do to fully achieve that, but at this moment, the
+	  tests bundled with bas55 give exactly the same results in the
+	  platforms I tested (previously many of the tests were failing on
+	  Windows due to differences in decimals or roundings).
+
+	* Numbers are written up to 8 significant digits (previous versions
+	  were limited to only 6 significant digits). Due to this the PRINT
+	  zone length is now larger than before.
+
+	* Multiple fixes to the NBS tests bundled. Thanks again to John
+	  Gatewood Ham.
+
+	Source changes
+	--------------
+
+	* bas55 now requires a C99 compiler to build. Come on, we are in 2020.
+
+	* Added src/bmath.c: Here are all the mathematical functions
+	  implemented.
+
+	* src/vm.c: strtod55(): Bug fixed. We were using the 'long' data type
+	  in this function and file. But a long is only 32 bits on Windows (64
+	  bit on Linux). When the read precision was raised to 17 significant
+	  digits, this was failing. Now we use the int64_t data type.
+
+	* Added tools/newton.c. This is a small program used to calculate the
+	  coefficients for the polynomials used to approximate the functions in
+	  bmath.c.
+
+	* Updated documentation bas55.texi.
+
 1.17	2018-10-14
 
 	* Updated project website to https://jorgicor.niobe.org/bas55 .

@@ -551,7 +551,7 @@ will print:
  0
 @end example
 
-Note that this behavior ir not required by the standard, and other implementations may not initialize all variables to zero.
+Note that this behavior is not required by the standard, and other implementations may not initialize all variables to zero.
 You can enable the debug mode if you want the interpreter to warn you about variables that are used before any value has been assigned to them.
 
 Arrays always have a size of 11 elements by default, from 0 to 10.
@@ -1214,7 +1214,7 @@ bas55 1.13 (with libedit support)
 
 In this case, you have the same editing enhancements as on Microsoft Windows, and some more.
 
-For example, you can access any line of your BASIC program by writting its number and then pressing the @key{TAB} key.
+For example, you can access any line of your BASIC program by witting its number and then pressing the @key{TAB} key.
 Then you will get the line and you will be able to edit it.
 
 For example, if your program was:
@@ -1283,7 +1283,7 @@ In @command{bas55} they are:
 @itemize @minus
 
 @item
-Accuracy of evaluation of numeric expressions: we use IEEE 754 double-precision binary floating-point format. For the mathematical functions sin, cos, etc. @command{bas55} uses its own implementation, trying to be independent of the C library or OS used.
+Accuracy of evaluation of numeric expressions: we use IEEE 754 double-precision binary floating-point format. For the mathematical functions sin, cos, etc. @command{bas55} uses its own implementation, trying to get the same result on every platform.
 @item
 End-of-line: we accept Windows and Unix end-of-lines.
 @item
@@ -1293,7 +1293,7 @@ Initial value of variables: 0 for numeric variables and array slots; the empty s
 @item
 Input-prompt: question mark followed by a single space.
 @item
-Longest string that can be retained: this is limited by the longest program line allowed, which is 72 as required by the standard. Thus 65 characters can be retined.
+Longest string that can be retained: this is limited by the longest program line allowed, which is 72 as required by the standard. Thus 65 characters can be retained.
 @item
 Value of machine infinitesimal: the minimum normal value is 2.2250738585072014 * 10^(-308) approximately, although smaller values can be represented by losing precision. The minimum subnormal value is 4.9406564584124654 * 10^(-324) approximately.
 @item
@@ -1305,9 +1305,9 @@ Precision of numeric values: 17 significant decimal digits and 3 digits for the 
 @item
 Print-zone length: 16 characters.
 @item
-Pseudo-random number sequence: @command{bas55} uses its own random number generator, independent of the C library or OS used.
+Pseudo-random number sequence: @command{bas55} uses its own random number generator which should give the same result on every platform.
 @item
-Significance width for printing numeric representations: a maximum of 15 characters are used: 8 decimal digits plus 3 digits for the exrad plus 5 characters to accomodate signs, final space, etc.
+Significance width for printing numeric representations: a maximum of 15 characters are used: 8 decimal digits plus 3 digits for the exrad plus 5 characters to accommodate signs, final space, etc.
 @item
 Is unary minus accepted after an operator? Yes, we accept this 1 + -3; and this 1 + --3. Warning: this is not required or accepted by the standard.
 @item
