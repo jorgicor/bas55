@@ -1,0 +1,2 @@
+newton:	newton.c
+	cc -Wall -lm -o newton newton.c

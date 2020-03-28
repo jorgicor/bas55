@@ -503,10 +503,10 @@ Example of numeric constants are:
 1	500	-21.	.255	1E10	5E-1	4.E+1
 @end example
 
-@command{bas55} only uses the six first significant digits of a numeric constant.
-A constant is rounded if it is written with more than six significant digits.
-@command{bas55} works internally IEEE double-precision floating-point numbers.
-Numbers printed with the @code{PRINT} statement use six significant digits.
+@command{bas55} uses the 17 first significant digits when reading a number.
+A number is rounded if it is written with more than 17 significant digits.
+@command{bas55} works internally with IEEE double-precision floating-point numbers.
+Numbers printed with the @code{PRINT} statement show up to 8 significant digits.
 
 @node Arrays
 @section Arrays
@@ -610,7 +610,7 @@ In that case, by default, the arrays will have 10 elements, indexed from 1 to 10
 
 You can print more than one item using the @code{PRINT} statement by separating the items by commas or semicolons.
 Using commas will move the cursor to the next printing column.
-Each line has a printing column every 15 characters.
+Each line has a printing column every 16 characters (that is, the second column starts at position 17).
 
 @example
 10 PRINT "COLUMN 1", "COLUMN 2"
@@ -643,11 +643,11 @@ You can use @code{TAB} to move the cursor to a specific character column in the 
 
 @example
 10 PRINT ,"A"
-10 PRINT TAB(15);"A"
+10 PRINT TAB(17);"A"
 20 END
 @end example
 
-will print at character column 15:
+will print at character column 17:
 
 @example
               A
@@ -725,7 +725,7 @@ Tangent of X, X in radians.
 
 You can use the function @code{RND} without any argument, to get a random number in the range @code{[0, 1[}.
 @code{RND} can be used in any numeric expression.
-The sequence of numbers you will get by calling @code{RND} will be always the same (given the same computer and operating system).
+The sequence of numbers you will get by calling @code{RND} will be always the same.
 If you want the sequence to start randomly, you can use the statement @code{RANDOMIZE}.
 
 @example
@@ -1283,7 +1283,7 @@ In @command{bas55} they are:
 @itemize @minus
 
 @item
-Accuracy of evaluation of numeric expressions: we use IEEE 754 double-precision binary floating-point format. The accuracy is defined by that standard. Additionally, we use the system library for mathematical functions. Warning: this makes the results dependant on the operating system where @command{bas55} is compiled or executed.
+Accuracy of evaluation of numeric expressions: we use IEEE 754 double-precision binary floating-point format. For the mathematical functions sin, cos, etc. @command{bas55} uses its own implementation, trying to be independent of the C library or OS used.
 @item
 End-of-line: we accept Windows and Unix end-of-lines.
 @item
@@ -1301,13 +1301,13 @@ Value of machine infinity: it is defined by the IEEE 754 standard as a special b
 @item
 Margin for output lines: 80 characters.
 @item
-Precision of numeric values: six significant decimal digits; three digits for the exrad.
+Precision of numeric values: 17 significant decimal digits and 3 digits for the exrad.
 @item
-Print-zone length: 14 characters.
+Print-zone length: 16 characters.
 @item
-Pseudo-random number sequence: we use the system library for random number sequences. Warning: this makes the results dependant on the operating system where @command{bas55} is compiled or executed.
+Pseudo-random number sequence: @command{bas55} uses its own random number generator, independent of the C library or OS used.
 @item
-Significance width for printing numeric representations: a maximum of 14 characters are used: six decimal digits plus three digits for the exrad plus 5 characters to accomodate signs, final space, etc.
+Significance width for printing numeric representations: a maximum of 15 characters are used: 8 decimal digits plus 3 digits for the exrad plus 5 characters to accomodate signs, final space, etc.
 @item
 Is unary minus accepted after an operator? Yes, we accept this 1 + -3; and this 1 + --3. Warning: this is not required or accepted by the standard.
 @item
@@ -1345,6 +1345,8 @@ Contrary to the standard, in @command{bas55} zero divided by zero gives an undef
 @file{datalex.c}: parsing of quoted or unquoted strings, numbers or comma separated lists of these elements.
 @item
 @file{codedvar.c}: utilities for encoding a variable name as an integer.
+@item
+@file{bmath.c}: implementation of mathematical functions.
 @end itemize
 
 @item Layer 1: BASIC source store and byte compiled code

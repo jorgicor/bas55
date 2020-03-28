@@ -12,7 +12,7 @@
  * interpolation polynomials.
  *
  * The constants P and D are needed for these calculations and are
- * obtained by using the tool newton.c included with bas55.
+ * obtained by using the program tools/newton.c included with bas55.
  * The P constants are actually not needed, the can be calculated
  * on the fly, but I keep the algorithm using them just in case
  * in the future we use the Chevishev nodes (P would contain the
