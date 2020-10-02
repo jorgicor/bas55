@@ -1,3 +1,16 @@
+1.19	2020-10-02
+
+	* Fixed: bas55 now compiles without errors on platforms where GCC
+          defaults to -fno-common.
+
+	Source changes
+	--------------
+
+	* src/ecma55.h: 'union instruction *code' is now declared as
+          extern, so it compiles when GCC defaults to fno-common. The rest
+          of global variables were correctly declared as extern. Thanks again
+          to John Gatewood Ham for the bug report.
+
 1.18	2020-03-28
 
 	* bas55 now uses its own implementation of the functions SIN, COS, TAN,

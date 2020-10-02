@@ -318,7 +318,7 @@ union instruction {
 	double num;
 };
 
-union instruction *code;
+extern union instruction *code;
 
 void free_code(void);
 int get_code_size(void);
