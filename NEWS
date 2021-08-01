@@ -1,3 +1,7 @@
+?.??	2021-08-01
+
+	* Corrected typo in P008.BAS (BEING -> BEGIN). Thanks John.
+
 1.19	2020-10-02
 
 	* Fixed: bas55 now compiles without errors on platforms where GCC
