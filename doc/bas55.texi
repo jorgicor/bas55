@@ -1214,7 +1214,7 @@ bas55 1.13 (with libedit support)
 
 In this case, you have the same editing enhancements as on Microsoft Windows, and some more.
 
-For example, you can access any line of your BASIC program by witting its number and then pressing the @key{TAB} key.
+For example, you can access any line of your BASIC program by writing its number and then pressing the @key{TAB} key.
 Then you will get the line and you will be able to edit it.
 
 For example, if your program was:

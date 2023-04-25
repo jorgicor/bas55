@@ -1,6 +1,23 @@
-/* ===========================================================================
- * bas55, an implementation of the Minimal BASIC programming language.
+/* Copyright (C) 2023 Jorge Giner Cordero
  *
+ * This file is part of bas55, an implementation of the Minimal BASIC
+ * programming language.
+ *
+ * bas55 is free software: you can redistribute it and/or modify it under the
+ * terms of the GNU General Public License as published by the Free Software
+ * Foundation, either version 3 of the License, or (at your option) any later
+ * version.
+ *
+ * bas55 is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * bas55. If not, see <https://www.gnu.org/licenses/>.
+ */
+
+/* ===========================================================================
  * Virtual machine that can execute the BASIC program compiled in code.c, str.c
  * and data.c .
  * ===========================================================================
@@ -1171,6 +1188,7 @@ static char s_input_line[LINE_MAX_CHARS + 3];
 static void input_op(void)
 {
 	int r;
+	size_t eindex;
 
 	s_input_pass = 1;
 	s_input_pc = s_pc - 1;
@@ -1184,6 +1202,16 @@ retry:	r = get_line("? ", s_input_line, sizeof s_input_line, stdin);
 		s_fatal = 1;
 	} else if (r == E_LINE_TOO_LONG) {
 		eprint(r);
+		enl();
+		goto retry;
+	}
+       
+	toupper_str(s_input_line);
+	if (chk_basic_chars(s_input_line, strlen(s_input_line), 1, &eindex)) {
+		eprint(E_INVAL_CHARS);
+		putc('(', stderr);
+		putc(s_input_line[eindex], stderr);
+		putc(')', stderr);
 		enl();
 		goto retry;
 	}

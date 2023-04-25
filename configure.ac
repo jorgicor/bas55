@@ -1,9 +1,23 @@
 #                                               -*- Autoconf -*-
 # Process this file with autoconf to produce a configure script.
 
-# ===========================================================================
-# bas55, an implementation of the Minimal BASIC programming language.
-# ===========================================================================
+# Copyright (C) 2023 Jorge Giner Cordero
+#
+# This file is part of bas55, an implementation of the Minimal BASIC
+# programming language.
+#
+# bas55 is free software: you can redistribute it and/or modify it under the
+# terms of the GNU General Public License as published by the Free Software
+# Foundation, either version 3 of the License, or (at your option) any later
+# version.
+#
+# bas55 is distributed in the hope that it will be useful, but WITHOUT ANY
+# WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+# details.
+#
+# You should have received a copy of the GNU General Public License along with
+# bas55. If not, see <https://www.gnu.org/licenses/>.
 
 AC_INIT([bas55],
 	[1.19],
@@ -39,11 +53,11 @@ AC_ARG_WITH([ncurses],
 		 [],
 		 [with_ncurses=no])
 
-# AC_ARG_WITH([readline],
-#   [AS_HELP_STRING([--with-readline],
-# 		 [support fancy command line editing])],
-# 		 [],
-# 		 [with_readline=no])
+AC_ARG_WITH([readline],
+  [AS_HELP_STRING([--with-readline],
+		 [support fancy command line editing])],
+		 [],
+		 [with_readline=no])
 
 AC_ARG_WITH([libedit],
   [AS_HELP_STRING([--with-libedit],
@@ -85,11 +99,11 @@ AS_IF([test "$n_termlibs" -gt 1],
 
 # Check that only one of --with-readline or --with-libedit is used.
 
-# n_editlibs=0
-# AS_IF([test "x$with_readline" != xno], [n_editlibs=$(expr "$n_editlibs" + 1)])
-# AS_IF([test "x$with_libedit" != xno], [n_editlibs=$(expr "$n_editlibs" + 1)])
-# AS_IF([test "$n_editlibs" -gt 1],
-#       [AC_MSG_ERROR([only one of --with-readline or --with-libedit can be used])])
+n_editlibs=0
+AS_IF([test "x$with_readline" != xno], [n_editlibs=$(expr "$n_editlibs" + 1)])
+AS_IF([test "x$with_libedit" != xno], [n_editlibs=$(expr "$n_editlibs" + 1)])
+AS_IF([test "$n_editlibs" -gt 1],
+      [AC_MSG_ERROR([only one of --with-readline or --with-libedit can be used])])
 
 # Check that --with-termcap, --with-curses, etc are used only when
 # --with-libedit is used.
@@ -125,9 +139,9 @@ AS_IF([test "x$check_termlib" = xyes],
 
 # Check for the libedit library.
 
-# AS_IF([test "x$with_readline" != xno],
-#   [AC_CHECK_LIB(readline, readline,,
-#       [AC_MSG_ERROR([readline not found or not usable.])])])
+AS_IF([test "x$with_readline" != xno],
+  [AC_CHECK_LIB(readline, readline,,
+      [AC_MSG_ERROR([readline not found or not usable.])])])
 
 AS_IF([test "x$with_libedit" != xno],
   [AC_CHECK_LIB(edit, readline,,
@@ -140,8 +154,8 @@ AS_IF([test "x$with_libedit" != xno],
 # Checks for library functions.
 
 # PKG_CHECK_MODULES([LIBEDIT], [libedit >= 3.1],
-# 	[ AC_DEFINE([HAVE_LIBEDIT], [1], [Use libedit]) ],
-# 	[ ])
+# 	[AC_DEFINE([HAVE_LIBEDIT], [1], [Use libedit])],
+# 	[])
 
 AC_CONFIG_FILES([Makefile
 		 src/Makefile
