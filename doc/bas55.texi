@@ -13,7 +13,7 @@
 
 @dircategory Software development
 @direntry
-* bas55: (bas55)Invoking bas55.
+* bas55: (bas55).	ECMA-55 Minimal BASIC System.
 @end direntry
 
 @copying
@@ -23,24 +23,12 @@ This manual is for bas55 (ECMA-55 Minimal BASIC System) version
 Copyright @copyright{} @value{COPYRIGHT_YEARS} Jorge Giner Cordero
 
 @quotation
-Permission is hereby granted, free of charge, to any person obtaining
-a copy of this software and associated documentation files (the
-"Software"), to deal in the Software without restriction, including
-without limitation the rights to use, copy, modify, merge, publish,
-distribute, sublicense, and/or sell copies of the Software, and to
-permit persons to whom the Software is furnished to do so, subject to
-the following conditions:
-
-The above copyright notice and this permission notice shall be included
-in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
-CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
-TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
-SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+Permission is granted to copy, distribute and/or modify this document under the
+terms of the GNU Free Documentation License, Version 1.3 or any later version
+published by the Free Software Foundation; with no Invariant Sections, no
+Front-Cover texts and no Back-Cover Texts.
+A copy of the license is included in the section entitled
+``GNU Free Documentation License.''
 @end quotation
 @end copying
 
@@ -59,9 +47,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 @ifnottex
 @node Top
 @top ECMA-55 Minimal BASIC System
-
-This manual is for bas55 (ECMA-55 Minimal BASIC System) version
-@value{VERSION} (updated @value{UPDATED}).
+@insertcopying
 @end ifnottex
 
 @menu
@@ -69,7 +55,7 @@ This manual is for bas55 (ECMA-55 Minimal BASIC System) version
 * Tutorial::		How to program in BASIC and @command{bas55}.
 * Reference::		@command{bas55} reference manual.
 * Source guide::	How the program works.
-* Copyright::		Copyright and license.
+* GNU Free Documentation License:: Copying and sharing this manual.
 @end menu
 
 @node About
@@ -80,7 +66,12 @@ language as defined by the @uref{http://www.ecma-international.org,ECMA-55
 standard}.
 @command{bas55} provides an interpreter and an editor with line renumbering capabilities.
 
-@command{bas55} is free software.
+@command{bas55} is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+
+@command{bas55} is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with @command{bas55}.
+If not, see @uref{https://www.gnu.org/licenses/}.
 
 The latest version of the program, source code and documentation can be found at @uref{https://jorgicor.niobe.org/bas55}.
 
@@ -1688,8 +1679,9 @@ Of course, this slows down the execution of the BASIC program.
 By default, @command{bas55} runs in debug mode only when started in editor mode.
 You can set the debug mode on or off in the editor with the command @command{DEBUG ON} or @command{DEBUG OFF}, or you can start @command{bas55} with the option @option{-d} (or @option{--debug}).
 
-@node Copyright
-@chapter Copyright
-@insertcopying
+@node GNU Free Documentation License
+@chapter GNU Free Documentation License
+
+@include fdl.texi
 
 @bye

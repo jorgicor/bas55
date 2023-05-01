@@ -1,26 +1,23 @@
-/* Copyright (C) 2023 Jorge Giner Cordero
+/* Virtual machine that can execute the BASIC program compiled in code.c, str.c
+ * and data.c .
+ *
+ * Copyright (C) 2023 Jorge Giner Cordero
  *
  * This file is part of bas55, an implementation of the Minimal BASIC
  * programming language.
  *
- * bas55 is free software: you can redistribute it and/or modify it under the
- * terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * bas55 is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the Free
+ * Software Foundation, either version 3 of the License, or (at your option)
+ * any later version.
  *
- * bas55 is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * bas55 is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+ * more details.
  *
  * You should have received a copy of the GNU General Public License along with
- * bas55. If not, see <https://www.gnu.org/licenses/>.
- */
-
-/* ===========================================================================
- * Virtual machine that can execute the BASIC program compiled in code.c, str.c
- * and data.c .
- * ===========================================================================
+ * bas55.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 #include <config.h>
@@ -736,8 +733,16 @@ static void read_strvar_op(void)
 	if (s_debug_mode) {
 		set_rampos_inited(rampos);
 	}
+
 	if ((ecode = read_data_str(&stri, NULL)) != 0) {
 		eprintln(ecode, s_cur_line_num);
+		enl();
+		s_fatal = 1;
+		return;
+	}
+
+	if (strlen(strings[stri]->str) > STR_VAR_MAX_CHARS) {
+		eprintln(E_STR_DATUM_TOO_LONG, s_cur_line_num);
 		enl();
 		s_fatal = 1;
 		return;
@@ -1183,7 +1188,7 @@ static int s_input_pc;
 static int s_input_pass;
 static int s_input_comma;
 static const char *s_input_p;
-static char s_input_line[LINE_MAX_CHARS + 3];
+static char s_input_line[LINE_MAX_CHARS + 1];
 
 static void input_op(void)
 {
@@ -1309,6 +1314,8 @@ static void input_str_op_pass1(void)
 		if (t == DATA_ELEM_QUOTED_STR &&
 		    delem.str.start[delem.str.len] != '\"') {
 			retry_input(E_STR_NOEND);
+		} else if (delem.str.len > STR_VAR_MAX_CHARS) {
+			retry_input(E_STR_DATUM_TOO_LONG);
 		} else {
 			/* Consume and check next token, that must be a comma
 			 * or EOF. */

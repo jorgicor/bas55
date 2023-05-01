@@ -1,25 +1,22 @@
-/* Copyright (C) 2023 Jorge Giner Cordero
+/* Editor mode.
+ *
+ * Copyright (C) 2023 Jorge Giner Cordero
  *
  * This file is part of bas55, an implementation of the Minimal BASIC
  * programming language.
  *
- * bas55 is free software: you can redistribute it and/or modify it under the
- * terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * bas55 is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the Free
+ * Software Foundation, either version 3 of the License, or (at your option)
+ * any later version.
  *
- * bas55 is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * bas55 is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+ * more details.
  *
  * You should have received a copy of the GNU General Public License along with
- * bas55. If not, see <https://www.gnu.org/licenses/>.
- */
-
-/* ===========================================================================
- * Editor mode.
- * ===========================================================================
+ * bas55.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 #include <config.h>
@@ -35,13 +32,9 @@ static void pready (void)
 
 static void print_prologue(FILE *f)
 {
-	static const char *notice =
-"This is free software: you are free to change and redistribute it,\n"
-"but there is NO WARRANTY. Type LICENSE to show the details.\n";
-
 	print_version(f);
-	fputs("\n", f);
-	fputs(notice, f);
+	print_copyright(f);
+	print_short_license(f);
 	fputs("\nType HELP for a list of allowed commands.\n", stderr);
 }
 

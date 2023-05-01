@@ -1,27 +1,22 @@
-/* Copyright (C) 2023 Jorge Giner Cordero
+/* Implementation of mathematical functions sin, cos, etc.
+ *
+ * Copyright (C) 2023 Jorge Giner Cordero
  *
  * This file is part of bas55, an implementation of the Minimal BASIC
  * programming language.
  *
- * bas55 is free software: you can redistribute it and/or modify it under the
- * terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * bas55 is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the Free
+ * Software Foundation, either version 3 of the License, or (at your option)
+ * any later version.
  *
- * bas55 is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * bas55 is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+ * more details.
  *
  * You should have received a copy of the GNU General Public License along with
- * bas55. If not, see <https://www.gnu.org/licenses/>.
- */
-
-/* ===========================================================================
- * Implementation of mathematical functions sin, cos, etc. with the
- * hope to be more independent of any C math library and get the same results
- * on any OS.
- * ===========================================================================
+ * bas55.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 /* The aproximations for some of the mathematical funcionts like sin,
@@ -35,7 +30,7 @@
  * in the future we use the Chevishev nodes (P would contain the
  * precalculated Chevished nodes in that case).
  *
- * I don't use the Chevished nodes because although in overall they
+ * I don't use the Chevyshev nodes because although in overall they
  * approximate better, for the important points (for example sin(0),
  * sin(pi/2)) they don't give fully exact results, while the simplest
  * Lagrange nodes do.

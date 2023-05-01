@@ -85,25 +85,26 @@ folders will probably be different.  Try changing `/usr/local` to `/usr`.
 Enhanced editing capabilities on GNU/Linux or *BSD
 --------------------------------------------------
 
-On GNU/Linux, if you have the NetBSD Editline library (libedit, see
-<http://thrysoee.dk/editline>) installed on your system, then you will have
-some editing enhancements while `bas55` is in editor mode, like a history of
-previous typed lines, command autocompletion, direct access to a line by its
-number to edit it, etc. See the manual for details.
+On GNU/Linux or BSD systems, you can have some editing enhancements while
+`bas55` is in editor mode, like a history of previous typed lines, command
+autocompletion, direct access to a line by its number to edit it, etc.
 
-On FreeBSD, NetBSD or OpenBSD, this library should already be installed in the
-base system.
+You will need to have the GNU Readline library (recommended) or the NetBSD
+Editline library (libedit) installed on your system. 
 
-So, to compile with libedit support, you can pass `--with-libedit` to the
-configure script, and it will try to detect the library. Sometimes, the
-library is already linked with its dependencies and you don't need to do
-anything else, but sometimes it is not. In this case, you have to link also
-with one the termcap, curses or ncurses libraries. For this, you have the
-options `--with-termcap`, `--with-curses` and `--with-ncurses`. This means
-that if using `--with-libedit` gives you an error but you know that libedit is
-installed, try combining this option with one of the others.
+So, to compile with GNU Readline support, you can pass `--with-readline` to the
+configure script, and it will try to detect the library.
 
-This are some tests I did:
+To compile with libedit support, you can pass `--with-libedit` to the
+configure script to detect the library. Sometimes, the library is already
+linked with its dependencies and you don't need to do anything else, but
+sometimes it is not. In this case, you have to link also with one the termcap,
+curses or ncurses libraries. For this, you have the options `--with-termcap`,
+`--with-curses` and `--with-ncurses`. This means that if using
+`--with-libedit` gives you an error but you know that libedit is installed,
+try combining this option with one of the others.
+
+These are some tests I did:
 
 * Slackware Linux with the SlackBuild libedit 3.1 installed: `--with-libedit`
   is enough.
@@ -111,3 +112,17 @@ This are some tests I did:
 * NetBSD 7.1.1: `--with-libedit` is enough.
 * OpenBSD 6.2: `--with-libedit --with-curses` (or `--with-termcap`) is needed.
 
+<!--
+
+Copyright (C) 2023 Jorge Giner Cordero.
+
+This file is part of bas55, an implementation of the Minimal BASIC programming
+language.
+
+Permission is granted to copy, distribute and/or modify this document under
+the terms of the GNU Free Documentation License, Version 1.3 or any later
+version published by the Free Software Foundation; with no Invariant Sections,
+with no Front-Cover Texts, and with no Back-Cover Texts.  A copy of the
+license is included in the "GFDL" file as part of this distribution.
+
+-->

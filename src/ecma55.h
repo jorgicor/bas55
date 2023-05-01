@@ -3,23 +3,18 @@
  * This file is part of bas55, an implementation of the Minimal BASIC
  * programming language.
  *
- * bas55 is free software: you can redistribute it and/or modify it under the
- * terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * bas55 is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the Free
+ * Software Foundation, either version 3 of the License, or (at your option)
+ * any later version.
  *
- * bas55 is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * bas55 is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+ * more details.
  *
  * You should have received a copy of the GNU General Public License along with
- * bas55. If not, see <https://www.gnu.org/licenses/>.
- */
-
-/* ===========================================================================
- * bas55, an implementation of the Minimal BASIC programming language.
- * ===========================================================================
+ * bas55.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 #ifndef ECMA55_H
@@ -33,10 +28,13 @@
 #endif
 
 /* Max number of characters in a BASIC line, without new line characters. */
-#define LINE_MAX_CHARS	80
+#define LINE_MAX_CHARS	72
 
 /* Maximum line number allowed. */
 #define LINE_NUM_MAX	9999
+
+/* Maximum number of characters that can be assigned to a string variable. */
+#define STR_VAR_MAX_CHARS	18
 
 /* Maximum number of errors allowed */
 #define MAX_ERRORS	20
@@ -68,6 +66,9 @@ enum { N_SUBVARS = 12 };
 
 void print_version(FILE *);
 void print_copyright(FILE *);
+void print_license(FILE *);
+void print_title(FILE *);
+void print_short_license(FILE *);
 
 /* edit.c */
 
@@ -184,6 +185,7 @@ enum error_code {
 	E_STR_EXPECT,
 	E_STR_REL_EQ,
 	E_NUMVAR_EXPECT,
+	E_STR_DATUM_TOO_LONG
 };
 
 void eprint(enum error_code ecode);

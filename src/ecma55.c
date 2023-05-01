@@ -1,25 +1,22 @@
-/* Copyright (C) 2023 Jorge Giner Cordero
+/* main, handling of command line options.
+ *
+ * Copyright (C) 2023 Jorge Giner Cordero
  *
  * This file is part of bas55, an implementation of the Minimal BASIC
  * programming language.
  *
- * bas55 is free software: you can redistribute it and/or modify it under the
- * terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * bas55 is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the Free
+ * Software Foundation, either version 3 of the License, or (at your option)
+ * any later version.
  *
- * bas55 is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * bas55 is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+ * more details.
  *
  * You should have received a copy of the GNU General Public License along with
- * bas55. If not, see <https://www.gnu.org/licenses/>.
- */
-
-/* ===========================================================================
- * main(), handling of command line options.
- * ===========================================================================
+ * bas55.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 #include <config.h>
@@ -40,23 +37,36 @@ void print_copyright(FILE *f)
 	fputs(copyright, f);
 }
 
-static void print_license(FILE *f)
+void print_short_license(FILE *f)
 {
 	static const char *license[] = {
-"bas55, an implementation of the Minimal BASIC programming language.",
+"License GPLv3+: GNU GPL version 3 or later <https://gnu.org/licenses/gpl.html>",
+"This is free software: you are free to change and redistribute it.",
+"There is NO WARRANTY, to the extent permitted by law."
+	};
+
+	int i;
+
+	for (i = 0; i < NELEMS(license); i++) {
+		fprintf(f, "%s\n", license[i]);
+	}
+}
+
+void print_license(FILE *f)
+{
+	static const char *license[] = {
+"This program is free software: you can redistribute it and/or modify",
+"it under the terms of the GNU General Public License as published by",
+"the Free Software Foundation, either version 3 of the License, or",
+"(at your option) any later version.",
 "",
-"bas55 is free software: you can redistribute it and/or modify it under the",
-"terms of the GNU General Public License as published by the Free Software",
-"Foundation, either version 3 of the License, or (at your option) any later",
-"version.",
+"This program is distributed in the hope that it will be useful,",
+"but WITHOUT ANY WARRANTY; without even the implied warranty of",
+"MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the",
+"GNU General Public License for more details.",
 "",
-"bas55 is distributed in the hope that it will be useful, but WITHOUT ANY",
-"WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS",
-"FOR A PARTICULAR PURPOSE. See the GNU General Public License for more",
-"details.",
-"",
-"You should have received a copy of the GNU General Public License along with",
-"bas55. If not, see <https://www.gnu.org/licenses/>."
+"You should have received a copy of the GNU General Public License",
+"along with this program.  If not, see <https://www.gnu.org/licenses/>."
        	};
 
 	int i;
@@ -69,10 +79,26 @@ static void print_license(FILE *f)
 void print_version(FILE *f)
 {
 	fputs(PACKAGE_STRING, f);
+	#if defined(HAVE_LIBREADLINE)
+		fputs(" (with GNU readline support)", f); 
+	#endif
 	#if defined(HAVE_LIBEDIT)
 		fputs(" (with libedit support)", f); 
 	#endif
 	fputs("\n", f);
+}
+
+void print_title(FILE *f)
+{
+	static const char *title[] = {
+"bas55, an implementation of the Minimal BASIC programming language."
+	};
+
+	int i;
+
+	for (i = 0; i < NELEMS(title); i++) {
+		fprintf(f, "%s\n", title[i]);
+	}
 }
 
 static void print_help(const char *argv0)
@@ -88,7 +114,6 @@ static void print_help(const char *argv0)
 "Options:\n"
 "  -h, --help         Display this help and exit.\n"
 "  -v, --version      Output version information and exit.\n"
-"  -l, --license      Display the license text and exit.\n"
 "  -g n, --gosub n    Allocate n bytes for the GOSUB stack.\n"
 "  -d, --debug        Enable debug mode.\n"
 "\n"
@@ -142,7 +167,6 @@ int main(int argc, char *argv[])
 	static struct ngetopt_opt ops[] = {
 		{ "version", 0, 'v' },
 		{ "help", 0, 'h' },
-		{ "license", 0, 'l' },
 		{ "gosub", 1, 'g' },
 		{ "debug", 0, 'd' },
 		{ NULL, 0, 0 },
@@ -157,14 +181,11 @@ int main(int argc, char *argv[])
 		switch (c) {
 		case 'v':
 			print_version(stdout);
+			print_copyright(stdout);
+			print_short_license(stdout);
 			exit(EXIT_SUCCESS);
 		case 'h':
 			print_help(argv[0]);
-			exit(EXIT_SUCCESS);
-		case 'l':
-			print_copyright(stdout);
-			fputs("\n", stdout);
-			print_license(stdout);
 			exit(EXIT_SUCCESS);
 		case 'g':
 			read_gosub_stack_capacity(ngo.optarg);
