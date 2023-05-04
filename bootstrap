@@ -1,7 +1,15 @@
 #!/bin/sh
 
+# ---------------------------------------------------------------------------
+# Copyright (C) 2023 Jorge Giner Cordero
+#
+# Copying and distribution of this file, with or without modification,
+# are permitted in any medium without royalty provided the copyright
+# notice and this notice are preserved.  This file is offered as-is,
+# without any warranty.
+# ---------------------------------------------------------------------------
+
 # ============================================================================
-# When you get the source from a version control repository, it is not
 # When you get the source from a version control repository, it is not
 # ready for distribution. Some files have to be generated first but these
 # generated files depend on the version of the tools you have on your system:

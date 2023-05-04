@@ -1,20 +1,7 @@
-/* Copyright (C) 2023 Jorge Giner Cordero
- *
- * This file is part of bas55, an implementation of the Minimal BASIC
- * programming language.
- *
- * bas55 is free software: you can redistribute it and/or modify it
- * under the terms of the GNU General Public License as published by the Free
- * Software Foundation, either version 3 of the License, or (at your option)
- * any later version.
- *
- * bas55 is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
- * more details.
- *
- * You should have received a copy of the GNU General Public License along with
- * bas55.  If not, see <https://www.gnu.org/licenses/>.
+/* --------------------------------------------------------------------------
+ * Copyright (C) 2023 Jorge Giner Cordero
+ * License: GNU GPL version 3 or later <https://gnu.org/licenses/gpl.html>
+ * --------------------------------------------------------------------------
  */
 
 #ifndef ECMA55_H
@@ -66,7 +53,6 @@ enum { N_SUBVARS = 12 };
 
 void print_version(FILE *);
 void print_copyright(FILE *);
-void print_license(FILE *);
 void print_title(FILE *);
 void print_short_license(FILE *);
 

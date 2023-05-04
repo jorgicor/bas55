@@ -1,5 +1,10 @@
-@c ===========================================================================
-@c bas55, an implementation of the Minimal BASIC programming language.
-@c ===========================================================================
+@c ---------------------------------------------------------------------------
+@c Copyright (C) 2023 Jorge Giner Cordero
+@c
+@c Copying and distribution of this file, with or without modification,
+@c are permitted in any medium without royalty provided the copyright
+@c notice and this notice are preserved.  This file is offered as-is,
+@c without any warranty.
+@c ---------------------------------------------------------------------------
 
 @set COPYRIGHT_YEARS @COPYRIGHT_YEARS@ 

@@ -348,6 +348,9 @@ WELCOME
 JAMES
 @end example
 
+A string variable can hold at maximum 18 characters.
+If the user enters a longer string, @code{bas55} will print an error message and the @code{INPUT} will be retried.
+
 @code{INPUT} can be used to ask the user to enter a list of numbers or character strings, separated by commas.
 For example:
 
@@ -466,6 +469,9 @@ At line @code{20}, we are using parenthesis to select which operation is calcula
 If a numeric variable is used before any value has been assigned to it in the program, the value of the variable defaults to @samp{0}.
 For a string variable, it defaults to the empty string.
 You can enable the debug mode if you want the interpreter to warn you about any variable that is used before any value has been assigned to it.
+
+A string variable can hold at maximum 18 characters.
+The BASIC program will stop with an exception if you try to store a longer string into a string variable with @code{LET}.
 
 @node Numbers
 @section Numbers
@@ -1065,6 +1071,8 @@ This program prints @samp{1} and @samp{2}, and then @samp{1} and @samp{2} again.
 70 END
 @end example
 
+The maximum number of characters that can be @code{READ} into a string variable is 18. If you @code{READ} a longer string, the program will stop with an exception.
+
 @node Sieve of Eratosthenes
 @section Sieve of Eratosthenes
 
@@ -1197,15 +1205,24 @@ If you then press the @key{ENTER} key, the line will be saved with the modificat
 @node Unix-like systems
 @subsection Unix-like systems
 
-On GNU/Linux, BSD systems, etc, if @command{bas55} has been compiled with @samp{libedit} support, when executing the program in editor mode you will something like:
+On GNU/Linux, BSD systems, etc, if @command{bas55} has been compiled with @samp{GNU readline} support (recommended) or @samp{NetBSD libedit} support, when executing the program in editor mode you will see something like:
 
 @example
-bas55 1.13 (with libedit support)
+bas55 2.0 (with GNU readline support)
+@end example
+
+Or:
+
+@example
+bas55 2.0 (with NetBSD libedit support)
 @end example
 
 In this case, you have the same editing enhancements as on Microsoft Windows, and some more.
 
-For example, you can access any line of your BASIC program by writing its number and then pressing the @key{TAB} key.
+NetBSD's libedit, as of this writing, has some compatibility issues when used in readline emulation mode.
+I recommend GNU Readline even if you are on a BSD system, or at least try both.
+
+When @code{bas55} is compiled with support of one of these libraries, you can access any line of your BASIC program by writing its number and then pressing the @key{TAB} key.
 Then you will get the line and you will be able to edit it.
 
 For example, if your program was:
@@ -1252,9 +1269,6 @@ Display usage information and exit.
 
 @item -v, --version
 Display version information and exit.
-
-@item -l, --license
-Show the license text and exit.
 
 @item -g n, --gosub n
 Allocate enough space so that, at maximum, @samp{n} @code{GOSUB} statements can be executed without any @code{RETURN} statement.

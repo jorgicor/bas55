@@ -10,5 +10,5 @@ bas55 is free software. See the file `COPYING` for copying conditions.
 Home page: https://jorgicor.niobe.org/bas55  
 Send bug reports to: jorge.giner@hotmail.com
 
-[1]: http://www.ecma-international.org/publications/standards/Standardwithdrawn.htm
+[1]: https://www.ecma-international.org/publications-and-standards/standards/ecma-55/
 

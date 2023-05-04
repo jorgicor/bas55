@@ -1,33 +1,19 @@
+/* --------------------------------------------------------------------------
+ * Copyright (C) 2023 Jorge Giner Cordero
+ * License: GNU GPL version 3 or later <https://gnu.org/licenses/gpl.html>
+ * --------------------------------------------------------------------------
+ */
+
 /* Program to generate the coeficiens for the polynomials used to approximate
  * sin, atan, exp, etc. functions in bas55, an implementation of the Minimal
  * BASIC
  *
- * Copyright (C) 2023 Jorge Giner Cordero
- *
- * This program is free software: you can redistribute it and/or modify it
- * under the terms of the GNU General Public License as published by the Free
- * Software Foundation, either version 3 of the License, or (at your option)
- * any later version.
- *
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
- * more details.
- *
- * You should have received a copy of the GNU General Public License along with
- * this program.  If not, see <https://www.gnu.org/licenses/>.
- */
-
-/*
- * This program calculates two interpolation polynomials by Newton's
- * differences.
- * The polynomial called 'simple', computes the desired
- * function (sin, cos), etc at the points given by the desired interval
- * divided by the number of nodes.
- * The polynomial called 'chevi' computes the function at the Chevishev
- * nodes in the interval.
- * The program prints the nodes (P) and the coefficients (D) needed
- * to approximate the function at a point using Newton's method.
+ * We calculate two interpolation polynomials by Newton's differences.  The
+ * polynomial called 'simple', computes the desired function (sin, cos), etc at
+ * the points given by the desired interval divided by the number of nodes.
+ * The polynomial called 'chevi' computes the function at the Chevishev nodes
+ * in the interval.  The program prints the nodes (P) and the coefficients (D)
+ * needed to approximate the function at a point using Newton's method.
  */
 
 #include <assert.h>

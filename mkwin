@@ -1,24 +1,15 @@
 #!/bin/sh
 
 # This script is used to build the Microsoft Windows package under Cygwin.
-#
+
+# ---------------------------------------------------------------------------
 # Copyright (C) 2023 Jorge Giner Cordero
 #
-# This file is part of bas55, an implementation of the Minimal BASIC
-# programming language.
-#
-# bas55 is free software: you can redistribute it and/or modify it under
-# the terms of the GNU General Public License as published by the Free Software
-# Foundation, either version 3 of the License, or (at your option) any later
-# version.
-#
-# bas55 is distributed in the hope that it will be useful, but WITHOUT
-# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-# FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
-# details.
-#
-# You should have received a copy of the GNU General Public License along with
-# bas55.  If not, see <https://www.gnu.org/licenses/>.
+# Copying and distribution of this file, with or without modification,
+# are permitted in any medium without royalty provided the copyright
+# notice and this notice are preserved.  This file is offered as-is,
+# without any warranty.
+# ---------------------------------------------------------------------------
 
 case $# in
 	2) bas55_vmaj=$1; bas55_vmin=$2 ;;
@@ -77,10 +68,11 @@ make_zip () {
 	cp ../$bas55_xname/src/bas55.exe .
 	cp ../$bas55_xname/doc/bas55.html .
 	cp ../$bas55_xname/COPYING copying.txt
-	cp ../$bas55_xname/GFDL gfdl.txt
 	cp ../$bas55_xname/README readme.txt
 	cp ../$bas55_xname/NEWS news.txt
-	sed $sedmask ../$bas55_xname/data/SIEVE.BAS > sieve.bas
+	sed $sedmask ../$bas55_xname/data/SIEVE.BAS > SIEVE.BAS
+	sed $sedmask ../$bas55_xname/data/HAMURABI.BAS > HAMURABI.BAS
+	sed $sedmask ../$bas55_xname/data/BAGELS.BAS > BAGELS.BAS
 	for i in *.txt
 	do
 		sed $sedmask $i > tmp.txt
