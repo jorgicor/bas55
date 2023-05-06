@@ -7,6 +7,12 @@
     without any warranty.
 -----------------------------------------------------------------------------
 
+* The standard does not allow to assign to a string variable a string with
+  more than 18 characters. We issue error when the program is running, but
+  maybe we can already give erros when compiling. For example, a string
+  in a DATA statement can already be checked for conformance. The same
+  for LET and a constant string.
+
 Tests
 
 numvar_dimensioned()

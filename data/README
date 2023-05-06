@@ -1,6 +1,10 @@
-These are some BASIC programs you can try.
+-----------------------------------------------------------------------------
+    Copyright (C) 2023 Jorge Giner Cordero
+    This file is part of bas55 (ECMA-55 Minimal BASIC System).
+    bas55 license: GNU GPL v3 or later.
+-----------------------------------------------------------------------------
 
-`SIEVE.BAS` is the algorithm to find the first N prime numbers, by
+`SIEVE.BAS` is the algorithm for finding the first N prime numbers, by
 Erathostenes of Cyrene (276 BC - 194 BC).
 
 `HAMURABI.BAS` and `BAGELS.BAS` are ported by B. Watson <urchlay at

@@ -1,17 +1,15 @@
 -----------------------------------------------------------------------------
     Copyright (C) 2023 Jorge Giner Cordero
-
-    Copying and distribution of this file, with or without modification,
-    are permitted in any medium without royalty provided the copyright
-    notice and this notice are preserved.  This file is offered as-is,
-    without any warranty.
+    This file is part of bas55 (ECMA-55 Minimal BASIC System).
+    bas55 license: GNU GPL v3 or later.
 -----------------------------------------------------------------------------
 
-2.00	2023-05-01
+2.00	2023-05-06
 
 	* IMPORTANT NOTICE: from this version, bas55 is under the GNU General
 	  Public License version 3 or later. Previous versions were under a
-	  Expat/MIT license.
+	  Expat/MIT license. The manual is under the GNU Free Documentation
+	  License.
 
 	* Support for GNU Readline added.
 	  Changing to GPL makes it easier to support GNU Readline, which as of
@@ -20,22 +18,22 @@
 	  not behaving completely compatible with GNU Readline. This means that
 	  on GNU/Linux and BSDs you can compile the program with GNU Readline
 	  support or NetBSD libedit support, if they are installed. I recommend
-	  that if you can use it, use GNU Readline. See the README file for
+	  that, if you can, use GNU Readline. See the README file for
 	  instructions on how to compile the program with support for one or
 	  the other.
 
 	* Fixed: we were allowing to enter arbitrary characters when INPUT was
 	  called and entered them between double quotes. Only the characters
 	  allowed by the standard are accepted now. Moreover, characteres
-	  entered are automatically changed to upper case.
+	  entered are automatically set in upper case.
 
 	* The maximum number of characters on a BASIC line has been limited to
 	  72 to comply with the standard and other implementations. Previously
 	  we where allowing for 80 characters on a line.
 
 	* Fixed: we were allowing to assign, to a string variable, strings with
-	  more than 18 characters, either by INPUT or READ. The standard limits
-	  to 18 characters.
+	  more than 18 characters, either by LET, INPUT or READ. The standard
+	  limits to 18 characters.
 
 	* Removed the --license command line option and the LICENSE command.
 
@@ -46,10 +44,9 @@
 	* Fixed SIEVE.BAS so it initializes its array to zeros to comply with
 	  other ECMA55 implementations.
 
-	Source changes
-	--------------
+	* Added HAMURABI.BAS and BAGELS.BAS, courtesy of B. Watson.
 
-	* Added licenses to every source.
+	* Added THANKS file.
 
 1.19	2020-10-02
 

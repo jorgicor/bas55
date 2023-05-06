@@ -1,10 +1,7 @@
 @c ---------------------------------------------------------------------------
 @c Copyright (C) 2023 Jorge Giner Cordero
-@c
-@c Copying and distribution of this file, with or without modification,
-@c are permitted in any medium without royalty provided the copyright
-@c notice and this notice are preserved.  This file is offered as-is,
-@c without any warranty.
+@c This is part of the bas55 (ECMA Minimal BASIC System) manual.
+@c See the file bas55.texi for copying conditions.
 @c ---------------------------------------------------------------------------
 
 @set COPYRIGHT_YEARS @COPYRIGHT_YEARS@ 

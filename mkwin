@@ -1,15 +1,12 @@
 #!/bin/sh
 
-# This script is used to build the Microsoft Windows package under Cygwin.
-
 # ---------------------------------------------------------------------------
 # Copyright (C) 2023 Jorge Giner Cordero
-#
-# Copying and distribution of this file, with or without modification,
-# are permitted in any medium without royalty provided the copyright
-# notice and this notice are preserved.  This file is offered as-is,
-# without any warranty.
+# This file is part of bas55 (ECMA-55 Minimal BASIC System).
+# bas55 license: GNU GPL v3 or later.
 # ---------------------------------------------------------------------------
+
+# This script is used to build the Microsoft Windows package under Cygwin.
 
 case $# in
 	2) bas55_vmaj=$1; bas55_vmin=$2 ;;
@@ -70,9 +67,11 @@ make_zip () {
 	cp ../$bas55_xname/COPYING copying.txt
 	cp ../$bas55_xname/README readme.txt
 	cp ../$bas55_xname/NEWS news.txt
-	sed $sedmask ../$bas55_xname/data/SIEVE.BAS > SIEVE.BAS
-	sed $sedmask ../$bas55_xname/data/HAMURABI.BAS > HAMURABI.BAS
-	sed $sedmask ../$bas55_xname/data/BAGELS.BAS > BAGELS.BAS
+	mkdir data
+	sed $sedmask ../$bas55_xname/data/SIEVE.BAS > data/SIEVE.BAS
+	sed $sedmask ../$bas55_xname/data/HAMURABI.BAS > data/HAMURABI.BAS
+	sed $sedmask ../$bas55_xname/data/BAGELS.BAS > data/BAGELS.BAS
+	sed $sedmask ../$bas55_xname/data/README > data/readme.txt
 	for i in *.txt
 	do
 		sed $sedmask $i > tmp.txt

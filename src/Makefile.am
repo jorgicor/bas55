@@ -1,10 +1,7 @@
 # ---------------------------------------------------------------------------
 # Copyright (C) 2023 Jorge Giner Cordero
-#
-# Copying and distribution of this file, with or without modification,
-# are permitted in any medium without royalty provided the copyright
-# notice and this notice are preserved.  This file is offered as-is,
-# without any warranty.
+# This file is part of bas55 (ECMA-55 Minimal BASIC System).
+# bas55 license: GNU GPL v3 or later.
 # ---------------------------------------------------------------------------
 
 BUILT_SOURCES = grammar.h

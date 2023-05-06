@@ -2,7 +2,7 @@ bas55 - ECMA-55 Minimal BASIC System
 ====================================
 
 `bas55` is an implementation of the *Minimal BASIC* programming language as
-described by the [ECMA standard 55][1]. bas55 provides an interpreter and an
+described by the [ECMA-55 standard][1]. `bas55` provides an interpreter and an
 editor with line renumbering capabilities.
 
 bas55 is free software. See the file `COPYING` for copying conditions.

@@ -1079,24 +1079,28 @@ The maximum number of characters that can be @code{READ} into a string variable 
 A gift from @uref{http://en.wikipedia.org/wiki/Sieve_of_Eratosthenes,Eratosthenes of Cyrene}, 276 BC - 194 BC...
 
 @example
-10  PRINT "FIND PRIMES FROM 2 TO N (N <= 1000). ENTER N: "
-20  INPUT N
-30  IF N<2 THEN 10
-40  IF N>1000 THEN 10
-50  DIM A(1000)
-60  LET S=SQR(N)
-70  FOR I=2 TO S
-80    IF A(I)=1 THEN 130
-90    LET D=N/I
-100   FOR J=I TO D
-110     LET A(I*J)=1
-120   NEXT J
-130 NEXT I
-140 FOR I=2 TO N
-150   IF A(I)=1 THEN 170
-160   PRINT I
+10  REM SIEVE OF ERATOSTHENES, BY ERATHOSTENES OF CYRENE 276BC-194BC
+20  DIM A(1000)
+30  FOR I=1 TO 1000
+40    LET A(I)=0
+50  NEXT I
+60  PRINT "FIND PRIMES FROM 2 TO N (N <= 1000). ENTER N: "
+70  INPUT N
+80  IF N<2 THEN 60
+90  IF N>1000 THEN 60
+100 LET S=SQR(N)
+110 FOR I=2 TO S
+120   IF A(I)=1 THEN 170
+130   LET D=N/I
+140   FOR J=I TO D
+150     LET A(I*J)=1
+160   NEXT J
 170 NEXT I
-180 END
+180 FOR I=2 TO N
+190   IF A(I)=1 THEN 210
+200   PRINT I
+210 NEXT I
+220 END
 @end example
 
 @node Reference
@@ -1218,9 +1222,6 @@ bas55 2.0 (with NetBSD libedit support)
 @end example
 
 In this case, you have the same editing enhancements as on Microsoft Windows, and some more.
-
-NetBSD's libedit, as of this writing, has some compatibility issues when used in readline emulation mode.
-I recommend GNU Readline even if you are on a BSD system, or at least try both.
 
 When @code{bas55} is compiled with support of one of these libraries, you can access any line of your BASIC program by writing its number and then pressing the @key{TAB} key.
 Then you will get the line and you will be able to edit it.
