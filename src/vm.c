@@ -1,5 +1,6 @@
 /* --------------------------------------------------------------------------
  * Copyright (C) 2023 Jorge Giner Cordero
+ * This file is part of bas55 (ECMA-55 Minimal BASIC System).
  * License: GNU GPL version 3 or later <https://gnu.org/licenses/gpl.html>
  * --------------------------------------------------------------------------
  */
