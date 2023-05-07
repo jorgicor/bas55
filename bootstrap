@@ -12,14 +12,10 @@
 # generated files depend on the version of the tools you have on your system:
 # autoconf, automake, help2man, texinfo, bison, etc
 #
-# You use this script only if you are a developer and you cloned the
-# repository. You will need the above tools. This will generate some files:
-# INSTALL, configure, some Makefile.in, etc
+# You use this script to generate those files. They should not be in version
+# control. We have rules for that in the .gitignore file.
 #
-# This generated files should not be in version control. We have rules for that
-# in the .gitignore file.
-#
-# After this 'bootstrap' you should be able to use the usual
+# After that, you should be able to do
 #
 # $ ./configure & make
 # ===========================================================================

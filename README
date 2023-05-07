@@ -64,7 +64,8 @@ the `configure` script. Use:
     $ ./bootstrap
 
 to generate the required files. You will need *GNU autoconf*, *GNU automake*,
-*GNU texinfo*, *help2man*, and a *yacc* parser (tested only with *GNU bison*).
+*GNU texinfo*, *help2man*, and a *yacc* parser generator (tested only with
+*GNU bison*).
 
 Compiling from the source distribution
 --------------------------------------
@@ -114,14 +115,14 @@ system, or at least try both.
 So, to compile with GNU Readline support, you can pass `--with-readline` to the
 configure script, and it will try to detect the library.
 
-To compile with libedit support, you can pass `--with-libedit` to the
-configure script to detect the library. Sometimes, the library is already
-linked with its dependencies and you don't need to do anything else, but
-sometimes it is not. In this case, you have to link also with one the termcap,
-curses or ncurses libraries. For this, you have the options `--with-termcap`,
-`--with-curses` and `--with-ncurses`. This means that if using
-`--with-libedit` gives you an error but you know that libedit is installed,
-try combining this option with one of the others.
+To compile with libedit support, you can pass `--with-libedit` to to detect
+the library. Sometimes, the library is already linked with its dependencies
+and you don't need to do anything else, but sometimes it is not. In this case,
+you have to link also with one the termcap, curses or ncurses libraries. For
+this, you have the options `--with-termcap`, `--with-curses` and
+`--with-ncurses`. This means that if using `--with-libedit` gives you an error
+but you know that libedit is installed, try combining this option with one of
+the others.
 
 These are some tests I did:
 

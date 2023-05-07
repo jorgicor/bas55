@@ -5,7 +5,7 @@
 -----------------------------------------------------------------------------
 
 `SIEVE.BAS` is the algorithm for finding the first N prime numbers, by
-Erathostenes of Cyrene (276 BC - 194 BC).
+Eratosthenes of Cyrene (276 BC - 194 BC).
 
 `HAMURABI.BAS` and `BAGELS.BAS` are ported by B. Watson <urchlay at
 slackware.uk>, from the book "BASIC Computer Games - Microcomputers Edition"

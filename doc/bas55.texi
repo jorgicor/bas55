@@ -1079,7 +1079,7 @@ The maximum number of characters that can be @code{READ} into a string variable 
 A gift from @uref{http://en.wikipedia.org/wiki/Sieve_of_Eratosthenes,Eratosthenes of Cyrene}, 276 BC - 194 BC...
 
 @example
-10  REM SIEVE OF ERATOSTHENES, BY ERATHOSTENES OF CYRENE 276BC-194BC
+10  REM SIEVE OF ERATOSTHENES, BY ERATOSTHENES OF CYRENE 276BC-194BC
 20  DIM A(1000)
 30  FOR I=1 TO 1000
 40    LET A(I)=0

@@ -5,7 +5,7 @@
 -----------------------------------------------------------------------------
 
 All the Pxxx.BAS tests come from the *National Bureau of Standards - Minimal
-BASIC test programs - Version 2*, published in two volumnes on November 1980.
+BASIC test programs - Version 2*, published in two volumes on November 1980.
 We call them the NBS test programs.
 
 The original publications of the NBS test programs can be found here:
@@ -18,7 +18,7 @@ He is the author of the *ECMA-55 Minimal BASIC Compiler*. Check it at:
 
 http://buraphakit.sourceforge.net/BASIC.shtml
 
-Copying and distribution of the rest of files that do not specify a license in
-this folder (not the NBS test programs) are permitted in any medium without
+Copying and distribution of the rest of the files that do not specify a license
+in this folder (not the NBS test programs) are permitted in any medium without
 royalty. They are offered as-is, without any warranty.
 
