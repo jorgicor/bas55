@@ -38,7 +38,7 @@ static const char *s_errors[] = {
 	"function argument as array",
 	"undefined function",
 	"invalid number of arguments for function",
-	"insuficient input data",
+	"insufficient input data",
 	"too much input data",
 	"error on input stream",
 	"numeric constant overflow",
